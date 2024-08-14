@@ -95,8 +95,6 @@ const FormAssessment = ({ visible, hidden }) => {
       <button
         onClick={() => handleCreateAppointment()}
         style={{
-          right:
-            appointmentDate.day === 0 ? "-120%" : "4px",
           background:
             "linear-gradient(to right, #11998e, #38ef7d)",
         }}
