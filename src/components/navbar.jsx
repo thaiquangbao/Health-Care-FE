@@ -89,17 +89,16 @@ const Navbar = () => {
                         <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Tải Ứng Dụng Ngay</button></Link>
                     </>
                 } */}
-                    <button onClick={() => authHandler.setVisibleMore(!authData.visibleMore)} className='flex items-center gap-2 mr-4'>
-                        <span className='text-[15px] font-normal'>Trang Chủ</span>
-                        <i className="text-[23px] text-[#585858] fa-solid fa-list"></i>
-                    </button>
                     <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Đặt Lịch Khám</button></Link>
                     <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Tải Ứng Dụng Ngay</button></Link>
+                    <button onClick={() => authHandler.setVisibleMore(!authData.visibleMore)} className='flex items-center gap-2 mr-4'>
+                        <i className="text-[25px] ml-2 text-[#494949] fa-solid fa-bars"></i>
+                    </button>
                 </div>
             </div>
             <div style={{ right: authData.visibleMore ? 0 : '-100%' }} className='z-[49] h-screen w-[300px] bg-[white] fixed top-0 transition-all'>
                 <button onClick={() => authHandler.setVisibleMore(false)}><i className='bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]'></i></button>
-                <ul className='flex flex-col gap-8 py-[3rem] px-[1.5rem]'>
+                <ul className='flex flex-col gap-7 py-[2rem] px-[1.5rem]'>
                     {userData.user?.role !== 'DOCTOR' ? (
                         <>
                             {userData.user && (
@@ -136,6 +135,26 @@ const Navbar = () => {
                                 <i className="text-[#4ce1c6] text-[23px] fa-solid fa-user-doctor"></i>
                                 <span className='text-[16px] font-medium'>Đội Ngũ Bác Sĩ</span>
                             </li>
+                            {userData?.user?.role === 'USER' && (
+                                <>
+                                    <li onClick={() => {
+                                        router.push('/')
+                                        authHandler.hiddenWrapper()
+                                        authHandler.setVisibleMore(false)
+                                    }} className='flex gap-3 cursor-pointer'>
+                                        <i className='text-[#ff3359] fa-solid fa-clipboard text-[23px]'></i>
+                                        <span className='text-[16px] font-medium'>Hồ Sơ Sức Khỏe</span>
+                                    </li>
+                                    <li onClick={() => {
+                                        router.push('/cuoc-hen-cua-ban')
+                                        authHandler.hiddenWrapper()
+                                        authHandler.setVisibleMore(false)
+                                    }} className='flex gap-3 cursor-pointer'>
+                                        <i className='text-[#ebd400] fa-solid fa-calendar-check text-[23px]'></i>
+                                        <span className='text-[16px] font-medium'>Cuộc Hẹn Của Bạn</span>
+                                    </li>
+                                </>
+                            )}
                             <li onClick={() => {
                                 router.push('/')
                                 authHandler.hiddenWrapper()
@@ -152,22 +171,6 @@ const Navbar = () => {
                                 <i className='text-[#ff7834] fa-solid fa-blog text-[23px]'></i>
                                 <span className='text-[16px] font-medium'>Cẩm Nang</span>
                             </li>
-                            {!userData.user && (
-                                <li className='flex items-center gap-3 justify-center'>
-                                    <button onClick={() => {
-                                        authHandler.setVisibleMore(false)
-                                        setTimeout(() => {
-                                            authHandler.showSignUp()
-                                        }, 700);
-                                    }} className="text-[white] bg-[blue] w-[110px] py-2 rounded-xl hover:scale-[1.05] transition-all">Đăng Ký</button>
-                                    <button onClick={() => {
-                                        authHandler.setVisibleMore(false)
-                                        setTimeout(() => {
-                                            authHandler.showSignIn()
-                                        }, 700);
-                                    }} className="text-[white] bg-[#1dcbb6] w-[110px] py-2 rounded-xl hover:scale-[1.05] transition-all">Đăng Nhập</button>
-                                </li>
-                            )}
                         </>
                     )
                         :
@@ -213,17 +216,35 @@ const Navbar = () => {
                                     <i className='text-[#ff7834] fa-solid fa-blog text-[23px]'></i>
                                     <span className='text-[16px] font-medium'>Cẩm Nang</span>
                                 </li>
-                                <li onClick={() => {
-                                    handleSignOut()
-                                    authHandler.hiddenWrapper()
-                                    authHandler.setVisibleMore(false)
-                                }} className='flex gap-3 cursor-pointer'>
-                                    <i className='text-[#000000] fa-solid fa-right-from-bracket text-[23px]'></i>
-                                    <span className='text-[16px] font-medium'>Đăng Xuất</span>
-                                </li>
                             </>
                         )
                     }
+                    {!userData.user && (
+                        <li className='flex items-center gap-3 justify-center'>
+                            <button onClick={() => {
+                                authHandler.setVisibleMore(false)
+                                setTimeout(() => {
+                                    authHandler.showSignUp()
+                                }, 700);
+                            }} className="text-[white] bg-[blue] w-[110px] py-2 rounded-xl hover:scale-[1.05] transition-all">Đăng Ký</button>
+                            <button onClick={() => {
+                                authHandler.setVisibleMore(false)
+                                setTimeout(() => {
+                                    authHandler.showSignIn()
+                                }, 700);
+                            }} className="text-[white] bg-[#1dcbb6] w-[110px] py-2 rounded-xl hover:scale-[1.05] transition-all">Đăng Nhập</button>
+                        </li>
+                    )}
+                    {userData.user && (
+                        <li onClick={() => {
+                            handleSignOut()
+                            authHandler.hiddenWrapper()
+                            authHandler.setVisibleMore(false)
+                        }} className='flex gap-3 cursor-pointer'>
+                            <i className='text-[#000000] fa-solid fa-right-from-bracket text-[23px]'></i>
+                            <span className='text-[16px] font-medium'>Đăng Xuất</span>
+                        </li>
+                    )}
                 </ul>
             </div>
             <div style={{ height: height + 'px' }} className='w-full z-0'></div>

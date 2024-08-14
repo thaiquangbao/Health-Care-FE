@@ -3,7 +3,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import Navbar from '@/components/navbar'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Select, SelectItem } from "@nextui-org/select";
-import { changeDate, compareDateIsHaveInSchedule, convertDateToDayMonth, convertDateToDayMonthYearObject, formatDateISOByVietNam } from '@/utils/date';
+import { changeDate, compareDate1GetterThanDate2, compareDateIsHaveInSchedule, convertDateToDayMonth, convertDateToDayMonthYearObject, convertObjectToDate, formatDateISOByVietNam } from '@/utils/date';
 import { appointmentContext } from '@/context/AppointmentContext';
 import { userContext } from '@/context/UserContext';
 import { api, TypeHTTP } from '@/utils/api';
@@ -109,12 +109,23 @@ const HoSoBacSi = () => {
                         {days.map((day, index) => (
                             <div key={index} className='border-[1px] border-[rgb(217,217,217)] flex items-center justify-center font-medium text-[15px]'>
                                 {(day + '') !== '' && (
-                                    <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#eaeded' }} onClick={() => appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + ''))} className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
-                                        <span>{convertDateToDayMonth(day + '')}</span>
-                                        {compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) !== 0 && (
-                                            <span>{`(${compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules)}) Cuộc Hẹn`}</span>
+                                    <>
+                                        {compareDate1GetterThanDate2(convertDateToDayMonthYearObject(day + ''), convertDateToDayMonthYearObject(new Date().toISOString())) ? (
+                                            <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + ''))} className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
+                                                <span>{convertDateToDayMonth(day + '')}</span>
+                                                {compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) !== 0 && (
+                                                    <span>{`(${compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules)}) Cuộc Hẹn`}</span>
+                                                )}
+                                            </button>
+                                        ) : (
+                                            <button className='bg-[#eaeded] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
+                                                <span>{convertDateToDayMonth(day + '')}</span>
+                                                {compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) !== 0 && (
+                                                    <span>{`(${compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules)}) Cuộc Hẹn`}</span>
+                                                )}
+                                            </button>
                                         )}
-                                    </button>
+                                    </>
                                 )}
                             </div>
                         ))}
@@ -123,10 +134,10 @@ const HoSoBacSi = () => {
                 <div className='flex flex-col gap-3 bg-[white] rounded-md px-6 py-4 w-[80%]'>
                     <span className='text-[15px] font-semibold'>Thông Tin Chi Tiết</span>
                     <div className='grid grid-cols-2 gap-3'>
-                        <input value={appointmentData.doctorRecord?.area} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, area: e.target.value })} placeholder='Nơi Làm Việc' className='text-[13px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
-                        <input value={appointmentData.doctorRecord?.certificate + ''} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, certificate: [e.target.value] })} placeholder='Bằng Cấp' className='text-[13px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
-                        <input value={appointmentData.doctorRecord?.language + ''} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, language: [e.target.value] })} placeholder='Ngôn Ngữ' className='text-[13px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
-                        <input value={appointmentData.doctorRecord?.trainingPlace} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, trainingPlace: e.target.value })} placeholder='Nơi Đào Tạo' className='text-[13px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
+                        <input value={appointmentData.doctorRecord?.area} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, area: e.target.value })} placeholder='Nơi Làm Việc' className='text-[14px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
+                        <input value={appointmentData.doctorRecord?.certificate + ''} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, certificate: [e.target.value] })} placeholder='Bằng Cấp' className='text-[14px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
+                        <input value={appointmentData.doctorRecord?.language + ''} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, language: [e.target.value] })} placeholder='Ngôn Ngữ' className='text-[14px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
+                        <input value={appointmentData.doctorRecord?.trainingPlace} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, trainingPlace: e.target.value })} placeholder='Nơi Đào Tạo' className='text-[14px] w-full mt-1 h-[38px] bg-[white] border-[1px] border-[#d7d7d7] focus:outline-0 rounded-lg px-4' />
                     </div>
                     <textarea value={appointmentData.doctorRecord?.description} onChange={e => appointmentHandler.setDoctorRecord({ ...appointmentData.doctorRecord, description: e.target.value })} placeholder='Mô Tả Thêm' className='border-[1px] h-[200px] focus:outline-none px-5 text-[14px] py-2 border-[#e1e1e1] rounded-md'></textarea >
                 </div>

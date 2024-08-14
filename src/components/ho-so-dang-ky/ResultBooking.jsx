@@ -12,7 +12,7 @@ const ResultBooking = () => {
     const { bookingData, bookingHandler } = useContext(bookingContext)
     const { userData } = useContext(userContext)
     const { globalHandler } = useContext(globalContext)
-    const { appointmentHandler } = useContext(appointmentContext)
+    const { appointmentHandler, appointmentData } = useContext(appointmentContext)
     const router = useRouter()
 
     const handleSubmit = () => {
@@ -20,10 +20,11 @@ const ResultBooking = () => {
             globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
             api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
                 .then(res => {
-                    const body = {
-                        ...bookingData.doctorRecord, examination_call: bookingData.doctorRecord.examination_call + 1
-                    }
-                    api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body })
+                    let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+                    let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+                    let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+                    time.status = 'Queue'
+                    api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
                         .then(res => {
                             bookingHandler.setDoctorRecord()
                             appointmentHandler.setDoctorRecord()
@@ -36,10 +37,11 @@ const ResultBooking = () => {
             globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
             api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
                 .then(res => {
-                    const body = {
-                        ...bookingData.doctorRecord, examination_call: bookingData.doctorRecord.examination_call + 1
-                    }
-                    api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body })
+                    let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+                    let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+                    let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+                    time.status = 'Queue'
+                    api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
                         .then(res => {
                             bookingHandler.setDoctorRecord()
                             appointmentHandler.setDoctorRecord()
@@ -86,3 +88,50 @@ const ResultBooking = () => {
 }
 
 export default ResultBooking
+
+
+// const medicalRecord = {
+//     patient: {
+//         _id: ObjectID,
+//         fullName: String,
+//         dob: Date,
+//         gender: Boolean,
+//         phone: String,
+//         email: String
+//     },
+//     doctor: {
+//         _id: ObjectID,
+//         fullName: String,
+//         phone: String,
+//         email: String
+//     },
+//     totalDiagnosisDisease: [String](chuẩn đoán bệnh 'thường là lấy chuẩn đoán bênh mới nhất'),
+//     totalSymptoms: [String](triệu chứng tổng, 'thường là lấy triệu chứng mới nhất'),
+//     vitalSigns: [{
+//         temperature: Number,
+//         bloodPressure: Number,
+//         heartRate: Number,
+//         respiratoryRate: Number('hít thở bao nhiêu lần')
+//     }],
+//     medicalExaminationHistory: [{
+//         diagnosisDisease: [String],
+//         symptoms: [String],
+//         date: {
+//             day: Number,
+//             month: Number,
+//             year: Number,
+//             time: String
+//         },
+//         note: String,
+//         medical: [{
+//             medicalName: String,
+//             quantity: Number
+//         }]
+//     }],
+
+//     reExaminationDate: {
+//         day: Number,
+//         month: Number,
+//         year: Number,
+//     }
+// }

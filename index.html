@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div
+        style="font-family: Arial, sans-serif; width: 600px; margin: 0 auto; background-color: #f7f7f7; padding: 20px; border-radius: 8px;">
+        <div style="text-align: center; background-color: #b2ebf2; padding: 15px; border-radius: 8px 8px 0 0;">
+            <h2 style="margin: 0; color: #000;">Phiếu khám bệnh</h2>
+        </div>
+        <div
+            style="padding: 20px; background-color: #fff; border-radius: 0 0 8px 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);font-size: 16px;">
+            <h2 style="text-align: center; color: #000; margin-top: 0;">${rs.price_list.pathological.title}</h2>
+            <p style="text-align: center; color: #777; margin-bottom: 20px;">Địa chỉ: Tư vấn online qua meet online</p>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <p style="font-size: 24px; color: #000; margin: 0;">Thời gian khám</p>
+                <h1 style="font-size: 48px; color: #000; margin: 0;">${rs.appointment_date.time}</h1>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Mã phiếu:</p>
+                <p style=" text-align:right;"><strong>32424234</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Dịch vụ:</p>
+                <p style=" text-align:right;"><strong> Tư vấn online</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Chuyên khoa:</p>
+                <p style=" text-align:right;"><strong> Tim mạch</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Bác sĩ:</p>
+                <p style=" text-align:right;"><strong> ${recordDoctor.doctor.fullName}</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Ngày khám:</p>
+                <p style=" text-align:right;"><strong>
+                        ${rs.appointment_date.day}-${rs.appointment_date.month}-${rs.appointment_date.year}</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Giờ khám:</p>
+                <p style=" text-align:right;"><strong>${rs.appointment_date.time}</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Phí khám:</p>
+                <p style=" text-align:right;"><strong>${rs.price_list.price} VND</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Bệnh nhân:</p>
+                <p style=" text-align:right;"><strong>${rs.patient.fullName} </strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Giới tính:</p>
+                <p style=" text-align:right;"><strong>${rs.patient.sex}</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Số điện thoại:</p>
+                <p style=" text-align:right;"><strong>${rs.patient.phone}</strong></p>
+            </div>
+            <div
+                style="display: flex;width: 100%; justify-content: space-between; font-size: 18px; color: #000; margin-bottom: 10px;">
+                <p>Email:</p>
+                <p style=" text-align:right;"><strong>${rs.patient.email}</strong></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

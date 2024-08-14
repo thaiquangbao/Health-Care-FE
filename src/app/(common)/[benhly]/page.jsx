@@ -36,7 +36,7 @@ const BenhLy = () => {
         setSick(sickFound)
         api({ path: '/price-lists/getAll', sendToken: false, type: TypeHTTP.GET })
             .then(res => {
-                setPriceList(res.filter(item => item.pathological._id === sickFound?._id)[0])
+                setPriceList(res.filter(item => item.type === 'Online')[0])
             })
     }, [benhly, appointmentData.sicks])
 
@@ -62,11 +62,11 @@ const BenhLy = () => {
                     <p className='text-[17px] font-medium text-[#404040]'>{sick?.description}</p>
                     <div className='bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between'>
                         <div className='flex flex-col text-[#333333]'>
-                            <span className='text-[15px]'>GIÁ TƯ VẤN</span>
-                            <span className='text-[20px]'>{formatMoney(priceList?.price)}</span>
+                            <span className='text-[14px]'>GIÁ TƯ VẤN TRỰC TUYẾN</span>
+                            <span className='text-[19px]'>{formatMoney(priceList?.price)}</span>
                         </div>
                         <div>
-                            <button onClick={() => scrollToTarget()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
+                            <button onClick={() => scrollToTarget()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] scale-[0.95] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
                         </div>
                     </div>
                 </div>

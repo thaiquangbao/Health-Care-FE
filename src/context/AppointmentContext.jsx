@@ -122,7 +122,8 @@ const AppointmentProvider = ({ children }) => {
         detailTime,
         doctorRecord,
         sicks,
-        priceList
+        priceList,
+        currentDay
     }
 
     const handler = {

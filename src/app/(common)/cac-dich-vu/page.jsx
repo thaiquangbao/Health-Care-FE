@@ -3,13 +3,16 @@ import Footer from '@/components/footer'
 import Navbar from '@/components/navbar'
 import { appointmentContext } from '@/context/AppointmentContext'
 import { api, TypeHTTP } from '@/utils/api'
-import { removeDiacritics } from '@/utils/other'
+import { formatMoney, removeDiacritics } from '@/utils/other'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useState } from 'react'
 
 const CacDichVu = () => {
 
     const { appointmentData, appointmentHandler } = useContext(appointmentContext)
+    const [priceList, setPriceList] = useState(0)
+    const router = useRouter()
 
     useEffect(() => {
         api({ path: '/sicks/get-all', sendToken: false, type: TypeHTTP.GET })
@@ -17,6 +20,12 @@ const CacDichVu = () => {
                 appointmentHandler.setSicks(res)
             })
     }, [])
+    useEffect(() => {
+        api({ path: '/price-lists/getAll', sendToken: false, type: TypeHTTP.GET })
+            .then(res => {
+                setPriceList(res.filter(item => item.type === 'Online')[0])
+            })
+    }, [appointmentData.sicks])
 
     return (
         <>
@@ -41,7 +50,7 @@ const CacDichVu = () => {
                     <img className='absolute z-[3]' src='https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/general-care-person.png' />
                     <img className='absolute z-[2]' src='https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/general-care-circle-1.svg' />
                     <img className='absolute z-0' src='https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/general-care-circle-2.svg' />
-                    <div className='absolute w-[35%] flex flex-col gap-1 top-[50%] translate-y-[-50%] left-12'>
+                    <div className='absolute w-[35%] z-[5] flex flex-col gap-1 top-[50%] translate-y-[-50%] left-12'>
                         <h2 className="text-transparent text-[35px] bg-clip-text bg-gradient-to-r from-blue-400 via-pink-500 to-red-500">
                             Khám Tổng Quát Tim Mạch
                         </h2>
@@ -50,10 +59,10 @@ const CacDichVu = () => {
                         <div className='bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between'>
                             <div className='flex flex-col text-[#333333]'>
                                 <span className='text-[15px]'>GIÁ TƯ VẤN CHỈ TỪ</span>
-                                <span className='text-[20px]'>400.000đ</span>
+                                <span className='text-[20px]'>{formatMoney(priceList?.price)}đ</span>
                             </div>
                             <div>
-                                <button style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
+                                <button onClick={() => router.push('/bac-si-noi-bat')} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 z-50 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
                             </div>
                         </div>
                     </div>

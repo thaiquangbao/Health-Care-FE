@@ -41,12 +41,12 @@ export default function Home() {
               </div>
             </div>
             <div className="flex mt-4 gap-3 font-medium">
-              <Link href="http://localhost:3000/zero/833347">
-                <button className="flex items-center hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] px-[1rem] justify-center rounded-md gap-2">
-                  <span>Đặt Lịch Khám Ngay</span>
-                  <i className='bx bx-right-arrow-alt text-[20px]'></i>
-                </button>
-              </Link>
+              {/* <Link href="http://localhost:3000/zero/833347"> */}
+              <button className="flex items-center hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] px-[1rem] justify-center rounded-md gap-2">
+                <span>Đặt Lịch Khám Ngay</span>
+                <i className='bx bx-right-arrow-alt text-[20px]'></i>
+              </button>
+              {/* </Link> */}
               <button className="flex items-center text-[15px] px-[1rem] justify-center py-3 rounded-md gap-2">
                 <span>Xem Thêm</span>
                 <div className="flex items-center border-[1px] border-[black] rounded-full">

@@ -18,7 +18,8 @@ const HoSoBacSi = () => {
     const param = useParams()
     const { id } = param
     const [doctorRecord, setDoctorRecord] = useState()
-    const { appointmentHandler } = useContext(appointmentContext)
+    const { appointmentHandler, appointmentData } = useContext(appointmentContext)
+    const [priceList, setPriceList] = useState(0)
 
     useEffect(() => {
         api({ type: TypeHTTP.GET, path: `/doctorRecords/getById/${id}`, sendToken: false })
@@ -27,6 +28,13 @@ const HoSoBacSi = () => {
                 setDoctorRecord(res)
             })
     }, [id])
+
+    useEffect(() => {
+        api({ path: '/price-lists/getAll', sendToken: false, type: TypeHTTP.GET })
+            .then(res => {
+                setPriceList(res.filter(item => item.type === 'Online')[0])
+            })
+    }, [appointmentData.sicks])
 
     return (
         <>
@@ -42,7 +50,15 @@ const HoSoBacSi = () => {
                         </h2>
                         <span></span>
                         <p className='text-[17px] font-medium text-[#404040]'>{doctorRecord?.description}</p>
-                        <button onClick={() => appointmentHandler.showFormBooking()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 cursor-pointer mt-[1rem] text-[white]'>Đặt Khám Ngay</button>
+                        <div className='bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between'>
+                            <div className='flex flex-col text-[#333333]'>
+                                <span className='text-[14px]'>GIÁ TƯ VẤN TRỰC TUYẾN</span>
+                                <span className='text-[19px]'>{formatMoney(priceList?.price)}</span>
+                            </div>
+                            <div>
+                                <button onClick={() => appointmentHandler.showFormBooking()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] scale-[0.95] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">

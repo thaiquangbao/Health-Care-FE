@@ -213,3 +213,56 @@ export const sortTimes = (times) => {
         return timeA - timeB;
     });
 }
+
+export const sortDates = (schedule) => {
+    schedule.sort((a, b) => {
+        // So sánh năm
+        if (a.date.year !== b.date.year) {
+            return a.date.year - b.date.year;
+        }
+        // So sánh tháng
+        if (a.date.month !== b.date.month) {
+            return a.date.month - b.date.month;
+        }
+        // So sánh ngày
+        return a.date.day - b.date.day;
+    });
+    return schedule;
+}
+
+export function sortByAppointmentDate(array) {
+    return array.sort((a, b) => {
+        const dateA = new Date(
+            a.appointment_date.year,
+            a.appointment_date.month - 1, // JavaScript months are 0-based
+            a.appointment_date.day,
+            ...a.appointment_date.time.split(":").map(Number)
+        );
+        const dateB = new Date(
+            b.appointment_date.year,
+            b.appointment_date.month - 1,
+            b.appointment_date.day,
+            ...b.appointment_date.time.split(":").map(Number)
+        );
+        return dateA - dateB;
+    });
+}
+
+
+export function isWithinTenMinutes(A, B) {
+    // Chuyển thời gian từ định dạng chuỗi thành mảng số
+    const timeA = A.split(":").map(Number);
+    const timeB = B.split(":").map(Number);
+
+    // Tạo đối tượng Date cho cả hai thời gian
+    const dateA = new Date(0, 0, 0, timeA[0], timeA[1]);
+    const dateB = new Date(0, 0, 0, timeB[0], timeB[1]);
+
+    // Tính toán khoảng thời gian giữa A và B tính bằng phút
+    const diffInMinutes = (dateB - dateA) / (1000 * 60);
+
+    // Kiểm tra các điều kiện:
+    // 1. B nằm trong khoảng 10 phút trước A (0 <= diffInMinutes <= 10)
+    // 2. B nằm trong khoảng tối đa 60 phút sau A (0 <= diffInMinutes <= 60)
+    return (diffInMinutes >= 0 && diffInMinutes <= 10) || (diffInMinutes >= 0 && diffInMinutes <= 60);
+}

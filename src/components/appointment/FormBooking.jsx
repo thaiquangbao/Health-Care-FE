@@ -2,7 +2,7 @@ import { appointmentContext } from '@/context/AppointmentContext'
 import { bookingContext } from '@/context/BookingContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
-import { compare2Date, compareDate1GetterThanDate2, convertDateToDayMonthYearVietNam2, sortTimes } from '@/utils/date'
+import { compare2Date, compareDate1GetterThanDate2, convertDateToDayMonthYearObject, convertDateToDayMonthYearVietNam2, sortDates, sortTimes } from '@/utils/date'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
@@ -45,15 +45,26 @@ const FormBooking = ({ visible, hidden }) => {
                 .then(res => {
                     setSchedules(() => {
                         let schedules = JSON.parse(JSON.stringify(appointmentData.doctorRecord.schedules)).filter(item => compareDate1GetterThanDate2(item.date, today) === true)
+                        // là những cuộc hẹn có ngày sau ngày hôm nay trở đi
                         schedules = schedules.map(item => {
-                            const filter = res.filter(item1 => compare2Date(item.date, item1.appointment_date))[0]
-                            if (filter) {
-                                const timeFilter = item.times.filter(time => time.time === filter.appointment_date.time)[0]
-                                if (timeFilter) {
-                                    return { ...item, times: sortTimes(item.times.filter(item1 => item1.time !== timeFilter?.time)) }
+                            res = res.filter(item1 => item1.status !== 'CANCELED' && item1.status !== 'REJECTED')
+                            // lọc những cuộc hẹn đã bị hủy hoặc bị từ chối
+                            const filters = res.filter(item1 => compare2Date(item.date, item1.appointment_date))
+                            // filters là cuộc hẹn có ngày hẹn bằng với item.date (ngày, tháng, năm)
+                            item.times = item.times.map(i => {
+                                if (!filters.map(filter => filter.appointment_date.time).includes(i.time)) {
+                                    if (compare2Date(convertDateToDayMonthYearObject(new Date().toISOString()), item.date)) {
+                                        if (new Date().getHours() + 2 >= Number(i.time.split(':')[0])) {
+
+                                        } else {
+                                            return i
+                                        }
+                                    } else {
+                                        return i
+                                    }
                                 }
-                            }
-                            return { ...item, times: sortTimes(item.times) }
+                            }).filter(j => j !== undefined)
+                            return { ...item, times: item.times }
                         })
                         return schedules
                     })
@@ -91,12 +102,13 @@ const FormBooking = ({ visible, hidden }) => {
                 <div style={{ transition: '0.5s', marginLeft: `-${(currentStep - 1) * 100}%` }} className='w-[100%] flex overflow-auto h-[100%]'>
                     <div className='min-w-[100%] px-[2.5rem] py-[1.5rem] flex justify-center'>
                         <div className='w-full h-full px-[0.25rem] flex flex-col gap-1'>
-                            {schedules.map((schedule, index) => (
+                            {sortDates(schedules).map((schedule, index) => (
                                 <div key={index} className='w-full px-[1rem] cursor-pointer flex flex-col shadow-[#35a4ff2a] border-[1px] border-[#0890ff2a] bg-[white] shadow-xl py-2 text-[15px] font-semibold rounded-lg'>
                                     <span onClick={() => display === index + 1 ? setDisplay(0) : setDisplay(index + 1)} className='text-[16px] '>{convertDateToDayMonthYearVietNam2(schedule.date)}</span>
                                     <div style={{ height: display === index + 1 ? `${40 + (timeRef.current ? (timeRef.current.offsetHeight + 2) * schedule.times.length : 0)}px` : 0, transition: '0.5s' }} className='overflow-hidden flex flex-col gap-1'>
                                         <span className='mt-2 font-bold px-[1rem]'>Giờ hẹn hiện có</span>
-                                        {schedule.times.map((time, indexTime) => (
+                                        {console.log(schedule.times)}
+                                        {sortTimes(schedule.times).map((time, indexTime) => (
                                             <div key={index} style={{ backgroundColor: appointmentDate.time === time.time ? '#35a4ff2a' : 'white' }} className='rounded-lg'>
                                                 <button onClick={() => setAppointmentDate({
                                                     day: schedule.date.day,

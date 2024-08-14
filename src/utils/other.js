@@ -67,7 +67,7 @@ export const sicks = [
         image: 'https://jiohealth.com/assets/icons/cardiology/dilated-cardiomyopathy.svg',
         title: 'Bệnh cơ tim giãn nở'
     }, {
-        image: 'https://jiohealth.com/assets/icons/cardiology/erectile-dysfunction.svg',
+        image: 'https://jiohea  lth.com/assets/icons/cardiology/erectile-dysfunction.svg',
         title: 'Rối loạn cương dương'
     }, {
         image: 'https://jiohealth.com/assets/icons/cardiology/hypercholesterolemia.svg',
