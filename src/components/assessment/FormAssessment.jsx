@@ -27,7 +27,6 @@ const FormAssessment = () => {
       <div
         style={{
           transition: "0.5s",
-          marginLeft: `-${(currentStep - 1) * 100}%`,
         }}
         className="w-[100%] flex overflow-auto h-[100%]"
       >
