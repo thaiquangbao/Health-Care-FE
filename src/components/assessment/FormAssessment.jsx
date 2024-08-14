@@ -72,8 +72,11 @@ const FormAssessment = () => {
                 ></textarea>
               </div>
               <button
-                type="submit"
-                className="bg-blue-500 text-white p-2 rounded mt-4"
+                style={{
+                  background:
+                    "linear-gradient(to right, #11998e, #38ef7d)",
+                }}
+                className="text-[white] z-[50] shadow-[#767676] absolute bottom-2 text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold"
               >
                 Đánh giá
               </button>
@@ -82,16 +85,6 @@ const FormAssessment = () => {
         </div>
       </div>
 
-      <button
-        onClick={() => handleCreateAppointment()}
-        style={{
-          background:
-            "linear-gradient(to right, #11998e, #38ef7d)",
-        }}
-        className="text-[white] z-[50] shadow-[#767676] absolute bottom-2 text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold"
-      >
-        Đặt Khám
-      </button>
       <button>
         <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
       </button>
