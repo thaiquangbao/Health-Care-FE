@@ -60,7 +60,6 @@ const Zero = () => {
       onLeaveRoom: () => {
         // khi rời muốn lamf j đó thì ở đây
         endMeet();
-        window.location.href = "http://127.0.0.1:3000";
         // window.location.href = "/" // chổ này là khi bấm nút tắt m muốn chuyển sang trang nào đó
       },
     });
