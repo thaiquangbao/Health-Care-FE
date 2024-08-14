@@ -13,6 +13,11 @@ import React, {
 } from "react";
 import { auth } from "../firebase/firebase";
 const FormAssessment = () => {
+  const [rating, setRating] = useState(0);
+
+  const handleRating = (rate) => {
+    setRating(rate);
+  };
   return (
     <div
       style={{
