@@ -1,11 +1,20 @@
 "use client";
+import { api, TypeHTTP } from "@/utils/api";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { useParams } from "next/navigation";
+import { useEffect, useParams } from "next/navigation";
 import React from "react";
 const Zero = () => {
   const param = useParams();
   const { id, fullName } = param;
-  // const { id, appointment_date } = useParams();
+  useEffect(() => {
+    api({
+      type: TypeHTTP.GET,
+      path: `/appointments/get-one/${id}`,
+      sendToken: false,
+    }).then((res) => {
+      console.log(res);
+    });
+  }, []);
   const endMeet = () => {
     const appId = 9941651;
     const server = "0a4c93dcfcc779f9ce39d72e555284b4";

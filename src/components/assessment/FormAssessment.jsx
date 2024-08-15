@@ -11,13 +11,19 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { auth } from "../firebase/firebase";
+
 const FormAssessment = () => {
   const [rating, setRating] = useState(0);
-
+  const [comments, setComments] = useState("");
+  const [infor, setInfor] = useState({
+    doctor_record_id: "",
+    star: 0,
+    content: "",
+    fullName: "",
+    date: "",
+  });
   const handleRating = (rate) => {
     setRating(rate);
-    console.log(rating);
   };
   const submit = () => {
     console.log(rating);
@@ -76,6 +82,10 @@ const FormAssessment = () => {
                   rows="4"
                   required
                   style={{ height: "145px" }}
+                  value={comments}
+                  onChange={(e) =>
+                    setComments(e.target.value)
+                  }
                 ></textarea>
               </div>
               <button
