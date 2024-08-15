@@ -242,7 +242,7 @@ const HoSoBacSi = () => {
           </div>
         </div>
         {/* Đánh giá từ người bệnh */}
-        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start gap-5">
           <span className="font-bold">
             Đánh giá từ người bệnh ({assessments.length})
           </span>
@@ -250,7 +250,7 @@ const HoSoBacSi = () => {
             {assessments.map((assessment, index) => (
               <div
                 key={index}
-                className="border p-4 rounded shadow w-[100%]"
+                className="p-4 rounded w-[100%]"
               >
                 <div className="flex items-center gap-4">
                   <img
