@@ -1,8 +1,8 @@
 "use client";
 import { api, TypeHTTP } from "@/utils/api";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { useEffect, useParams } from "next/navigation";
-import React from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect } from "react";
 const Zero = () => {
   const param = useParams();
   const { id, fullName } = param;
