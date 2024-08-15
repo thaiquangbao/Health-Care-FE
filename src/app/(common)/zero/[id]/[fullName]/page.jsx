@@ -12,7 +12,10 @@ const Zero = () => {
       path: `/appointments/get-one/${id}`,
       sendToken: false,
     }).then((res) => {
-      console.log(res);
+      localStorage.setItem(
+        "appointmentData",
+        JSON.stringify(res)
+      );
     });
   }, []);
   const endMeet = () => {
