@@ -26,6 +26,9 @@ const FormAssessment = () => {
         width: "40%",
         transition: "0.3s",
         backgroundSize: "cover",
+        background:
+          "linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5))",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
       className="z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
