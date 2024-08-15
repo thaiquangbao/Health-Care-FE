@@ -229,7 +229,7 @@ const HoSoBacSi = () => {
             {assessments.map((assessment, index) => (
               <div
                 key={index}
-                className="border p-4 rounded shadow"
+                className="border p-4 rounded shadow w-[100%]"
               >
                 <div className="flex items-center gap-4">
                   <img
