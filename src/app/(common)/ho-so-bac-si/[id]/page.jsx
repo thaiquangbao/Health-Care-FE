@@ -48,7 +48,7 @@ const HoSoBacSi = () => {
       appointmentHandler.setDoctorRecord(res);
       setDoctorRecord(res);
     });
-    console.log(doctorRecord);
+    console.log(appointmentData.doctor_record_id);
   }, [id]);
 
   useEffect(() => {
