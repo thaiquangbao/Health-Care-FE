@@ -8,6 +8,7 @@ import { api, TypeHTTP } from "@/utils/api";
 import React, {
   useContext,
   useEffect,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -15,18 +16,39 @@ import React, {
 const FormAssessment = () => {
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState("");
-  const [infor, setInfor] = useState({
-    doctor_record_id: "",
-    star: 0,
-    content: "",
-    fullName: "",
-    date: "",
-  });
   const handleRating = (rate) => {
     setRating(rate);
   };
   const submit = () => {
-    console.log(rating);
+    const storedData = localStorage.getItem(
+      "appointmentData"
+    );
+    // Parse dữ liệu từ JSON string thành object
+    const appointmentData = storedData
+      ? JSON.parse(storedData)
+      : {};
+    const data = {
+      doctor_record_id: appointmentData.doctor_record_id,
+      assessment_list: {
+        star: rating,
+        content: comments,
+        fullName: appointmentData.patient.fullName,
+        image: appointmentData.patient.image,
+        date: {
+          day: appointmentData.appointment_date.day,
+          month: appointmentData.appointment_date.month,
+          year: appointmentData.appointment_date.year,
+        },
+      },
+    };
+    api({
+      type: TypeHTTP.POST,
+      path: `/assessments/save`,
+      body: data,
+      sendToken: false,
+    }).then((res) => {
+      console.log(res);
+    });
   };
   return (
     <div
