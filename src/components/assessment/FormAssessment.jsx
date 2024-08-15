@@ -98,7 +98,7 @@ const FormAssessment = () => {
                 <textarea
                   id="comments"
                   name="comments"
-                  className="border p-2 rounded"
+                  className="border p-2 rounded focus:outline-0"
                   rows="4"
                   required
                   style={{ height: "145px" }}
