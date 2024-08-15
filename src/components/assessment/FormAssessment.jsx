@@ -41,7 +41,7 @@ const FormAssessment = () => {
             <h2 className="text-xl font-bold mb-4">
               Bạn hãy đánh giá cho bác sĩ
             </h2>
-            <div className="flex mb-4">
+            <div className="flex mb-4 justify-center items-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg
                   key={star}
@@ -77,7 +77,7 @@ const FormAssessment = () => {
                   background:
                     "linear-gradient(to right, #11998e, #38ef7d)",
                 }}
-                className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] absolute"
+                className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676]"
               >
                 Đánh giá
               </button>
