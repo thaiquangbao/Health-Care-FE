@@ -24,6 +24,13 @@ const FormAssessment = () => {
     const appointmentData = storedData
       ? JSON.parse(storedData)
       : {};
+    api({
+      type: TypeHTTP.GET,
+      path: `/doctorRecords/get-one/${appointmentData.doctor_record_id}`,
+      sendToken: false,
+    }).then((res) => {
+      console.log(res);
+    });
     setName(appointmentData.doctor.fullName);
   }, []);
   const handleRating = (rate) => {
