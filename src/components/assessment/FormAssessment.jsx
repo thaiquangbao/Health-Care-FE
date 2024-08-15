@@ -19,7 +19,9 @@ const FormAssessment = () => {
     setRating(rate);
     console.log(rating);
   };
-  //
+  const submit = () => {
+    console.log(rating);
+  };
   return (
     <div
       style={{
@@ -81,6 +83,7 @@ const FormAssessment = () => {
                   background:
                     "linear-gradient(to right, #11998e, #38ef7d)",
                 }}
+                onClick={() => submit()}
                 className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676]"
               >
                 Đánh giá
