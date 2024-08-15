@@ -225,7 +225,7 @@ const HoSoBacSi = () => {
           <span className="font-bold">
             Đánh giá từ người bệnh ({assessments.length})
           </span>
-          <div className="flex flex-col gap-3 mt-2">
+          <div className="flex flex-col gap-3 mt-2 w-[100%]">
             {assessments.map((assessment, index) => (
               <div
                 key={index}
