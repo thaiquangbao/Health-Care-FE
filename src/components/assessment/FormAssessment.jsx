@@ -22,7 +22,7 @@ const FormAssessment = () => {
   return (
     <div
       style={{
-        height: "350px",
+        height: "450px",
         width: "40%",
         transition: "0.3s",
         backgroundSize: "cover",
@@ -72,6 +72,7 @@ const FormAssessment = () => {
                   className="border p-2 rounded"
                   rows="4"
                   required
+                  style={{ height: "145px" }}
                 ></textarea>
               </div>
               <button
