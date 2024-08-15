@@ -223,7 +223,7 @@ const HoSoBacSi = () => {
         {/* Đánh giá từ người bệnh */}
         <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
           <span className="font-bold">
-            Đánh giá từ người bệnh ()
+            Đánh giá từ người bệnh ({assessments.length})
           </span>
           <div className="flex flex-col gap-3 mt-2">
             {assessments.map((assessment, index) => (
