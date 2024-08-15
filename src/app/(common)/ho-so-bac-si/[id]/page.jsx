@@ -69,7 +69,7 @@ const HoSoBacSi = () => {
       sendToken: false,
     }).then((res) => {
       console.log(res);
-      ;
+    });
   }, [doctorRecord._id]);
   return (
     <>
