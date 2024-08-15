@@ -4,16 +4,18 @@ import {
   notifyType,
 } from "@/context/GlobalContext";
 import { api, TypeHTTP } from "@/utils/api";
+import { useRouter } from "next/navigation";
 import React, {
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-
 const FormAssessment = () => {
+  const { globalHandler } = useContext(globalContext);
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState("");
+  const router = useRouter();
   const handleRating = (rate) => {
     setRating(rate);
   };
@@ -45,7 +47,12 @@ const FormAssessment = () => {
       body: data,
       sendToken: false,
     }).then((res) => {
-      console.log(res);
+      globalHandler.notify(
+        notifyType.SUCCESS,
+        "Đánh giá thành công, Cảm ơn bạn đã đánh giá!!!"
+      );
+      localStorage.removeItem("appointmentData");
+      router.push("/");
     });
   };
   return (
@@ -90,7 +97,7 @@ const FormAssessment = () => {
                 </svg>
               ))}
             </div>
-            <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col">
                 <label htmlFor="comments" className="mb-1">
                   Nội dung đánh giá:
@@ -118,7 +125,7 @@ const FormAssessment = () => {
               >
                 Đánh giá
               </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
