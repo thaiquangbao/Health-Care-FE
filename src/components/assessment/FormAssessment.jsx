@@ -22,7 +22,7 @@ const FormAssessment = () => {
   return (
     <div
       style={{
-        height: "450px",
+        height: "350px",
         width: "40%",
         transition: "0.3s",
         backgroundSize: "cover",
