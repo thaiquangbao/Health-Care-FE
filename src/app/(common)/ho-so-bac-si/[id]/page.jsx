@@ -64,7 +64,7 @@ const HoSoBacSi = () => {
   useEffect(() => {
     // get assessments
     if (doctorRecord) {
-      console.log(doctorRecord);
+      console.log(doctorRecord.doctor);
       api({
         type: TypeHTTP.GET,
         path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
