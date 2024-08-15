@@ -38,7 +38,7 @@ const HoSoBacSi = () => {
   const { appointmentHandler, appointmentData } =
     useContext(appointmentContext);
   const [priceList, setPriceList] = useState(0);
-
+  const [assessments, setAssessments] = useState([]);
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -61,7 +61,16 @@ const HoSoBacSi = () => {
       );
     });
   }, [appointmentData.sicks]);
-
+  useEffect(() => {
+    // get assessments
+    api({
+      type: TypeHTTP.GET,
+      path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
+      sendToken: false,
+    }).then((res) => {
+      console.log(res);
+      ;
+  }, [doctorRecord._id]);
   return (
     <>
       <div className="w-full min-h-screen flex flex-col pb-[2rem]">
@@ -207,6 +216,13 @@ const HoSoBacSi = () => {
                 </span>
               ))}
           </div>
+        </div>
+        {/* Đánh giá từ người bệnh */}
+        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+          <span className="font-bold">
+            Đánh giá từ người bệnh ()
+          </span>
+          <div className="flex flex-col gap-3 mt-2"></div>
         </div>
       </div>
       <Footer />
