@@ -18,6 +18,7 @@ const FormAssessment = () => {
   const handleRating = (rate) => {
     setRating(rate);
   };
+  //
   return (
     <div
       style={{
@@ -76,7 +77,7 @@ const FormAssessment = () => {
                   background:
                     "linear-gradient(to right, #11998e, #38ef7d)",
                 }}
-                className="text-[white] z-[50] shadow-[#767676] absolute bottom-2 text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold"
+                className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] absolute"
               >
                 Đánh giá
               </button>
