@@ -16,6 +16,8 @@ const FormAssessment = () => {
   const [rating, setRating] = useState(0);
 
   const handleRating = (rate) => {
+    console.log(rate);
+
     setRating(rate);
   };
   //
