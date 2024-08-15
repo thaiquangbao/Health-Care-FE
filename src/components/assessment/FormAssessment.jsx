@@ -3,11 +3,9 @@ import {
   globalContext,
   notifyType,
 } from "@/context/GlobalContext";
-import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import React, {
   useContext,
-  useEffect,
   useEffect,
   useRef,
   useState,
