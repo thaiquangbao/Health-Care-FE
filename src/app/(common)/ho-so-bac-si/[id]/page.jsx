@@ -70,7 +70,7 @@ const HoSoBacSi = () => {
         path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
         sendToken: false,
       }).then((res) => {
-        console.log(res);
+        setAssessments(res);
       });
     }
   }, [doctorRecord]);
@@ -225,7 +225,40 @@ const HoSoBacSi = () => {
           <span className="font-bold">
             Đánh giá từ người bệnh ()
           </span>
-          <div className="flex flex-col gap-3 mt-2"></div>
+          <div className="flex flex-col gap-3 mt-2">
+            {assessments.map((assessment, index) => (
+              <div
+                key={index}
+                className="border p-4 rounded shadow"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={assessment.assessment_list.image}
+                    alt="Avatar"
+                    className="w-16 h-16 rounded-full"
+                  />
+                  <div>
+                    <h3 className="text-[20px] font-bold">
+                      {assessment.assessment_list.fullName}
+                    </h3>
+                    <p className="text-[16px]">
+                      Đánh giá:{" "}
+                      {assessment.assessment_list.star} sao
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-2 text-[16px]">
+                  {assessment.assessment_list.content}
+                </p>
+                <p className="mt-2 text-[14px] text-gray-500">
+                  Ngày:{" "}
+                  {assessment.assessment_list.date.day}/
+                  {assessment.assessment_list.date.month}/
+                  {assessment.assessment_list.date.year}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <Footer />
