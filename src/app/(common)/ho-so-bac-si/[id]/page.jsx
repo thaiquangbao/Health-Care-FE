@@ -63,6 +63,7 @@ const HoSoBacSi = () => {
   }, [appointmentData.sicks]);
   useEffect(() => {
     // get assessments
+    console.log(doctorRecord);
     api({
       type: TypeHTTP.GET,
       path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
@@ -70,7 +71,7 @@ const HoSoBacSi = () => {
     }).then((res) => {
       console.log(res);
     });
-  }, [doctorRecord._id]);
+  }, [doctorRecord]);
   return (
     <>
       <div className="w-full min-h-screen flex flex-col pb-[2rem]">
