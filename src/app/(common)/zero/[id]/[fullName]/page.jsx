@@ -3,7 +3,6 @@ import { api, TypeHTTP } from "@/utils/api";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
-import removeDiacritics from "@/utils/other";
 const Zero = () => {
   const param = useParams();
   const { id, fullName } = param;
