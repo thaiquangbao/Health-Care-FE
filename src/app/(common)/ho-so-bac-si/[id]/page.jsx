@@ -63,14 +63,16 @@ const HoSoBacSi = () => {
   }, [appointmentData.sicks]);
   useEffect(() => {
     // get assessments
-    console.log(doctorRecord);
-    api({
-      type: TypeHTTP.GET,
-      path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
-      sendToken: false,
-    }).then((res) => {
-      console.log(res);
-    });
+    if (doctorRecord) {
+      console.log(doctorRecord);
+      api({
+        type: TypeHTTP.GET,
+        path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
+        sendToken: false,
+      }).then((res) => {
+        console.log(res);
+      });
+    }
   }, [doctorRecord]);
   return (
     <>
