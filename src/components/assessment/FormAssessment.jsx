@@ -25,7 +25,6 @@ const FormAssessment = () => {
         height: "450px",
         width: "40%",
         transition: "0.3s",
-        backgroundImage: "url(/bg-form.jpg)",
         backgroundSize: "cover",
       }}
       className="z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
@@ -41,12 +40,12 @@ const FormAssessment = () => {
             <h2 className="text-xl font-bold mb-4">
               Bạn hãy đánh giá cho bác sĩ
             </h2>
-            <div className="flex mb-4 justify-center items-center">
+            <div className="flex mb-4 justify-center items-center space-x-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg
                   key={star}
                   onClick={() => handleRating(star)}
-                  className={`w-8 h-8 cursor-pointer ${
+                  className={`w-12 h-12 cursor-pointer ${
                     star <= rating
                       ? "text-yellow-500"
                       : "text-gray-300"
