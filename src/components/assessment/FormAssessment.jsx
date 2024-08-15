@@ -15,7 +15,17 @@ const FormAssessment = () => {
   const { globalHandler } = useContext(globalContext);
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState("");
+  const [name, setName] = useState("");
   const router = useRouter();
+  useEffect(() => {
+    const storedData = localStorage.getItem(
+      "appointmentData"
+    );
+    const appointmentData = storedData
+      ? JSON.parse(storedData)
+      : {};
+    setName(appointmentData.doctor.fullName);
+  }, []);
   const handleRating = (rate) => {
     setRating(rate);
   };
@@ -77,7 +87,7 @@ const FormAssessment = () => {
         <div className="min-w-[100%] px-[2.5rem] py-[1.5rem] flex justify-center">
           <div className="w-full h-full px-[0.25rem] flex flex-col gap-1">
             <h2 className="text-xl font-bold mb-4">
-              Bạn hãy đánh giá cho bác sĩ
+              Bạn hãy đánh giá cho bác sĩ ${name}
             </h2>
             <div className="flex mb-4 justify-center items-center space-x-4">
               {[1, 2, 3, 4, 5].map((star) => (
