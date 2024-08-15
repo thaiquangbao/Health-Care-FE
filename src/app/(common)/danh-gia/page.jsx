@@ -14,7 +14,9 @@ const DanhGia = () => {
   return (
     <div className="w-full min-h-screen pb-4 flex flex-col background-public">
       <Navbar />
-      <FormAssessment />
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+        <FormAssessment />
+      </div>
       <Footer />
     </div>
   );
