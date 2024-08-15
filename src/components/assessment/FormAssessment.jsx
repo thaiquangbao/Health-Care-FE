@@ -29,9 +29,8 @@ const FormAssessment = () => {
       path: `/doctorRecords/get-one/${appointmentData.doctor_record_id}`,
       sendToken: false,
     }).then((res) => {
-      console.log(res);
+      setName(res.doctor.fullName);
     });
-    setName(appointmentData.doctor.fullName);
   }, []);
   const handleRating = (rate) => {
     setRating(rate);
