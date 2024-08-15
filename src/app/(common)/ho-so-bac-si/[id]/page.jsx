@@ -76,7 +76,7 @@ const HoSoBacSi = () => {
   }, [doctorRecord]);
   const renderStars = (rating) => {
     return (
-      <div className="flex">
+      <div className="flex gap-2">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
@@ -227,7 +227,7 @@ const HoSoBacSi = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start gap-5">
+        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start mb-8">
           <span className="font-bold">
             Học vấn và kinh nghiệm
           </span>
@@ -246,11 +246,11 @@ const HoSoBacSi = () => {
           <span className="font-bold">
             Đánh giá từ người bệnh ({assessments.length})
           </span>
-          <div className="flex flex-col gap-3 mt-2 w-[100%]">
+          <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {assessments.map((assessment, index) => (
               <div
                 key={index}
-                className="p-4 rounded w-[100%]"
+                className="p-4 rounded w-[100%] mt-4 border-b"
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -262,20 +262,22 @@ const HoSoBacSi = () => {
                     <h3 className="text-[20px] font-bold">
                       {assessment.assessment_list.fullName}
                     </h3>
-                    <p className="text-[16px] flex items-center">
+                    <p className="text-[16px] flex items-center mt-3">
                       Đánh giá:{" "}
                       <span className="flex ml-2">
                         {renderStars(
+                          // dòng 77
                           assessment.assessment_list.star
                         )}
                       </span>
                     </p>
                   </div>
                 </div>
-                <p className="mt-2 text-[16px]">
+                <p className="mt-4 text-[18px] ml-20">
+                  Nội dung:{" "}
                   {assessment.assessment_list.content}
                 </p>
-                <p className="mt-2 text-[14px] text-gray-500">
+                <p className="mt-4 text-[16px] text-gray-500 ml-20">
                   Ngày:{" "}
                   {assessment.assessment_list.date.day}/
                   {assessment.assessment_list.date.month}/
