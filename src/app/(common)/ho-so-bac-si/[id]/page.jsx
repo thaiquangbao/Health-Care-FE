@@ -39,6 +39,8 @@ const HoSoBacSi = () => {
     useContext(appointmentContext);
   const [priceList, setPriceList] = useState(0);
   const [assessments, setAssessments] = useState([]);
+  const [forums, setForums] = useState([]);
+  const router = useRouter();
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -61,10 +63,11 @@ const HoSoBacSi = () => {
       );
     });
   }, [appointmentData.sicks]);
+  // get assessments bằng doctor record id
+  // xuống dòng 245 lấy code
   useEffect(() => {
     // get assessments
     if (doctorRecord) {
-      console.log(doctorRecord._id);
       api({
         type: TypeHTTP.GET,
         path: `/assessments/getByDoctorRecord/${doctorRecord._id}`,
@@ -72,8 +75,38 @@ const HoSoBacSi = () => {
       }).then((res) => {
         setAssessments(res);
       });
+      api({
+        type: TypeHTTP.GET,
+        path: `/forums/get-by-doctor/${doctorRecord.doctor._id}`,
+        sendToken: false,
+      }).then((res) => {
+        setForums(res);
+      });
     }
   }, [doctorRecord]);
+  // xử lý bài đăng bài sĩ
+  const extractFirstParagraphAndImage = (content) => {
+    // Lấy đoạn nội dung đầu tiên
+    const paragraphMatch = content.match(/<p>(.*?)<\/p>/);
+    const firstParagraph = paragraphMatch
+      ? paragraphMatch[1]
+      : "";
+
+    // Lấy URL của hình ảnh đầu tiên
+    const imgMatch = content.match(/<img\s+src="([^"]+)"/);
+    const firstImageUrl = imgMatch ? imgMatch[1] : "";
+
+    return { firstParagraph, firstImageUrl };
+  };
+  const clickItem = (id) => {
+    api({
+      path: `/forums/update/views/${id}`,
+      sendToken: false,
+      type: TypeHTTP.POST,
+    }).then((res) => {
+      router.push(`/cam-nang-detail/${id}`);
+    });
+  };
   const renderStars = (rating) => {
     return (
       <div className="flex gap-2">
@@ -250,7 +283,7 @@ const HoSoBacSi = () => {
             {assessments.map((assessment, index) => (
               <div
                 key={index}
-                className="p-4 rounded w-[100%] mt-4 border-b"
+                className="p-4 rounded w-[100%] mt-4"
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -285,6 +318,61 @@ const HoSoBacSi = () => {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+        {/* Bài viết của bác sĩ*/}
+        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+          <span className="font-bold">
+            Bài viết của bác sĩ ({forums.length})
+          </span>
+          <div className="flex flex-col gap-4 mt-2 w-[100%]">
+            {forums.map((forum, index) => {
+              const { firstParagraph, firstImageUrl } =
+                extractFirstParagraphAndImage(
+                  forum.content
+                );
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-4 p-4 cursor-pointer rounded w-[100%] mt-4 "
+                  onClick={() => clickItem(forum._id)}
+                >
+                  <div
+                    className="bg-cover w-[300px] h-[120px] rounded"
+                    style={{
+                      backgroundImage: `url(${firstImageUrl})`,
+                    }}
+                  ></div>
+                  <div className="flex flex-col justify-between w-[100%]">
+                    <div>
+                      <h3 className="text-[20px] font-bold mb-2">
+                        {forum.title}
+                      </h3>
+                      <div
+                        className="text-[18px] text-gray-700"
+                        dangerouslySetInnerHTML={{
+                          __html: firstParagraph,
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center text-gray-500 text-[14px]">
+                      <span>
+                        {forum.date.day}/{forum.date.month}/
+                        {forum.date.year}
+                      </span>
+                      <span className="ml-4">
+                        <i className="fas fa-eye mr-1"></i>
+                        {forum.views} Lượt xem
+                      </span>
+                      <span className="ml-4">
+                        <i className="fas fa-heart mr-1"></i>
+                        {forum.like} Lượt thích
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
