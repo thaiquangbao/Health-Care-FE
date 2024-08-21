@@ -34,6 +34,15 @@ const CongDongDetail = () => {
       console.log(userData);
     }
   }, [id, userData]);
+
+  useEffect(() => {
+    api({
+      path: `/qas/update-view/${id}`,
+      sendToken: false,
+      type: TypeHTTP.POST,
+    })
+  }, [id])
+
   // Hàm tính tuổi từ ngày sinh
   const calculateAge = (dateOfBirth) => {
     const birthDate = new Date(dateOfBirth);
@@ -59,7 +68,7 @@ const CongDongDetail = () => {
         <div className="min-h-screen flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-center">
           <div
             className="flex items-center gap-4 p-4 rounded w-[70%] mt-4 border-b"
-            // onClick={() => clickItem(qa._id)}
+          // onClick={() => clickItem(qa._id)}
           >
             <div className="flex flex-col justify-between w-[100%]">
               <div className="flex flex-row w-[100%]">
@@ -116,10 +125,10 @@ const CongDongDetail = () => {
                   className="ml-4"
                   style={{
                     cursor:
-                      userData.user &&
-                      (userData.user.role === "DOCTOR" ||
-                        userData.user._id ===
-                          qa.patient._id)
+                      userData?.user &&
+                        (userData.user?.role === "DOCTOR" ||
+                          userData.user?._id ===
+                          qa.patient?._id)
                         ? "pointer"
                         : "default",
                   }}

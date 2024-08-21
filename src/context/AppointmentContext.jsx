@@ -11,6 +11,8 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { userContext } from './UserContext'
 import { api, TypeHTTP } from '@/utils/api'
 import FormBooking from '@/components/appointment/FormBooking'
+import FormRecordPatient from '@/components/appointment/FormRecordPatient'
+import FormDetailAppointment from '@/components/appointment/FormDetailAppointment'
 
 export const appointmentContext = createContext()
 
@@ -22,6 +24,9 @@ const AppointmentProvider = ({ children }) => {
     const [visibleFormDetailTime, setVisibleFormDetailTime] = useState(false)
     const [visibleSignUpAppointment, setVisibleSignUpAppointment] = useState(false)
     const [visibleFormBooking, setVisibleFormBooking] = useState(false)
+    const [visibleFormRecordPatient, setVisibleFormRecordPatient] = useState(false)
+    const [dataFormDetailAppointment, setDataFormDetailAppointment] = useState()
+    const [currentAppointment, setCurrentAppointment] = useState()
     const [currentDay, setCurrentDay] = useState()
     const [detailTime, setDetailTime] = useState()
     const [doctorRecord, setDoctorRecord] = useState()
@@ -29,6 +34,8 @@ const AppointmentProvider = ({ children }) => {
     const [priceList, setPriceList] = useState()
     const [schedule, setSchedule] = useState()
     const { userData } = useContext(userContext)
+    const [sick, setSick] = useState('')
+    const [displayConnect, setDisplayConnect] = useState(false)
     const wrapperRef = useRef()
 
     useEffect(() => {
@@ -63,9 +70,12 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormDetailTimeForHaveSchedule()
         hiddenFormSignUpAppointment()
         hiddenFormBooking()
+        hiddenFormRecordPatient()
+        hiddenFormDetailAppointment()
     }
 
-    const showFormBooking = () => {
+    const showFormBooking = (sick) => {
+        setSick(sick)
         setVisibleFormBooking(true)
         showWrapper()
     }
@@ -118,12 +128,35 @@ const AppointmentProvider = ({ children }) => {
         setVisibleFormDetailTimeForHaveSchedule(false)
     }
 
+    const showFormRecordPatient = (detail) => {
+        showWrapper()
+        setVisibleFormRecordPatient(true)
+    }
+
+    const hiddenFormRecordPatient = () => {
+        hiddenWrapper()
+        setVisibleFormRecordPatient(false)
+    }
+
+    const showFormDetailAppointment = (appointment, display) => {
+        showWrapper()
+        setDisplayConnect(display)
+        setDataFormDetailAppointment(appointment)
+    }
+
+    const hiddenFormDetailAppointment = () => {
+        hiddenWrapper()
+        setDisplayConnect(false)
+        setDataFormDetailAppointment()
+    }
+
     const data = {
         detailTime,
         doctorRecord,
         sicks,
         priceList,
-        currentDay
+        currentDay,
+        currentAppointment
     }
 
     const handler = {
@@ -140,8 +173,13 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormSignUpAppointment,
         showFormBooking,
         hiddenFormBooking,
+        showFormRecordPatient,
+        hiddenFormRecordPatient,
         setSicks,
-        setPriceList
+        setPriceList,
+        setCurrentAppointment,
+        showFormDetailAppointment,
+        hiddenFormDetailAppointment
     }
 
     return (
@@ -151,7 +189,9 @@ const AppointmentProvider = ({ children }) => {
             <FormDetailTime day={currentDay} visible={visibleFormDetailTime} hidden={hidden} detailTime={detailTime} />
             <FormDetailTimeForHaveSchedule visible={visibleFormDetailTimeForHaveSchedule} hidden={hidden} schedule={schedule} />
             <FormSignUpAppointment hidden={hidden} visible={visibleSignUpAppointment} />
-            <FormBooking hidden={hidden} visible={visibleFormBooking} />
+            <FormBooking hidden={hidden} visible={visibleFormBooking} sick={sick} />
+            <FormDetailAppointment display={displayConnect} hidden={hidden} data={dataFormDetailAppointment} />
+            {/* <FormRecordPatient hidden={hidden} visible={visibleFormRecordPatient} /> */}
             {children}
         </appointmentContext.Provider>
     )

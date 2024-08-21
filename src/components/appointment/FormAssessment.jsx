@@ -100,11 +100,10 @@ const FormAssessment = () => {
                 <svg
                   key={star}
                   onClick={() => handleRating(star)}
-                  className={`w-12 h-12 cursor-pointer ${
-                    star <= rating
-                      ? "text-yellow-500"
-                      : "text-gray-300"
-                  }`}
+                  className={`w-12 h-12 cursor-pointer ${star <= rating
+                    ? "text-yellow-500"
+                    : "text-gray-300"
+                    }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"

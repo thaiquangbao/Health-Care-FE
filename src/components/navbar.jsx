@@ -156,7 +156,7 @@ const Navbar = () => {
                                 </>
                             )}
                             <li onClick={() => {
-                                router.push('/')
+                                router.push('/cong-dong')
                                 authHandler.hiddenWrapper()
                                 authHandler.setVisibleMore(false)
                             }} className='flex gap-3 cursor-pointer'>
@@ -164,7 +164,7 @@ const Navbar = () => {
                                 <span className='text-[16px] font-medium'>Thảo Luận</span>
                             </li>
                             <li onClick={() => {
-                                router.push('/')
+                                router.push('/cam-nang')
                                 authHandler.hiddenWrapper()
                                 authHandler.setVisibleMore(false)
                             }} className='flex gap-3 cursor-pointer'>
@@ -201,7 +201,7 @@ const Navbar = () => {
                                     <span className='text-[16px] font-medium'>Hồ Sơ Bác Sĩ</span>
                                 </li>
                                 <li onClick={() => {
-                                    router.push('/')
+                                    router.push('/cong-dong')
                                     authHandler.hiddenWrapper()
                                     authHandler.setVisibleMore(false)
                                 }} className='flex gap-3 cursor-pointer'>
@@ -209,7 +209,7 @@ const Navbar = () => {
                                     <span className='text-[16px] font-medium'>Thảo Luận</span>
                                 </li>
                                 <li onClick={() => {
-                                    router.push('/')
+                                    router.push('/cam-nang')
                                     authHandler.hiddenWrapper()
                                     authHandler.setVisibleMore(false)
                                 }} className='flex gap-3 cursor-pointer'>

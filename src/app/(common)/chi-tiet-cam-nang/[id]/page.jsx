@@ -21,6 +21,11 @@ const CamNangDetail = () => {
   const { id } = param;
   useEffect(() => {
     api({
+      path: `/forums/update/views/${id}`,
+      sendToken: false,
+      type: TypeHTTP.POST,
+    })
+    api({
       path: `/forums/get-one/${id}`,
       sendToken: false,
       type: TypeHTTP.GET,
@@ -33,7 +38,7 @@ const CamNangDetail = () => {
       <div className="w-full flex flex-col pb-[2rem] pt-[3rem]">
         <Navbar />
 
-        <div className="min-h-screen flex flex-col z-0 overflow-hidden relative text-[#171717] w-[65%] px-[5%] items-center mx-auto bg-slate-100 rounded-md">
+        <div className="min-h-screen flex flex-col z-0 gap-4 overflow-hidden relative text-[#171717] w-[65%] px-[5%] items-center mx-auto bg-slate-100 rounded-md">
           <h1 className="font-bold text-[36px] leading-tight mt-6">
             {forum.title}
           </h1>
@@ -45,11 +50,7 @@ const CamNangDetail = () => {
           />
           <div className="p-2 rounded w-[100%] mt-2 mb-6">
             <div className="flex items-center gap-4">
-              <img
-                src={forum.author?.image}
-                alt="Avatar"
-                className="w-20 h-20 rounded-full"
-              />
+              <div style={{ backgroundImage: `url(${forum.author?.image})` }} className="bg-cover w-20 h-20 rounded-full" />
               <div>
                 <h3 className="text-[20px] font-bold">
                   {forum.author?.fullName}

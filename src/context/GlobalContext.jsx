@@ -60,7 +60,7 @@ const GlobalProvider = ({ children }) => {
     }, [pathname])
 
     useEffect(() => {
-        const pathnames = ['/ho-so']
+        const pathnames = ['ho-so', 'cam-nang', 'chi-tiet-cam-nang', 'zero']
         const doctorPathname = ['/cuoc-hen', '/ho-so-ca-nhan-bac-si']
         if (pathname !== '/') {
             if (userData.user) {
@@ -70,7 +70,7 @@ const GlobalProvider = ({ children }) => {
                     globalThis.localStorage.removeItem('accessToken')
                     globalThis.localStorage.removeItem('refreshToken')
                 } else {
-                    if (pathnames.includes(pathname)) {
+                    if (pathnames.includes(pathname.split('/')[1])) {
 
                     } else {
                         if (userData.user?.role !== 'DOCTOR') {
@@ -102,7 +102,7 @@ const GlobalProvider = ({ children }) => {
     return (
         <globalContext.Provider value={{ globalData: data, globalHandler: handler }}>
             <Notification status={info.status} message={info.message} setInfomation={setInfo} />
-            <ChatBot />
+            {!pathname.includes('zero') && (<ChatBot />)}
             {children}
         </globalContext.Provider >
     )

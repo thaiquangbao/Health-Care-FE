@@ -3,19 +3,21 @@
 import Footer from "@/components/footer";
 import Logo from "@/components/logo";
 import Navbar from "@/components/navbar";
+import { appointmentContext } from "@/context/AppointmentContext";
 import { api, TypeHTTP } from "@/utils/api";
+import { removeDiacritics } from "@/utils/other";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function Home() {
 
-  const [sicks, setSicks] = useState([])
+  const { appointmentData, appointmentHandler } = useContext(appointmentContext)
 
   useEffect(() => {
     api({ path: '/sicks/get-all', sendToken: false, type: TypeHTTP.GET })
       .then(res => {
-        setSicks(res)
+        appointmentHandler.setSicks(res)
       })
   }, [])
 
@@ -61,17 +63,19 @@ export default function Home() {
           <div className="bg-[#35a4ffa1] w-[100px] h-[2px] rounded-lg"></div>
           <span className="text-[16px] text-center font-medium mt-[1.5rem] px-[6rem]">Tim mạch là một nhánh của y học, liên quan đến chẩn đoán và điều trị các rối loạn của tim và hệ thống mạch máu, bao gồm dị tật tim bẩm sinh, bệnh mạch vành, suy tim, bệnh van tim và rối loạn nhịp tim.</span>
         </div>
-        <div className="flex flex-col gap-2 text-[30px] font-bold text-[#171717] mt-[4rem] w-[100%] items-center">
+        <div className="flex px-[5%] flex-col gap-2 text-[30px] font-bold text-[#171717] mt-[4rem] w-[100%] items-center">
           <span>Các bệnh lý tim mạch chúng tôi điều trị</span>
           <div className="bg-[#35a4ffa1] w-[100px] h-[2px] rounded-lg"></div>
           <div className="mt-[1.5rem] grid grid-cols-5 w-[95%] gap-3">
-            {sicks.map((sick, index) => (
-              <div key={index} className={`flex flex-col items-center gap-3 px-6 justify-center w-full bg-[white] h-[140px] rounded-2xl shadow-xl shadow-[#35a4ff2a]`}>
-                <div className="w-[50px] aspect-square flex items-center justify-center rounded-full bg-[white] shadow-xl shadow-[#35a4ff2a]">
-                  <img src={sick.image} width={'35px'} />
+            {appointmentData.sicks.map((sick, index) => (
+              <Link key={index} href={`/${removeDiacritics(sick.title).toLowerCase().split(' ').join('-')}`}>
+                <div key={index} className={`flex cursor-pointer flex-col items-center gap-3 px-6 justify-center w-full bg-[white] h-[140px] rounded-2xl shadow-xl shadow-[#35a4ff2a]`}>
+                  <div className="w-[50px] aspect-square flex items-center justify-center rounded-full bg-[white] shadow-xl shadow-[#35a4ff2a]">
+                    <img src={sick.image} width={'35px'} />
+                  </div>
+                  <span className="text-[16px] text-center">{sick.title}</span>
                 </div>
-                <span className="text-[16px] text-center">{sick.title}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

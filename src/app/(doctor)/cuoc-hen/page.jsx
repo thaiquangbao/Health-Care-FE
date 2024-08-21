@@ -4,18 +4,21 @@ import { appointmentContext } from '@/context/AppointmentContext'
 import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
-import { convertDateToDayMonthYearObject, convertDateToDayMonthYearVietNam } from '@/utils/date'
+import { compare2Date, compareTimeDate1GreaterThanDate2, convertDateToDayMonthYearObject, convertDateToDayMonthYearTimeObject, convertDateToDayMonthYearVietNam, isALargerThanBPlus60Minutes, isALargerWithin10Minutes, isALargerWithin60Minutes, sortByAppointmentDate } from '@/utils/date'
 import { returnNumber } from '@/utils/other'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 const Appointment = () => {
 
   const { userData } = useContext(userContext)
   const [type, setType] = useState('1')
   const [appointments, setAppointments] = useState([])
-  const { appointmentData } = useContext(appointmentContext)
+  const { appointmentData, appointmentHandler } = useContext(appointmentContext)
   const { globalHandler } = useContext(globalContext)
   const [loading, setLoading] = useState(false)
+  const [time, setTime] = useState(new Date().getHours() + ':' + new Date().getMinutes())
+  const [displayConnect, setDisplayConnect] = useState(false)
+  const intervalRef = useRef()
   const typeTime = {
     '1': 'Hôm Nay',
     '2': 'Ngày Mai',
@@ -23,6 +26,24 @@ const Appointment = () => {
     '4': 'Tháng Này',
     '5': 'Tháng Sau'
   }
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setTime(new Date().getHours() + ':' + new Date().getMinutes())
+    }, 60000);
+  }, [])
+
+  useEffect(() => {
+    if (appointments.length > 0) {
+      const theFirstAppointment = sortByAppointmentDate(appointments.filter(item => item.status === 'ACCEPTED')).filter(item => compareTimeDate1GreaterThanDate2(item.appointment_date, convertDateToDayMonthYearTimeObject(new Date().toISOString())))[0]
+      if (theFirstAppointment) {
+        if (compare2Date(convertDateToDayMonthYearTimeObject(new Date().toISOString()), theFirstAppointment.appointment_date)) {
+          if (isALargerWithin10Minutes(theFirstAppointment.appointment_date.time, time) || isALargerWithin60Minutes(time, theFirstAppointment.appointment_date.time)) {
+            setDisplayConnect(theFirstAppointment._id)
+          }
+        }
+      }
+    }
+  }, [appointments, time])
 
   useEffect(() => {
     if (appointmentData.doctorRecord) {
@@ -227,19 +248,19 @@ const Appointment = () => {
             <tbody className=' w-[full] bg-black font-medium'>
               {!loading && appointments.map((appointment, index) => (
                 <tr key={index} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                  <td scope="row" className="px-6 py-4 text-center font-medium">
+                  <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} scope="row" className="px-6 py-4 text-center font-medium">
                     {index + 1}
                   </td>
-                  <td className="py-4 text-[15px]">
+                  <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4 text-[15px]">
                     {appointment.patient.fullName}
                   </td>
-                  <td style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
+                  <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
                     {appointment.status_message}
                   </td>
-                  <td className="py-4">
+                  <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4">
                     {`${convertDateToDayMonthYearVietNam(appointment.appointment_date)}`}
                   </td>
-                  <td className="py-4">
+                  <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4">
                     {appointment.note}
                   </td>
                   <td className="py-4 flex gap-2 items-center justify-center">
@@ -252,6 +273,11 @@ const Appointment = () => {
                       :
                       appointment.status === 'ACCEPTED' && (<button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy</button>)
                     }
+                    {(displayConnect === appointment._id) && (
+                      <Link href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
+                        <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}

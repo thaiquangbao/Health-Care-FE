@@ -3,7 +3,7 @@ import Navbar from '@/components/navbar'
 import { appointmentContext } from '@/context/AppointmentContext'
 import { api, TypeHTTP } from '@/utils/api'
 import { formatMoney, removeDiacritics, sicks } from '@/utils/other'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useState } from 'react'
 
 const BenhLy = () => {
@@ -13,8 +13,13 @@ const BenhLy = () => {
     const [sick, setSick] = useState()
     const [priceList, setPriceList] = useState()
     const router = useRouter()
+    const pathname = usePathname()
     const [doctorRecords, setDoctorRecords] = useState([])
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
+    const tongQuat = {
+        title: 'Khám Tổng Quát Tim Mạch',
+        description: 'Dù cho bệnh trái gió trở trời, hay nhiễm khuẩn thì các Bác sĩ giàu kinh nghiệm của Jio Health luôn sẵn lòng khám bệnh ngay tại phòng khám, giúp bạn phục hồi nhanh chóng.',
+    }
 
     useEffect(() => {
         api({ type: TypeHTTP.GET, path: '/doctorRecords/getAll', sendToken: false })
@@ -56,10 +61,10 @@ const BenhLy = () => {
                 <img className='absolute z-[4]' src='https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/cardiology-circle.svg?v=1' />
                 <div className='absolute w-[40%] z-[5] flex flex-col gap-1 top-[50%] translate-y-[-50%] left-12'>
                     <h2 className="text-transparent text-[35px] bg-clip-text bg-gradient-to-r from-blue-400 via-pink-500 to-red-500">
-                        {sick?.title}
+                        {pathname.includes('kham-tong-quat') ? tongQuat.title : sick?.title}
                     </h2>
                     <span></span>
-                    <p className='text-[17px] font-medium text-[#404040]'>{sick?.description}</p>
+                    <p className='text-[17px] font-medium text-[#404040]'>{pathname.includes('kham-tong-quat') ? tongQuat.description : sick?.description}</p>
                     <div className='bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between'>
                         <div className='flex flex-col text-[#333333]'>
                             <span className='text-[14px]'>GIÁ TƯ VẤN TRỰC TUYẾN</span>
@@ -95,7 +100,7 @@ const BenhLy = () => {
                             appointmentHandler.setDoctorRecord(item)
                             appointmentHandler.setPriceList(priceList)
                             setTimeout(() => {
-                                appointmentHandler.showFormBooking()
+                                appointmentHandler.showFormBooking(pathname.includes('kham-tong-quat') ? tongQuat.title : sick?.title)
                             }, 500);
                         }} className='mt-[1rem] flex items-center justify-center gap-1 text-[white] bg-[#5050ff] font-medium text-[15px] w-full'>
                             <i className='bx bxs-calendar text-[23px] py-3' ></i>

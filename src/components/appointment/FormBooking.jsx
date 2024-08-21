@@ -6,7 +6,7 @@ import { compare2Date, compareDate1GetterThanDate2, convertDateToDayMonthYearObj
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-const FormBooking = ({ visible, hidden }) => {
+const FormBooking = ({ visible, hidden, sick }) => {
     const router = useRouter()
     const [currentStep, setCurrentStep] = useState(1)
     const [display, setDisplay] = useState(0)
@@ -87,7 +87,8 @@ const FormBooking = ({ visible, hidden }) => {
             status: "QUEUE",
             note: "",
             status_message: 'Đang chờ bác sĩ xác nhận',
-            priceList: priceList
+            priceList: priceList,
+            sick
         }
         bookingHandler.setBooking(body)
         bookingHandler.setDoctorRecord(appointmentData.doctorRecord)
@@ -107,7 +108,6 @@ const FormBooking = ({ visible, hidden }) => {
                                     <span onClick={() => display === index + 1 ? setDisplay(0) : setDisplay(index + 1)} className='text-[16px] '>{convertDateToDayMonthYearVietNam2(schedule.date)}</span>
                                     <div style={{ height: display === index + 1 ? `${40 + (timeRef.current ? (timeRef.current.offsetHeight + 2) * schedule.times.length : 0)}px` : 0, transition: '0.5s' }} className='overflow-hidden flex flex-col gap-1'>
                                         <span className='mt-2 font-bold px-[1rem]'>Giờ hẹn hiện có</span>
-                                        {console.log(schedule.times)}
                                         {sortTimes(schedule.times).map((time, indexTime) => (
                                             <div key={index} style={{ backgroundColor: appointmentDate.time === time.time ? '#35a4ff2a' : 'white' }} className='rounded-lg'>
                                                 <button onClick={() => setAppointmentDate({

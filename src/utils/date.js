@@ -156,6 +156,35 @@ export const compareDate1GetterThanDate2 = (date1, date2) => {
     return false
 }
 
+export const compareTimeDate1GreaterThanDate2 = (date1, date2) => {
+    // So sánh năm
+    if (date1.year > date2.year) return true;
+    if (date1.year < date2.year) return false;
+
+    // So sánh tháng nếu năm bằng nhau
+    if (date1.month > date2.month) return true;
+    if (date1.month < date2.month) return false;
+
+    // So sánh ngày nếu tháng và năm bằng nhau
+    if (date1.day > date2.day) return true;
+    if (date1.day < date2.day) return false;
+
+    // Nếu ngày, tháng và năm bằng nhau, so sánh thời gian
+    const time1 = date1.time.split(":").map(Number);
+    const time2 = date2.time.split(":").map(Number);
+
+    const hour1 = time1[0];
+    const minute1 = time1[1];
+    const hour2 = time2[0];
+    const minute2 = time2[1];
+
+    if (hour1 > hour2) return true;
+    if (hour1 < hour2) return false;
+
+    // Nếu giờ bằng nhau, so sánh phút
+    return minute1 >= minute2;
+}
+
 export function convertDateToDayMonthYearObject(dateString) {
     // Tạo một đối tượng Date từ chuỗi ngày hiện tại
     let currentDate = new Date(dateString);
@@ -169,6 +198,25 @@ export function convertDateToDayMonthYearObject(dateString) {
     return { day, month, year };
 }
 
+export function convertDateToDayMonthYearTimeObject(dateString) {
+    // Tạo một đối tượng Date từ chuỗi ngày hiện tại
+    let currentDate = new Date(dateString);
+
+    // Lấy ngày, tháng, năm
+    let day = currentDate.getDate();
+    let month = currentDate.getMonth() + 1;
+    let year = currentDate.getFullYear();
+
+    // Lấy giờ và phút
+    let hours = currentDate.getHours();
+    let minutes = currentDate.getMinutes();
+
+    // Định dạng lại thời gian thành chuỗi 'HH:mm'
+    let time = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+    // Trả về đối tượng chứa ngày, tháng, năm và thời gian
+    return { day, month, year, time };
+}
 
 export const convertObjectToDate = (date1) => {
     return new Date(date1.year, date1.month - 1, date1.day)
@@ -249,20 +297,115 @@ export function sortByAppointmentDate(array) {
 }
 
 
-export function isWithinTenMinutes(A, B) {
-    // Chuyển thời gian từ định dạng chuỗi thành mảng số
-    const timeA = A.split(":").map(Number);
-    const timeB = B.split(":").map(Number);
+export function isALargerWithin10Minutes(A, B) {
+    // Chuyển đổi thời gian từ chuỗi thành số phút kể từ nửa đêm
+    function timeToMinutes(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
 
-    // Tạo đối tượng Date cho cả hai thời gian
-    const dateA = new Date(0, 0, 0, timeA[0], timeA[1]);
-    const dateB = new Date(0, 0, 0, timeB[0], timeB[1]);
+    // Loại bỏ ký tự '+' nếu có trong chuỗi thời gian B
+    if (B.startsWith('+')) {
+        B = B.slice(1).trim();
+    }
 
-    // Tính toán khoảng thời gian giữa A và B tính bằng phút
-    const diffInMinutes = (dateB - dateA) / (1000 * 60);
+    const minutesA = timeToMinutes(A);
+    const minutesB = timeToMinutes(B);
 
-    // Kiểm tra các điều kiện:
-    // 1. B nằm trong khoảng 10 phút trước A (0 <= diffInMinutes <= 10)
-    // 2. B nằm trong khoảng tối đa 60 phút sau A (0 <= diffInMinutes <= 60)
-    return (diffInMinutes >= 0 && diffInMinutes <= 10) || (diffInMinutes >= 0 && diffInMinutes <= 60);
+    // Kiểm tra nếu A lớn hơn B trong khoảng cách 10 phút
+    return minutesA > minutesB && (minutesA - minutesB) <= 10;
+}
+
+export function calculateDetailedTimeDifference(A, B) {
+    // A là thời gian hiện tại
+    // B là thời gian cuộc hẹn
+
+    // Tạo đối tượng Date cho A
+    const dateA = new Date(
+        A.year,
+        A.month - 1, // JavaScript months are 0-based
+        A.day,
+        ...A.time.split(":").map(Number)
+    );
+
+    // Tạo đối tượng Date cho B
+    const dateB = new Date(
+        B.year,
+        B.month - 1,
+        B.day,
+        ...B.time.split(":").map(Number)
+    );
+
+    // Tính toán chênh lệch thời gian giữa B và A (milliseconds)
+    let diffInMilliseconds = dateB - dateA;
+
+    if (diffInMilliseconds <= 0) {
+        return "Cuộc hẹn đã diễn ra";
+    }
+
+    // Tính toán các đơn vị thời gian
+    const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    // Lấy phần dư cho các đơn vị nhỏ hơn
+    const remainingHours = diffInHours % 24;
+    const remainingMinutes = diffInMinutes % 60;
+    const remainingSeconds = diffInSeconds % 60;
+
+    // Tạo chuỗi kết quả
+    let result = '';
+    if (diffInDays > 0) {
+        result += `${diffInDays} ngày `;
+    }
+    if (remainingHours > 0) {
+        result += `${remainingHours} giờ `;
+    }
+    if (remainingMinutes > 0) {
+        result += `${remainingMinutes} phút `;
+    }
+
+    return 'còn ' + result.trim();
+}
+
+export function isALargerWithin60Minutes(A, B) {
+    // Chuyển đổi thời gian từ chuỗi thành số phút kể từ nửa đêm
+    function timeToMinutes(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
+
+    // Loại bỏ ký tự '+' nếu có trong chuỗi thời gian B
+    if (B.startsWith('+')) {
+        B = B.slice(1).trim();
+    }
+
+    const minutesA = timeToMinutes(A);
+    const minutesB = timeToMinutes(B);
+
+    // Kiểm tra nếu A lớn hơn B trong khoảng cách 60 phút
+    return minutesA > minutesB && (minutesA - minutesB) <= 60;
+}
+
+export function isALargerThanBPlus60Minutes(A, B) {
+    // Chuyển đổi thời gian từ chuỗi thành số phút kể từ nửa đêm
+    function timeToMinutes(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
+
+    // Loại bỏ ký tự '+' nếu có trong chuỗi thời gian B
+    if (B.startsWith('+')) {
+        B = B.slice(1).trim();
+    }
+
+    const minutesA = timeToMinutes(A);
+    const minutesB = timeToMinutes(B);
+
+    // Cộng thêm 60 phút vào thời gian B
+    const minutesBPlus60 = minutesB + 60;
+
+    // Kiểm tra nếu A lớn hơn B cộng thêm 60 phút
+    return minutesA > minutesBPlus60;
 }

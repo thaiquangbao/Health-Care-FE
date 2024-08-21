@@ -1,9 +1,10 @@
 'use client'
 import Navbar from '@/components/navbar'
+import { appointmentContext } from '@/context/AppointmentContext'
 import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
-import { compare2Date, convertDateToDayMonthYearObject, convertDateToDayMonthYearVietNam, isWithinTenMinutes, sortByAppointmentDate } from '@/utils/date'
+import { compare2Date, compareDate1GetterThanDate2, compareTimeDate1GreaterThanDate2, convertDateToDayMonthYearObject, convertDateToDayMonthYearTimeObject, convertDateToDayMonthYearVietNam, isALargerWithin10Minutes, isALargerWithin60Minutes, isWithinTenMinutes, sortByAppointmentDate } from '@/utils/date'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -12,6 +13,7 @@ const CuocHenCuaBan = () => {
 
     const { userData } = useContext(userContext)
     const { globalHandler } = useContext(globalContext)
+    const { appointmentHandler } = useContext(appointmentContext)
     const [appointments, setAppointments] = useState([])
     const [doctorRecords, setDoctorRecords] = useState([])
     const [type, setType] = useState('1')
@@ -28,10 +30,12 @@ const CuocHenCuaBan = () => {
 
     useEffect(() => {
         if (appointments.length > 0) {
-            const theFirstAppointment = sortByAppointmentDate(appointments)[0]
-            if (compare2Date(convertDateToDayMonthYearObject(new Date().toISOString()), theFirstAppointment.appointment_date)) {
-                if (isWithinTenMinutes(theFirstAppointment.appointment_date.time, time)) {
-                    setDisplayConnect(true)
+            const theFirstAppointment = sortByAppointmentDate(appointments.filter(item => item.status === 'ACCEPTED')).filter(item => compareTimeDate1GreaterThanDate2(item.appointment_date, convertDateToDayMonthYearTimeObject(new Date().toISOString())))[0]
+            if (theFirstAppointment) {
+                if (compare2Date(convertDateToDayMonthYearTimeObject(new Date().toISOString()), theFirstAppointment.appointment_date)) {
+                    if (isALargerWithin10Minutes(theFirstAppointment.appointment_date.time, time) || isALargerWithin60Minutes(time, theFirstAppointment.appointment_date.time)) {
+                        setDisplayConnect(theFirstAppointment._id)
+                    }
                 }
             }
         }
@@ -119,28 +123,28 @@ const CuocHenCuaBan = () => {
                         </thead>
                         <tbody className=' w-[full] bg-black font-medium'>
                             {sortByAppointmentDate(appointments).map((appointment, index) => (
-                                <tr key={index} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td scope="row" className="px-6 py-4 text-center font-medium">
+                                <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} scope="row" className="px-6 py-4 text-center font-medium">
                                         {index + 1}
                                     </td>
-                                    <td className="py-4 text-[15px]">
-                                        BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0].doctor.fullName}
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4 text-[15px]">
+                                        BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]?.doctor?.fullName}
                                     </td>
-                                    <td style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
                                         {appointment.status_message}
                                     </td>
-                                    <td className="py-4">
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4">
                                         {`${convertDateToDayMonthYearVietNam(appointment.appointment_date)}`}
                                     </td>
-                                    <td className="py-4">
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4">
                                         {appointment.note}
                                     </td>
                                     <td className="py-4 flex gap-2 items-center justify-center">
                                         {!['CANCELED', 'ACCEPTED', 'REJECTED'].includes(appointment.status) && (
                                             <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
                                         )}
-                                        {(index === 0 && displayConnect === true && appointment.status === 'ACCEPTED') && (
-                                            <Link href={`http://127.0.0.1:3000/zero/${appointment._id}`}>
+                                        {(displayConnect === appointment._id) && (
+                                            <Link href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
                                                 <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
                                             </Link>
                                         )}

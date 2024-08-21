@@ -13,7 +13,9 @@ const AuthContext = ({ children }) => {
     const [visibleSignUp, setVisibleSignUp] = useState(false)
     const [visibleSignIn, setVisibleSignIn] = useState(false)
     const [visibleWrapper, setVisibleWrapper] = useState(false)
+    const [visibleFormCreateBaiViet, setVisibleFormCreateBaiViet] = useState(false)
     const [visibleMore, setVisibleMore] = useState(false)
+    const [visibleMedicalRecord, setVisibleMedicalRecord] = useState(false)
     const wrapperRef = useRef()
     const [loading, setLoading] = useState(true)
     const { userData } = useContext(userContext)
@@ -69,15 +71,39 @@ const AuthContext = ({ children }) => {
         setVisibleSignIn(false)
     }
 
+    const showFormCreateBaiViet = () => {
+        showWrapper()
+        setVisibleFormCreateBaiViet(true)
+    }
+
+    const hiddenFormCreateBaiViet = () => {
+        hiddenWrapper()
+        setVisibleFormCreateBaiViet(false)
+    }
+
+    const showMedicalRecord = () => {
+        showWrapper()
+        setVisibleMedicalRecord(true)
+    }
+
+    const hiddenMedicalRecord = () => {
+        hiddenWrapper()
+        setVisibleMedicalRecord(false)
+    }
+
     const hidden = () => {
         hiddenWrapper();
         hiddenSignUp();
         hiddenSignIn();
         setVisibleMore(false)
+        setVisibleFormCreateBaiViet(false)
+        setVisibleMedicalRecord(false)
     }
 
     const data = {
-        visibleMore
+        visibleMore,
+        visibleFormCreateBaiViet,
+        visibleMedicalRecord
     }
 
     const handler = {
@@ -87,7 +113,11 @@ const AuthContext = ({ children }) => {
         hiddenSignIn,
         showWrapper,
         hiddenWrapper,
-        setVisibleMore
+        setVisibleMore,
+        hiddenFormCreateBaiViet,
+        showFormCreateBaiViet,
+        hiddenMedicalRecord,
+        showMedicalRecord
     }
 
     return (

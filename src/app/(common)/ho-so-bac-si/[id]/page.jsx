@@ -15,7 +15,7 @@ import {
   compareDates,
   convertDateToDayMonthYear,
   convertDateToDayMonthYearObject,
-  convertObjectToDate,
+  convertqObjectToDate,
 } from "@/utils/date";
 import {
   formatMoney,
@@ -99,13 +99,7 @@ const HoSoBacSi = () => {
     return { firstParagraph, firstImageUrl };
   };
   const clickItem = (id) => {
-    api({
-      path: `/forums/update/views/${id}`,
-      sendToken: false,
-      type: TypeHTTP.POST,
-    }).then((res) => {
-      router.push(`/cam-nang-detail/${id}`);
-    });
+    router.push(`/chi-tiet-cam-nang/${id}`);
   };
   const renderStars = (rating) => {
     return (
@@ -113,11 +107,10 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${
-              star <= rating
-                ? "text-yellow-500"
-                : "text-gray-300"
-            }`}
+            className={`w-6 h-6 ${star <= rating
+              ? "text-yellow-500"
+              : "text-gray-300"
+              }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"

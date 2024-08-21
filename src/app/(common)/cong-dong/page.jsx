@@ -1,11 +1,17 @@
 "use client";
+import FormCreateBaiViet from "@/components/cong-dong/FormCreateBaiViet";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import { authContext } from "@/context/AuthContext";
+import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 const CongDong = () => {
+  const { authHandler, authData } = useContext(authContext)
+  const { userData } = useContext(userContext)
   const [qas, setQAs] = useState([]);
+  const [visibleFormCreate, setVisibleFormCreate] = useState(false)
   const router = useRouter();
   useEffect(() => {
     api({
@@ -17,22 +23,37 @@ const CongDong = () => {
     });
   }, []);
   const clickItem = (id) => {
-    api({
-      path: `/qas/update-view/${id}`,
-      sendToken: false,
-      type: TypeHTTP.POST,
-    }).then((res) => {
-      router.push(`/cong-dong-detail/${id}`);
-    });
+    router.push(`/chi-tiet-cau-hoi/${id}`);
   };
+
+  const handleTurnOnFormCreate = () => {
+    if (userData.user) {
+      authHandler.showFormCreateBaiViet()
+    } else {
+      authHandler.showSignIn()
+    }
+  }
+
   return (
     <>
       <div className="w-full flex flex-col pb-[2rem]">
         <Navbar />
-        <div className="min-h-screen flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
-          <span className="font-bold">
-            Hỏi đáp miễn phí với Bác sĩ
-          </span>
+        <div className="min-h-screen flex mt-[2rem] flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+          <div className="flex justify-between items-center w-full">
+            <span className="font-bold">
+              Hỏi đáp miễn phí với Bác sĩ
+            </span>
+            <button
+              style={{
+                background:
+                  "linear-gradient(to right, #11998e, #38ef7d)",
+              }}
+              onClick={() => handleTurnOnFormCreate()}
+              className="bg-blue-500 text-white p-2 rounded mt-2 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[15%]"
+            >
+              Đăng bài viết
+            </button>
+          </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {qas.map((qa, index) => {
               return (
@@ -90,6 +111,7 @@ const CongDong = () => {
         </div>
       </div>
       <Footer />
+      <FormCreateBaiViet visible={authData.visibleFormCreateBaiViet} hidden={authHandler.hiddenFormCreateBaiViet} />
     </>
   );
 };

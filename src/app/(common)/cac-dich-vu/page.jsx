@@ -61,9 +61,9 @@ const CacDichVu = () => {
                                 <span className='text-[15px]'>GIÁ TƯ VẤN CHỈ TỪ</span>
                                 <span className='text-[20px]'>{formatMoney(priceList?.price)}đ</span>
                             </div>
-                            <div>
-                                <button onClick={() => router.push('/bac-si-noi-bat')} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 z-50 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
-                            </div>
+                            <Link href={`/kham-tong-quat`}>
+                                <button style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] rounded-3xl px-6 py-3 z-50 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
