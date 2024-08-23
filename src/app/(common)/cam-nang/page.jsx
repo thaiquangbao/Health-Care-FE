@@ -1,19 +1,23 @@
 "use client";
-import { auth } from "@/components/firebase/firebase";
-// import { userContext } from "@/context/UserContext";
+
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import {
   globalContext,
   notifyType,
 } from "@/context/GlobalContext";
+import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 const CamNang = () => {
   const [forums, setForums] = useState([]);
   const router = useRouter();
-
+  const { userData } = useContext(userContext);
   useEffect(() => {
     api({
       path: "/forums/get-all",
@@ -39,14 +43,32 @@ const CamNang = () => {
   const clickItem = (id) => {
     router.push(`/chi-tiet-cam-nang/${id}`);
   };
+  const handleTurnOnFormCreate = () => {
+    router.push("/them-cam-nang");
+  };
   return (
     <>
       <div className="w-full flex flex-col pb-[2rem]">
         <Navbar />
-        <div className="min-h-screen flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
-          <span className="font-bold mt-[2rem]">
-            Cẩm nang sức khỏe
-          </span>
+        <div className="min-h-screen flex mt-[2rem] flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+          <div className="flex justify-between items-center w-full">
+            <span className="font-bold mt-[2rem]">
+              Cẩm nang sức khỏe
+            </span>
+            {userData.user &&
+              userData.user?.role === "DOCTOR" && (
+                <button
+                  style={{
+                    background:
+                      "linear-gradient(to right, #11998e, #38ef7d)",
+                  }}
+                  onClick={handleTurnOnFormCreate}
+                  className="bg-blue-500 text-white p-2 rounded mt-2 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[15%]"
+                >
+                  Thêm cẩm nang
+                </button>
+              )}
+          </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {forums.map((forum, index) => {
               const { firstParagraph, firstImageUrl } =
@@ -88,7 +110,7 @@ const CamNang = () => {
                       </span>
                       <span className="ml-4">
                         <i className="fas fa-heart mr-1"></i>
-                        {forum.like} Lượt thích
+                        {forum.like?.length} Lượt thích
                       </span>
                     </div>
                   </div>

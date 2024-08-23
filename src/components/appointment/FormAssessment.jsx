@@ -11,7 +11,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-const FormAssessment = () => {
+const FormAssessment = ({ visible, hidden }) => {
   const { globalHandler } = useContext(globalContext);
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState("");
@@ -68,21 +68,21 @@ const FormAssessment = () => {
         "Đánh giá thành công, Cảm ơn bạn đã đánh giá!!!"
       );
       localStorage.removeItem("appointmentData");
-      router.push("/");
+      window.location.href = "/cuoc-hen-cua-ban";
     });
   };
   return (
     <div
       style={{
-        height: "450px",
-        width: "40%",
+        height: visible ? "450px" : 0,
+        width: visible ? "40%" : 0,
         transition: "0.3s",
         backgroundSize: "cover",
         background:
-          "linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5))",
+          "linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0.5))",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
-      className="z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+      className="z-50 w-[300px] min-h-[100px] bg-[white] overflow-hidden rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
       <div
         style={{
@@ -100,10 +100,11 @@ const FormAssessment = () => {
                 <svg
                   key={star}
                   onClick={() => handleRating(star)}
-                  className={`w-12 h-12 cursor-pointer ${star <= rating
-                    ? "text-yellow-500"
-                    : "text-gray-300"
-                    }`}
+                  className={`w-12 h-12 cursor-pointer ${
+                    star <= rating
+                      ? "text-yellow-500"
+                      : "text-gray-300"
+                  }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +146,7 @@ const FormAssessment = () => {
         </div>
       </div>
 
-      <button>
+      <button onClick={() => hidden()}>
         <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
       </button>
     </div>

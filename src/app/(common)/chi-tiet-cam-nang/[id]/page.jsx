@@ -7,6 +7,7 @@ import {
   globalContext,
   notifyType,
 } from "@/context/GlobalContext";
+import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
@@ -18,21 +19,34 @@ import React, {
 const CamNangDetail = () => {
   const [forum, setForum] = useState({});
   const param = useParams();
+  const { userData } = useContext(userContext);
   const { id } = param;
+  const [likes, setLikes] = useState([]);
   useEffect(() => {
     api({
       path: `/forums/update/views/${id}`,
       sendToken: false,
       type: TypeHTTP.POST,
-    })
+    });
     api({
       path: `/forums/get-one/${id}`,
       sendToken: false,
       type: TypeHTTP.GET,
     }).then((res) => {
       setForum(res);
+      setLikes(res.like);
     });
   }, [id]);
+  const addLike = () => {
+    api({
+      path: `/forums/update/likes`,
+      sendToken: false,
+      type: TypeHTTP.POST,
+      body: { _id: id, patient: userData?.user?._id },
+    }).then((res) => {
+      setLikes((pre) => [userData.user?._id, ...pre]);
+    });
+  };
   return (
     <>
       <div className="w-full flex flex-col pb-[2rem] pt-[3rem]">
@@ -50,7 +64,12 @@ const CamNangDetail = () => {
           />
           <div className="p-2 rounded w-[100%] mt-2 mb-6">
             <div className="flex items-center gap-4">
-              <div style={{ backgroundImage: `url(${forum.author?.image})` }} className="bg-cover w-20 h-20 rounded-full" />
+              <div
+                style={{
+                  backgroundImage: `url(${forum.author?.image})`,
+                }}
+                className="bg-cover w-20 h-20 rounded-full"
+              />
               <div>
                 <h3 className="text-[20px] font-bold">
                   {forum.author?.fullName}
@@ -66,9 +85,37 @@ const CamNangDetail = () => {
                   <i className="fas fa-eye mr-1"></i>
                   {forum.views} Lượt xem
                 </span>
-                <span className="ml-4">
-                  <i className="fas fa-heart mr-1"></i>
-                  {forum.like} Lượt thích
+                <span
+                  className="ml-4"
+                  style={{
+                    cursor:
+                      userData?.user &&
+                      !likes?.includes(userData?.user?._id)
+                        ? "pointer"
+                        : "default",
+                  }}
+                >
+                  <i
+                    className="fas fa-heart mr-1"
+                    style={{
+                      color: likes?.includes(
+                        userData?.user?._id
+                      )
+                        ? "red"
+                        : "",
+                    }}
+                    onClick={() => {
+                      if (
+                        userData?.user &&
+                        !likes?.includes(
+                          userData?.user?._id
+                        )
+                      ) {
+                        addLike();
+                      }
+                    }}
+                  ></i>
+                  {likes?.length} Lượt thích
                 </span>
               </div>
             </div>

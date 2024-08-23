@@ -107,10 +107,11 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${star <= rating
-              ? "text-yellow-500"
-              : "text-gray-300"
-              }`}
+            className={`w-6 h-6 ${
+              star <= rating
+                ? "text-yellow-500"
+                : "text-gray-300"
+            }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -359,7 +360,7 @@ const HoSoBacSi = () => {
                       </span>
                       <span className="ml-4">
                         <i className="fas fa-heart mr-1"></i>
-                        {forum.like} Lượt thích
+                        {forum.like?.length} Lượt thích
                       </span>
                     </div>
                   </div>

@@ -6,12 +6,17 @@ import { authContext } from "@/context/AuthContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 const CongDong = () => {
-  const { authHandler, authData } = useContext(authContext)
-  const { userData } = useContext(userContext)
+  const { authHandler, authData } = useContext(authContext);
+  const { userData } = useContext(userContext);
   const [qas, setQAs] = useState([]);
-  const [visibleFormCreate, setVisibleFormCreate] = useState(false)
+  const [visibleFormCreate, setVisibleFormCreate] =
+    useState(false);
   const router = useRouter();
   useEffect(() => {
     api({
@@ -28,11 +33,11 @@ const CongDong = () => {
 
   const handleTurnOnFormCreate = () => {
     if (userData.user) {
-      authHandler.showFormCreateBaiViet()
+      authHandler.showFormCreateBaiViet();
     } else {
-      authHandler.showSignIn()
+      authHandler.showSignIn();
     }
-  }
+  };
 
   return (
     <>
@@ -51,7 +56,7 @@ const CongDong = () => {
               onClick={() => handleTurnOnFormCreate()}
               className="bg-blue-500 text-white p-2 rounded mt-2 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[15%]"
             >
-              Đăng bài viết
+              Đặt câu hỏi
             </button>
           </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
@@ -96,7 +101,7 @@ const CongDong = () => {
                       </span>
                       <span className="ml-4">
                         <i className="fas fa-heart mr-1"></i>
-                        {qa.like} Lượt thích
+                        {qa.like.length} Lượt thích
                       </span>
                       <span className="ml-4">
                         <i className="fas fa-comment mr-1"></i>
@@ -111,7 +116,10 @@ const CongDong = () => {
         </div>
       </div>
       <Footer />
-      <FormCreateBaiViet visible={authData.visibleFormCreateBaiViet} hidden={authHandler.hiddenFormCreateBaiViet} />
+      <FormCreateBaiViet
+        visible={authData.visibleFormCreateBaiViet}
+        hidden={authHandler.hiddenFormCreateBaiViet}
+      />
     </>
   );
 };
