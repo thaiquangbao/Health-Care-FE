@@ -6,6 +6,8 @@ import {
   notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
+import { api, TypeHTTP } from "@/utils/api";
+import { set } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {
@@ -26,11 +28,13 @@ const Navbar = () => {
   const { authData, authHandler } = useContext(authContext);
   const { userData, userHandler } = useContext(userContext);
   const [user, setUser] = useState();
+  const [notifications, setNotifications] = useState([]);
   const [visibleUserInfo, setVisibleUserInfo] =
     useState(false);
   const { appointmentHandler } = useContext(
     appointmentContext
   );
+  const [lengthNotice, setLengthNotice] = useState(0);
   const router = useRouter();
 
   const handleScroll = () => {
@@ -40,6 +44,17 @@ const Navbar = () => {
   useEffect(() => {
     if (userData.user) {
       setUser(userData.user);
+      api({
+        path: `/notices/get-by-user/${userData.user?._id}`,
+        type: TypeHTTP.GET,
+        sendToken: false,
+      }).then((res) => {
+        setNotifications(res);
+
+        setLengthNotice(
+          res.filter((item) => item.seen === false).length
+        );
+      });
     }
   }, [userData.user]);
 
@@ -84,7 +99,31 @@ const Navbar = () => {
       setHeight(navbarRef.current.offsetHeight);
     }
   }, [navbarRef.current]);
-
+  // action click
+  const clickNotice = (item) => {
+    if (
+      item.category === "APPOINTMENT" &&
+      userData.user?.role === "USER"
+    ) {
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/cuoc-hen-cua-ban");
+      });
+    } else {
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("cuoc-hen");
+      });
+    }
+  };
   return (
     <>
       <div
@@ -97,24 +136,106 @@ const Navbar = () => {
       >
         <Logo />
         <div className="flex gap-2 text-[14px] items-center">
-          {/* {(userData.user && userData.user?.processSignup === 3) ?
-                    <div className='flex items-center gap-3 relative'>
-                        <span>{user?.fullName}</span>
-                        <div onClick={() => setVisibleUserInfo(!visibleUserInfo)} style={{ backgroundImage: `url(${user?.image})`, backgroundSize: 'cover' }} className='rounded-full cursor-pointer h-[40px] w-[40px]' />
-                        <div style={visibleUserInfo ? { height: 'auto', transition: '0.5s' } : { height: 0, transition: '0.5s' }} className='z-50 w-[200px] shadow-lg overflow-hidden absolute right-0 top-[45px] bg-[white] rounded-md '>
-                            <div className='w-full flex py-1 flex-col px-2 items-start'>
-                                <button className='w-full my-[5px]'><Link href={'/ho-so'}>Thông Tin Cá Nhân</Link></button>
-                                <button onClick={() => handleSignOut()} className='w-full my-[5px]'>Đăng Xuất</button>
-                            </div>
-                        </div>
+          {userData.user &&
+          userData.user?.processSignup === 3 ? (
+            <div className="flex items-center gap-3 relative">
+              <div className="relative">
+                {/* Icon chuông để mở danh sách thông báo */}
+                <div
+                  className="mr-5 rounded-full cursor-pointer"
+                  onClick={() =>
+                    setVisibleUserInfo(!visibleUserInfo)
+                  }
+                >
+                  <span className="fa fa-bell text-gray-600 text-[20px]"></span>
+                  {/* Số thông báo màu đỏ */}
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-2 -translate-y-1/2">
+                    {lengthNotice}
+                  </span>
+                </div>
+
+                {/* Dropdown danh sách thông báo */}
+                <div
+                  className={`z-50 w-[300px] shadow-lg overflow-hidden absolute top-[30px] right-0 bg-white rounded-md transition-all duration-500 ${
+                    visibleUserInfo
+                      ? "h-auto opacity-100"
+                      : "h-0 opacity-0"
+                  }`}
+                >
+                  <div className="w-full flex flex-col">
+                    {/* Tiêu đề */}
+                    <div className="px-4 py-2 border-b">
+                      <span className="font-bold text-sm">
+                        Danh sách thông báo
+                      </span>
                     </div>
-                    :
-                    <>
-                        <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Đặt Lịch Khám</button></Link>
-                        <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Tải Ứng Dụng Ngay</button></Link>
-                    </>
-                } */}
-          <Link href={"/bac-si-noi-bat"}>
+
+                    {/* Thông báo */}
+                    {notifications.map((item, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 border-b flex items-start cursor-pointer hover:bg-gray-200"
+                        onClick={() => clickNotice(item)}
+                      >
+                        <div>
+                          <span className="font-bold text-blue-600">
+                            {item.title}
+                          </span>{" "}
+                          <br />
+                          <span className="text-sm text-gray-500">
+                            {item.content}
+                          </span>
+                          <div className="text-[13px] text-gray-500">
+                            Ngày: {item.date.day}/
+                            {item.date.month}/
+                            {item.date.year}
+                          </div>
+                        </div>
+                        {item.seen === false && (
+                          <span className="w-2 h-2 bg-green-500 rounded-full mt-1 absolute right-4 transform"></span>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Xem tất cả */}
+                    <div className="px-4 py-2 text-center">
+                      <Link
+                        href="/tat-ca-thong-bao"
+                        className="text-sm text-blue-600 font-bold"
+                      >
+                        Xem tất cả
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Link href={"/bac-si-noi-bat"}>
+                <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+                  Đặt Lịch Khám
+                </button>
+              </Link>
+              <Link href={"/bac-si-noi-bat"}>
+                <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+                  Tải Ứng Dụng Ngay
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <Link href={"/bac-si-noi-bat"}>
+                <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+                  Đặt Lịch Khám
+                </button>
+              </Link>
+              <Link href={"/bac-si-noi-bat"}>
+                <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+                  Tải Ứng Dụng Ngay
+                </button>
+              </Link>
+            </>
+          )}
+          {/* <Link href={"/bac-si-noi-bat"}>
             <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
               Đặt Lịch Khám
             </button>
@@ -123,7 +244,7 @@ const Navbar = () => {
             <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
               Tải Ứng Dụng Ngay
             </button>
-          </Link>
+          </Link> */}
           <button
             onClick={() =>
               authHandler.setVisibleMore(
