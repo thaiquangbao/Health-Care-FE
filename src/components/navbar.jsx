@@ -36,6 +36,7 @@ const Navbar = () => {
   );
   const [lengthNotice, setLengthNotice] = useState(0);
   const router = useRouter();
+  const [visibleCount, setVisibleCount] = useState(2);
 
   const handleScroll = () => {
     setScrollY(globalThis.window.scrollY);
@@ -124,6 +125,10 @@ const Navbar = () => {
       });
     }
   };
+  // chỉ xuất hiện 2 thông báo
+  const showMoreNotifications = () => {
+    setVisibleCount(notifications.length);
+  };
   return (
     <>
       <div
@@ -171,41 +176,51 @@ const Navbar = () => {
                     </div>
 
                     {/* Thông báo */}
-                    {notifications.map((item, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 border-b flex items-start cursor-pointer hover:bg-gray-200"
-                        onClick={() => clickNotice(item)}
-                      >
-                        <div>
-                          <span className="font-bold text-blue-600">
-                            {item.title}
-                          </span>{" "}
-                          <br />
-                          <span className="text-sm text-gray-500">
-                            {item.content}
-                          </span>
-                          <div className="text-[13px] text-gray-500">
-                            Ngày: {item.date.day}/
-                            {item.date.month}/
-                            {item.date.year}
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications
+                        .slice()
+                        .reverse()
+                        .slice(0, visibleCount)
+                        .map((item, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 border-b flex items-start cursor-pointer hover:bg-gray-200"
+                            onClick={() =>
+                              clickNotice(item)
+                            }
+                          >
+                            <div>
+                              <span className="font-bold text-blue-600">
+                                {item.title}
+                              </span>{" "}
+                              <br />
+                              <span className="text-sm text-gray-500">
+                                {item.content}
+                              </span>
+                              <div className="text-[13px] text-gray-500">
+                                Ngày: {item.date.day}/
+                                {item.date.month}/
+                                {item.date.year}
+                              </div>
+                            </div>
+                            {item.seen === false && (
+                              <span className="w-2 h-2 bg-green-500 rounded-full mt-1 right-4 transform"></span>
+                            )}
                           </div>
-                        </div>
-                        {item.seen === false && (
-                          <span className="w-2 h-2 bg-green-500 rounded-full mt-1 absolute right-4 transform"></span>
-                        )}
-                      </div>
-                    ))}
-
-                    {/* Xem tất cả */}
-                    <div className="px-4 py-2 text-center">
-                      <Link
-                        href="/tat-ca-thong-bao"
-                        className="text-sm text-blue-600 font-bold"
-                      >
-                        Xem tất cả
-                      </Link>
+                        ))}
                     </div>
+                    {/* Xem tất cả */}
+                    {visibleCount <
+                      notifications.length && (
+                      <div
+                        className="px-4 py-2 border-t text-center cursor-pointer hover:bg-gray-200"
+                        onClick={showMoreNotifications}
+                      >
+                        <span className="text-blue-600">
+                          Xem tất cả
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
