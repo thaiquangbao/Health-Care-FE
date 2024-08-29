@@ -111,7 +111,7 @@ const ThemCamNang = () => {
     "formula",
   ];
   return (
-    <div className="w-full min-h-screen pb-4 flex flex-col pt-[1%] px-[5%] background-public">
+    <div className="w-full min-h-screen pb-4 flex flex-col pt-[60px] px-[5%] background-public">
       <Navbar />
       <div className="flex flex-col gap-4 p-4">
         <div className="text-right">

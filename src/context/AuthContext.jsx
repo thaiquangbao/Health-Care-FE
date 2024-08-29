@@ -31,6 +31,7 @@ const AuthContext = ({ children }) => {
   const wrapperRef = useRef();
   const [loading, setLoading] = useState(true);
   const { userData } = useContext(userContext);
+  const [detailMedicalRecord, setDetailMedicalRecord] = useState()
 
   const handleWaitTime = () => {
     if (!globalThis.localStorage.getItem("refreshToken"))
@@ -114,6 +115,16 @@ const AuthContext = ({ children }) => {
     setVisibleAssessment(false);
   };
 
+  const showDetailMedicalRecord = (data) => {
+    showWrapper();
+    setDetailMedicalRecord(data)
+  };
+
+  const hiddenDetailMedicalRecord = () => {
+    hiddenWrapper();
+    setDetailMedicalRecord()
+  };
+
   const hidden = () => {
     hiddenWrapper();
     hiddenSignUp();
@@ -122,6 +133,7 @@ const AuthContext = ({ children }) => {
     setVisibleFormCreateBaiViet(false);
     setVisibleMedicalRecord(false);
     hiddenAssessment();
+    hiddenDetailMedicalRecord()
   };
 
   const data = {
@@ -129,6 +141,7 @@ const AuthContext = ({ children }) => {
     visibleFormCreateBaiViet,
     visibleMedicalRecord,
     visibleAssessment,
+    detailMedicalRecord
   };
 
   const handler = {
@@ -145,6 +158,8 @@ const AuthContext = ({ children }) => {
     showMedicalRecord,
     showAssessment,
     hiddenAssessment,
+    showDetailMedicalRecord,
+    hiddenDetailMedicalRecord
   };
 
   return (
@@ -163,7 +178,7 @@ const AuthContext = ({ children }) => {
         />
         {children}
       </div>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
     </authContext.Provider>
   );
 };

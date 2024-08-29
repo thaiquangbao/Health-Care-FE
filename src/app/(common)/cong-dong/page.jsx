@@ -41,7 +41,7 @@ const CongDong = () => {
 
   return (
     <>
-      <div className="w-full flex flex-col pb-[2rem]">
+      <div className="w-full pt-[60px] flex flex-col pb-[2rem]">
         <Navbar />
         <div className="min-h-screen flex mt-[2rem] flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
           <div className="flex justify-between items-center w-full">

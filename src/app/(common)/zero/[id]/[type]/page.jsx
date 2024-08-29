@@ -32,6 +32,7 @@ const Zero = () => {
     useState(false);
   const { globalHandler } = useContext(globalContext);
   const router = useRouter();
+
   useEffect(() => {
     if (userData.user) {
       setFullName(userData.user.fullName);
@@ -44,10 +45,6 @@ const Zero = () => {
       sendToken: false,
     }).then((res) => {
       appointmentHandler.setCurrentAppointment(res);
-      localStorage.setItem(
-        "appointmentData",
-        JSON.stringify(res)
-      );
     });
   }, [id]);
 
@@ -67,11 +64,8 @@ const Zero = () => {
       authHandler.showAssessment();
       zc.hangUp();
     } else {
-      setTimeout(() => {
-        window.location.href = "/cuoc-hen";
-        //router.replace("/cuoc-hen");
-        zc.hangUp();
-      }, 4000);
+      globalThis.window.location.href = "/cuoc-hen";
+      zc.hangUp();
     }
 
     // chổ này là dùng để dọn dẹp dữ liệu phòng meet chứ bth tắt là nó còn chạy meet đó bên phía server zego nên là phải có chổ này
@@ -115,14 +109,29 @@ const Zero = () => {
 
       onLeaveRoom: () => {
         // khi rời muốn lamf j đó thì ở đây
-        //authHandler.showAssessment();
         endMeet();
-        // window.location.href = "/" // chổ này là khi bấm nút tắt m muốn chuyển sang trang nào đó
       },
     });
   };
+
+  const checkMedicalRecord = (record) => {
+    if (record) {
+      if (record.diagnosisDisease === '') {
+        return false
+      }
+      if (record.medical.length === 0) {
+        return false
+      }
+      if (record.note === "") {
+        return false
+      }
+      return true
+    }
+    return false
+  }
+
   return (
-    <div>
+    <div className="relative">
       {fullName !== "" && (
         <div
           style={{ width: "100%", height: "100vh" }}
@@ -130,10 +139,17 @@ const Zero = () => {
           ref={myMeeting}
         ></div>
       )}
+      {!checkMedicalRecord(appointmentData.medicalRecord) && (
+        <button onClick={() => {
+          authHandler.showMedicalRecord();
+          globalHandler.notify(notifyType.WARNING, 'Bác sĩ cần hoàn thành thông tin bệnh nhân trước khi rời khỏi phòng')
+        }} className="absolute bottom-[1.5%] left-[53.5%] rounded-xl translate-x-[-50%] h-[4.7%] w-[4.8%] z-[1]">
+        </button>
+      )}
       {userData.user?.role === "DOCTOR" && (
         <button
           onClick={() => authHandler.showMedicalRecord()}
-          className="absolute top-2 right-2 px-4 py-2 bg-[white] shadow-sm rounded-xl"
+          className="absolute top-2 right-2 px-4 py-2 bg-[#1dcbb6] text-[white] text-[14px] shadow-sm rounded-xl"
         >
           {visibleStatusUpdated && (
             <span

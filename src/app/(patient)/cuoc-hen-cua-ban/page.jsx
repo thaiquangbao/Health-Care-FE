@@ -58,10 +58,11 @@ const CuocHenCuaBan = () => {
         const body = {
             _id: appointment._id,
             status: 'CANCELED',
-            status_message: 'Bệnh nhân đã hủy cuộc hẹn'
+            status_message: 'Bệnh nhân đã hủy cuộc hẹn',
+            note: ''
         }
         globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
-        api({ sendToken: true, path: '/appointments/doctor-reject', type: TypeHTTP.POST, body: body })
+        api({ sendToken: true, path: '/appointments/doctor-cancel', type: TypeHTTP.POST, body: body })
             .then(res => {
                 let record = JSON.parse(JSON.stringify(doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]))
                 let schedule = record.schedules.filter(item => item.date.day === appointment.appointment_date.day && item.date.month === appointment.appointment_date.month && item.date.year === appointment.appointment_date.year)[0]
@@ -76,12 +77,13 @@ const CuocHenCuaBan = () => {
                             return item
                         }))
                         globalHandler.notify(notifyType.SUCCESS, 'Đã hủy cuộc hẹn')
+                        globalHandler.reload()
                     })
             })
     }
 
     return (
-        <div className="w-full min-h-screen flex flex-col pt-[1%] px-[5%] background-public">
+        <div className="w-full min-h-screen flex flex-col pt-[60px] px-[5%] background-public">
             <Navbar />
             <div className='w-full mt-4 flex flex-col gap-1 px-16 text-[#2a2a2a]'>
                 <div className='my-2 flex justify-between items-end'>

@@ -13,6 +13,7 @@ import { api, TypeHTTP } from '@/utils/api'
 import FormBooking from '@/components/appointment/FormBooking'
 import FormRecordPatient from '@/components/appointment/FormRecordPatient'
 import FormDetailAppointment from '@/components/appointment/FormDetailAppointment'
+import FormSignUpHealth from '@/components/ho-so-ca-nhan-bac-si/FormSignUpHealth'
 
 export const appointmentContext = createContext()
 
@@ -27,6 +28,7 @@ const AppointmentProvider = ({ children }) => {
     const [visibleFormRecordPatient, setVisibleFormRecordPatient] = useState(false)
     const [dataFormDetailAppointment, setDataFormDetailAppointment] = useState()
     const [currentAppointment, setCurrentAppointment] = useState()
+    const [medicalRecord, setMedicalRecord] = useState();
     const [currentDay, setCurrentDay] = useState()
     const [detailTime, setDetailTime] = useState()
     const [doctorRecord, setDoctorRecord] = useState()
@@ -37,6 +39,7 @@ const AppointmentProvider = ({ children }) => {
     const [sick, setSick] = useState('')
     const [displayConnect, setDisplayConnect] = useState(false)
     const wrapperRef = useRef()
+    const [doctorRecordBooking, setDoctorRecordBooking] = useState()
 
     useEffect(() => {
         if (userData.user) {
@@ -72,6 +75,7 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormBooking()
         hiddenFormRecordPatient()
         hiddenFormDetailAppointment()
+        hiddenFormSignUpHealth()
     }
 
     const showFormBooking = (sick) => {
@@ -137,6 +141,15 @@ const AppointmentProvider = ({ children }) => {
         hiddenWrapper()
         setVisibleFormRecordPatient(false)
     }
+    const showFormSignUpHealth = (dr) => {
+        showWrapper()
+        setDoctorRecordBooking(dr)
+    }
+
+    const hiddenFormSignUpHealth = () => {
+        hiddenWrapper()
+        setDoctorRecordBooking()
+    }
 
     const showFormDetailAppointment = (appointment, display) => {
         showWrapper()
@@ -156,7 +169,8 @@ const AppointmentProvider = ({ children }) => {
         sicks,
         priceList,
         currentDay,
-        currentAppointment
+        currentAppointment,
+        medicalRecord
     }
 
     const handler = {
@@ -179,7 +193,9 @@ const AppointmentProvider = ({ children }) => {
         setPriceList,
         setCurrentAppointment,
         showFormDetailAppointment,
-        hiddenFormDetailAppointment
+        hiddenFormDetailAppointment,
+        setMedicalRecord,
+        showFormSignUpHealth
     }
 
     return (
@@ -191,6 +207,7 @@ const AppointmentProvider = ({ children }) => {
             <FormSignUpAppointment hidden={hidden} visible={visibleSignUpAppointment} />
             <FormBooking hidden={hidden} visible={visibleFormBooking} sick={sick} />
             <FormDetailAppointment display={displayConnect} hidden={hidden} data={dataFormDetailAppointment} />
+            <FormSignUpHealth doctorRecord={doctorRecordBooking} hidden={hidden} />
             {/* <FormRecordPatient hidden={hidden} visible={visibleFormRecordPatient} /> */}
             {children}
         </appointmentContext.Provider>

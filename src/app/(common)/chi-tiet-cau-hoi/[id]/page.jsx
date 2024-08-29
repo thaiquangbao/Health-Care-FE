@@ -170,12 +170,12 @@ const CongDongDetail = () => {
   };
   return (
     <>
-      <div className="w-full flex flex-col pb-[2rem]">
+      <div className="w-full pt-[60px] flex flex-col pb-[2rem]">
         <Navbar />
         <div className="min-h-screen flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-center">
           <div
             className="flex flex-col items-center gap-4 p-4 rounded w-[70%] mt-4"
-            // onClick={() => clickItem(qa._id)}
+          // onClick={() => clickItem(qa._id)}
           >
             <div className="flex flex-col justify-between w-[100%]">
               <div className="flex flex-row w-[100%]">
@@ -229,7 +229,7 @@ const CongDongDetail = () => {
                   style={{
                     cursor:
                       userData?.user &&
-                      !likes?.includes(userData?.user?._id)
+                        !likes?.includes(userData?.user?._id)
                         ? "pointer"
                         : "default",
                   }}

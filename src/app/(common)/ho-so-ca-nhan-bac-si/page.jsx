@@ -56,7 +56,7 @@ const HoSoBacSi = () => {
     }
 
     return (
-        <div className="w-full pb-4 flex flex-col pt-[1%] px-[5%] background-public">
+        <div className="w-full pb-4 flex flex-col pt-[60px] px-[5%] background-public">
             <Navbar />
             <div className='flex flex-col gap-4 items-center px-[2rem] mt-4'>
                 <div className='flex justify-normal gap-10 bg-[white] rounded-md p-3 w-[80%]'>

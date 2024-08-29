@@ -71,7 +71,7 @@ const FormSignIn = ({ visible, hidden }) => {
                             api({ path: `/doctorRecords/getById/${res.data._id}`, type: TypeHTTP.GET, sendToken: false })
                                 .then(record => {
                                     appointmentHandler.setDoctorRecord(record)
-                                    router.push('/cuoc-hen')
+                                    router.push('/phieu-dang-ky')
                                 })
                         }
                     }

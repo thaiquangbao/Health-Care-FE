@@ -2,42 +2,30 @@ import { bookingContext } from '@/context/BookingContext'
 import { userContext } from '@/context/UserContext'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 
 const BookingInformation = () => {
 
     const { bookingData, bookingHandler } = useContext(bookingContext)
     const { userData } = useContext(userContext)
-    const [individual, setIndividual] = useState({
-        name: '',
-        address: '',
-        sex: '',
-        dateOfBirth: null,
-        cccd: '',
-        email: '',
-        phone: ''
-    })
+    const inputRef = useRef()
+
+    const handleChangeImage = (e) => {
+        const files = Array.from(e.target.files);
+        const filesFormat = files.map(file => {
+            const blobURL = URL.createObjectURL(file);
+            return {
+                url: blobURL,
+                file
+            }
+        })
+        e.target.value = ''
+        bookingHandler.setImages([...bookingData.images, ...filesFormat])
+    }
 
 
     return (
-        <div className='flex flex-col gap-2 items-center mt-6 px-[6rem]'>
-            <div className='border-[#cbcbcb] flex items-center justify-center pb-2 border-b-[1px] w-full'>
-                <span className='font-medium text-[17px]'>Thông Tin Đặt Khám</span>
-            </div>
-            <div className='flex mt-4 flex-col gap-2 w-[70%]'>
-                <div className='flex justify-between'>
-                    <span className='text-[14px]'>Thông tin đặt khám</span>
-                    <span className='text-[14px]'>Phương thức thanh toán</span>
-                    <span className='text-[14px]'>Hoàn thành đặt khám</span>
-                </div>
-                <div className='h-[0px] relative mt-[10px] w-full bg-[#999] flex justify-between items-center'>
-                    <div style={{ backgroundColor: bookingData.currentStep >= 2 ? 'blue' : '#999', transition: '0.5s' }} className='h-[3px] left-0 absolute rounded-full w-[50%] z-20'></div>
-                    <div style={{ backgroundColor: bookingData.currentStep >= 3 ? 'blue' : '#999', transition: '0.5s' }} className='h-[3px] left-[50%] absolute rounded-full w-[50%]'></div>
-                    <div style={{ backgroundColor: bookingData.currentStep >= 1 ? 'blue' : '#999', transition: '0.5s' }} className='h-[12px] rounded-full w-[12px] z-30'></div>
-                    <div style={{ backgroundColor: bookingData.currentStep >= 2 ? 'blue' : '#999', transition: '0.5s' }} className='h-[12px] rounded-full w-[12px] z-30'></div>
-                    <div style={{ backgroundColor: bookingData.currentStep === 3 ? 'blue' : '#999', transition: '0.5s' }} className='h-[12px] rounded-full w-[12px] z-30'></div>
-                </div>
-            </div>
+        <>
             <div className='border-[#cfcfcf] px-4 py-2 w-[70%] gap-3 rounded-md border-[1px] mt-7 flex items-center'>
                 {userData.user ? (
                     <>
@@ -84,12 +72,44 @@ const BookingInformation = () => {
             </div>
             <div className='border-[#cfcfcf] px-5 relative py-3 w-[70%] gap-2 mt-1 rounded-md border-[1px] flex flex-col items-start'>
                 <span className='text-[14px] font-medium'>Mô tả triệu chứng của bạn</span>
-                <textarea value={bookingData.booking?.note} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, note: e.target.value })} placeholder='Mô tả triệu chứng' className='w-full bg-[#ffffff00] focus:outline-none text-[14px] h-[140px]'></textarea>
+                <textarea value={bookingData.booking?.note} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, note: e.target.value })} placeholder='Mô tả triệu chứng' className='w-full bg-[#ffffff00] focus:outline-none text-[14px] h-[50px]'></textarea>
             </div>
-            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
-                <button onClick={() => bookingHandler.setCurrentStep(2)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[blue] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
+            <div className='border-[#cfcfcf] px-5 relative py-3 w-[70%] gap-2 mt-1 rounded-md border-[1px] flex flex-col items-start'>
+                <span className='text-[14px] font-medium'>Chỉ số (nếu có)</span>
+                <div className='w-full grid grid-cols-3 gap-3'>
+                    <div className='flex gap-2 text-[14px]'>
+                        <span className=''>Cân nặng (kg):</span>
+                        <input value={bookingData.booking?.weight} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, weight: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
+                    </div>
+                    <div className='flex gap-2 text-[14px]'>
+                        <span className=''>Huyết áp (mmHg):</span>
+                        <input value={bookingData.booking?.bloodPressure} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, bloodPressure: e.target.value })} className='w-[60px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
+                    </div>
+                    <div className='flex gap-2 text-[14px]'>
+                        <span className=''>Nhịp tim (bpm):</span>
+                        <input value={bookingData.booking?.healthRate} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, healthRate: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
+                    </div>
+                </div>
             </div>
-        </div>
+            <div className='border-[#cfcfcf] px-5 relative py-3 w-[70%] gap-2 mt-1 rounded-md border-[1px] flex flex-col items-start'>
+                <span className='text-[14px] font-medium'>Đính kèm hình ảnh mô tả (nếu có)</span>
+                <div className='h-[50px] w-full flex items-center gap-3'>
+                    <input ref={inputRef} onChange={e => handleChangeImage(e)} type='file' className='hidden' />
+                    <button style={{ backgroundImage: 'url(/picker-image.png)' }} onClick={() => inputRef.current.click()} className='w-[40px] h-[40px] bg-cover rounded-xl'></button>
+                    <div className='flex items-center gap-3'>
+                        {bookingData.images.map((image, index) => (
+                            <div key={index} className='relative'>
+                                <img key={index} src={image.url} width={'50px'} />
+                                <button onClick={() => bookingHandler.setImages(prev => prev.filter(item => item.url !== image.url))} className='bx bx-x absolute top-[-5px] text-[#999] right-[-10px]'></button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex items-center'>
+                <button onClick={() => bookingHandler.setCurrentStep(2)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
+            </div>
+        </>
     )
 }
 

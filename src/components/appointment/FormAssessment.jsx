@@ -1,3 +1,5 @@
+'use client'
+import { appointmentContext } from "@/context/AppointmentContext";
 import { authContext } from "@/context/AuthContext";
 import {
   globalContext,
@@ -17,43 +19,33 @@ const FormAssessment = ({ visible, hidden }) => {
   const [comments, setComments] = useState("");
   const [name, setName] = useState("");
   const router = useRouter();
+  const { appointmentHandler, appointmentData } = useContext(appointmentContext);
   useEffect(() => {
-    const storedData = localStorage.getItem(
-      "appointmentData"
-    );
-    const appointmentData = storedData
-      ? JSON.parse(storedData)
-      : {};
-    api({
-      type: TypeHTTP.GET,
-      path: `/doctorRecords/get-one/${appointmentData.doctor_record_id}`,
-      sendToken: false,
-    }).then((res) => {
-      setName(res.doctor.fullName);
-    });
-  }, []);
+    if (appointmentData.currentAppointment) {
+      api({
+        type: TypeHTTP.GET,
+        path: `/doctorRecords/get-one/${appointmentData.currentAppointment?.doctor_record_id}`,
+        sendToken: false,
+      }).then((res) => {
+        setName(res.doctor.fullName);
+      });
+    }
+  }, [appointmentData.currentAppointment]);
   const handleRating = (rate) => {
     setRating(rate);
   };
   const submit = () => {
-    const storedData = localStorage.getItem(
-      "appointmentData"
-    );
-    // Parse dữ liệu từ JSON string thành object
-    const appointmentData = storedData
-      ? JSON.parse(storedData)
-      : {};
     const data = {
-      doctor_record_id: appointmentData.doctor_record_id,
+      doctor_record_id: appointmentData.currentAppointment?.doctor_record_id,
       assessment_list: {
         star: rating,
         content: comments,
-        fullName: appointmentData.patient.fullName,
-        image: appointmentData.patient.image,
+        fullName: appointmentData.currentAppointment?.patient.fullName,
+        image: appointmentData.currentAppointment?.patient.image,
         date: {
-          day: appointmentData.appointment_date.day,
-          month: appointmentData.appointment_date.month,
-          year: appointmentData.appointment_date.year,
+          day: appointmentData.currentAppointment?.appointment_date?.day,
+          month: appointmentData.currentAppointment?.appointment_date?.month,
+          year: appointmentData.currentAppointment?.appointment_date?.year,
         },
       },
     };
@@ -71,6 +63,9 @@ const FormAssessment = ({ visible, hidden }) => {
       window.location.href = "/cuoc-hen-cua-ban";
     });
   };
+
+  console.log(appointmentData.currentAppointment)
+
   return (
     <div
       style={{
@@ -100,11 +95,10 @@ const FormAssessment = ({ visible, hidden }) => {
                 <svg
                   key={star}
                   onClick={() => handleRating(star)}
-                  className={`w-12 h-12 cursor-pointer ${
-                    star <= rating
-                      ? "text-yellow-500"
-                      : "text-gray-300"
-                  }`}
+                  className={`w-12 h-12 cursor-pointer ${star <= rating
+                    ? "text-yellow-500"
+                    : "text-gray-300"
+                    }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"

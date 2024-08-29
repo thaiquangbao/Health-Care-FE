@@ -6,8 +6,6 @@ import {
   notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
-import { api, TypeHTTP } from "@/utils/api";
-import { set } from "date-fns";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, {
@@ -17,6 +15,7 @@ import React, {
   useState,
 } from "react";
 import Logo from "./logo";
+import NotificationApp from "./NotificationApp";
 
 const Navbar = () => {
   const { globalHandler } = useContext(globalContext);
@@ -27,16 +26,13 @@ const Navbar = () => {
     useState(false);
   const { authData, authHandler } = useContext(authContext);
   const { userData, userHandler } = useContext(userContext);
+  const [visibleHealth, setVisibleHealth] = useState(false)
   const [user, setUser] = useState();
-  const [notifications, setNotifications] = useState([]);
-  const [visibleUserInfo, setVisibleUserInfo] =
-    useState(false);
+  const [visibleHealthDoctor, setVisibleHealthDoctor] = useState(false)
   const { appointmentHandler } = useContext(
     appointmentContext
   );
-  const [lengthNotice, setLengthNotice] = useState(0);
   const router = useRouter();
-  const [visibleCount, setVisibleCount] = useState(2);
 
   const handleScroll = () => {
     setScrollY(globalThis.window.scrollY);
@@ -45,17 +41,6 @@ const Navbar = () => {
   useEffect(() => {
     if (userData.user) {
       setUser(userData.user);
-      api({
-        path: `/notices/get-by-user/${userData.user?._id}`,
-        type: TypeHTTP.GET,
-        sendToken: false,
-      }).then((res) => {
-        setNotifications(res);
-
-        setLengthNotice(
-          res.filter((item) => item.seen === false).length
-        );
-      });
     }
   }, [userData.user]);
 
@@ -79,7 +64,7 @@ const Navbar = () => {
       globalThis.localStorage.removeItem("accessToken");
       globalThis.localStorage.removeItem("refreshToken");
       globalHandler.notify(
-        notifyType.SUCCESS,
+        notifyType.LOADING,
         "Đăng Xuất Thành Công"
       );
       userHandler.setUser(undefined);
@@ -100,157 +85,42 @@ const Navbar = () => {
       setHeight(navbarRef.current.offsetHeight);
     }
   }, [navbarRef.current]);
-  // action click
-  const clickNotice = (item) => {
-    if (
-      item.category === "APPOINTMENT" &&
-      userData.user?.role === "USER"
-    ) {
-      api({
-        type: TypeHTTP.POST,
-        body: { _id: item._id, seen: true },
-        sendToken: false,
-        path: "/notices/update",
-      }).then((res) => {
-        router.push("/cuoc-hen-cua-ban");
-      });
-    } else {
-      api({
-        type: TypeHTTP.POST,
-        body: { _id: item._id, seen: true },
-        sendToken: false,
-        path: "/notices/update",
-      }).then((res) => {
-        router.push("cuoc-hen");
-      });
-    }
-  };
-  // chỉ xuất hiện 2 thông báo
-  const showMoreNotifications = () => {
-    setVisibleCount(notifications.length);
-  };
+
   return (
     <>
+      {/* <div className="w-screen h-[0px] bg-[red]"></div> */}
       <div
         ref={navbarRef}
         style={{
-          background: scrollY !== 0 ? "white" : "0",
+          background: scrollY !== 0 ? "white" : "white",
           transition: "0.5s",
         }}
-        className="flex shadow-sm items-center justify-between w-screen fixed top-0 left-0 py-1 px-[2rem] z-[3] text-[14px] font-medium"
+        className="flex shadow-sm h-[60px] items-center justify-between w-screen fixed top-0 left-0 py-1 px-[2rem] z-[3] text-[14px] font-medium"
       >
         <Logo />
         <div className="flex gap-2 text-[14px] items-center">
-          {userData.user &&
-          userData.user?.processSignup === 3 ? (
-            <div className="flex items-center gap-3 relative">
-              <div className="relative">
-                {/* Icon chuông để mở danh sách thông báo */}
-                <div
-                  className="mr-5 rounded-full cursor-pointer"
-                  onClick={() =>
-                    setVisibleUserInfo(!visibleUserInfo)
-                  }
-                >
-                  <span className="fa fa-bell text-gray-600 text-[20px]"></span>
-                  {/* Số thông báo màu đỏ */}
-                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-2 -translate-y-1/2">
-                    {lengthNotice}
-                  </span>
-                </div>
+          {(userData.user && userData.user?.processSignup === 3) && (
+            <NotificationApp />
+          )}
 
-                {/* Dropdown danh sách thông báo */}
-                <div
-                  className={`z-50 w-[300px] shadow-lg overflow-hidden absolute top-[30px] right-0 bg-white rounded-md transition-all duration-500 ${
-                    visibleUserInfo
-                      ? "h-auto opacity-100"
-                      : "h-0 opacity-0"
-                  }`}
-                >
-                  <div className="w-full flex flex-col">
-                    {/* Tiêu đề */}
-                    <div className="px-4 py-2 border-b">
-                      <span className="font-bold text-sm">
-                        Danh sách thông báo
-                      </span>
-                    </div>
-
-                    {/* Thông báo */}
-                    <div className="max-h-64 overflow-y-auto">
-                      {notifications
-                        .slice()
-                        .reverse()
-                        .slice(0, visibleCount)
-                        .map((item, index) => (
-                          <div
-                            key={index}
-                            className="px-4 py-2 border-b flex items-start cursor-pointer hover:bg-gray-200"
-                            onClick={() =>
-                              clickNotice(item)
-                            }
-                          >
-                            <div>
-                              <span className="font-bold text-blue-600">
-                                {item.title}
-                              </span>{" "}
-                              <br />
-                              <span className="text-sm text-gray-500">
-                                {item.content}
-                              </span>
-                              <div className="text-[13px] text-gray-500">
-                                Ngày: {item.date.day}/
-                                {item.date.month}/
-                                {item.date.year}
-                              </div>
-                            </div>
-                            {item.seen === false && (
-                              <span className="w-2 h-2 bg-green-500 rounded-full mt-1 right-4 transform"></span>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                    {/* Xem tất cả */}
-                    {visibleCount <
-                      notifications.length && (
-                      <div
-                        className="px-4 py-2 border-t text-center cursor-pointer hover:bg-gray-200"
-                        onClick={showMoreNotifications}
-                      >
-                        <span className="text-blue-600">
-                          Xem tất cả
-                        </span>
-                      </div>
-                    )}
-                  </div>
+          {/* {(userData.user && userData.user?.processSignup === 3) ?
+            <div className='flex items-center gap-3 relative'>
+              <span>{user?.fullName}</span>
+              <div onClick={() => setVisibleUserInfo(!visibleUserInfo)} style={{ backgroundImage: `url(${user?.image})`, backgroundSize: 'cover' }} className='rounded-full cursor-pointer h-[40px] w-[40px]' />
+              <div style={visibleUserInfo ? { height: 'auto', transition: '0.5s' } : { height: 0, transition: '0.5s' }} className='z-50 w-[200px] shadow-lg overflow-hidden absolute right-0 top-[45px] bg-[white] rounded-md '>
+                <div className='w-full flex py-1 flex-col px-2 items-start'>
+                  <button className='w-full my-[5px]'><Link href={'/ho-so'}>Thông Tin Cá Nhân</Link></button>
+                  <button onClick={() => handleSignOut()} className='w-full my-[5px]'>Đăng Xuất</button>
                 </div>
               </div>
-
-              <Link href={"/bac-si-noi-bat"}>
-                <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-                  Đặt Lịch Khám
-                </button>
-              </Link>
-              <Link href={"/bac-si-noi-bat"}>
-                <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-                  Tải Ứng Dụng Ngay
-                </button>
-              </Link>
             </div>
-          ) : (
+            :
             <>
-              <Link href={"/bac-si-noi-bat"}>
-                <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-                  Đặt Lịch Khám
-                </button>
-              </Link>
-              <Link href={"/bac-si-noi-bat"}>
-                <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-                  Tải Ứng Dụng Ngay
-                </button>
-              </Link>
+              <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Đặt Lịch Khám</button></Link>
+              <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Tải Ứng Dụng Ngay</button></Link>
             </>
-          )}
-          {/* <Link href={"/bac-si-noi-bat"}>
+          } */}
+          <Link href={"/bac-si-noi-bat"}>
             <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
               Đặt Lịch Khám
             </button>
@@ -259,7 +129,7 @@ const Navbar = () => {
             <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
               Tải Ứng Dụng Ngay
             </button>
-          </Link> */}
+          </Link>
           <button
             onClick={() =>
               authHandler.setVisibleMore(
@@ -283,7 +153,7 @@ const Navbar = () => {
         >
           <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
         </button>
-        <ul className="flex flex-col gap-7 py-[2rem] px-[1.5rem]">
+        <ul className="flex flex-col pt-[0.25rem] px-[1.5rem]">
           {userData.user?.role !== "DOCTOR" ? (
             <>
               {userData.user && (
@@ -293,7 +163,7 @@ const Navbar = () => {
                     authHandler.hiddenWrapper();
                     authHandler.setVisibleMore(false);
                   }}
-                  className="flex gap-3 cursor-pointer items-center"
+                  className="flex gap-3 cursor-pointer mt-5 items-center"
                 >
                   <img
                     src={userData.user.image}
@@ -313,7 +183,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="bx text-[#567fea] bxs-home text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -326,7 +196,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="bx text-[#ed4c4c] bxs-plus-circle text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -339,7 +209,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="text-[#4ce1c6] text-[23px] fa-solid fa-user-doctor"></i>
                 <span className="text-[16px] font-medium">
@@ -350,30 +220,71 @@ const Navbar = () => {
                 <>
                   <li
                     onClick={() => {
-                      router.push("/ho-so-suc-khoe");
-                      authHandler.hiddenWrapper();
-                      authHandler.setVisibleMore(false);
+                      setVisibleHealth(!visibleHealth)
                     }}
-                    className="flex gap-3 cursor-pointer"
+                    className="flex justify-between cursor-pointer mt-5"
                   >
-                    <i className="text-[#ff3359] fa-solid fa-clipboard text-[23px]"></i>
-                    <span className="text-[16px] font-medium">
-                      Hồ Sơ Sức Khỏe
-                    </span>
+                    <div className="flex gap-3">
+                      <i className="text-[#ff3359] fa-solid fa-notes-medical text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Sức Khỏe
+                      </span>
+                    </div>
                   </li>
-                  <li
-                    onClick={() => {
-                      router.push("/cuoc-hen-cua-ban");
-                      authHandler.hiddenWrapper();
-                      authHandler.setVisibleMore(false);
-                    }}
-                    className="flex gap-3 cursor-pointer"
-                  >
-                    <i className="text-[#ebd400] fa-solid fa-calendar-check text-[23px]"></i>
-                    <span className="text-[16px] font-medium">
-                      Cuộc Hẹn Của Bạn
-                    </span>
-                  </li>
+                  <div style={{ height: visibleHealth ? '180px' : '0', transition: '0.5s' }} className="flex flex-col gap-5 pl-[1.5rem] overflow-hidden">
+                    <li
+                      onClick={() => {
+                        router.push("/ho-so-suc-khoe");
+                        authHandler.hiddenWrapper();
+                        authHandler.setVisibleMore(false);
+                      }}
+                      className="flex gap-3 cursor-pointer mt-5"
+                    >
+                      <i className="text-[#ff3359] fa-solid fa-clipboard text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Hồ Sơ Sức Khỏe
+                      </span>
+                    </li>
+                    <li
+                      onClick={() => {
+                        router.push("/theo-doi-suc-khoe");
+                        authHandler.hiddenWrapper();
+                        authHandler.setVisibleMore(false);
+                      }}
+                      className="flex gap-3 cursor-pointer"
+                    >
+                      <i className="text-[#ff3359] fa-solid fa-heart-pulse text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Theo Dõi Sức Khỏe
+                      </span>
+                    </li>
+                    <li
+                      onClick={() => {
+                        router.push("/cuoc-hen-cua-ban");
+                        authHandler.hiddenWrapper();
+                        authHandler.setVisibleMore(false);
+                      }}
+                      className="flex gap-3 cursor-pointer"
+                    >
+                      <i className="text-[#ebd400] fa-solid fa-calendar-check text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Cuộc Hẹn Của Bạn
+                      </span>
+                    </li>
+                    <li
+                      onClick={() => {
+                        router.push("/cuoc-tro-chuyen");
+                        authHandler.hiddenWrapper();
+                        authHandler.setVisibleMore(false);
+                      }}
+                      className="flex gap-3 cursor-pointer"
+                    >
+                      <i className="text-[#567fea] fa-solid fa-comments text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Trò Chuyện
+                      </span>
+                    </li>
+                  </div>
                 </>
               )}
               <li
@@ -382,7 +293,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="text-[#fb3997] fa-solid fa-comment text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -395,7 +306,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="text-[#ff7834] fa-solid fa-blog text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -411,7 +322,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer items-center"
+                className="flex gap-3 cursor-pointer mt-5 items-center"
               >
                 <img
                   src={userData.user.image}
@@ -426,15 +337,54 @@ const Navbar = () => {
               </li>
               <li
                 onClick={() => {
-                  router.push("/cac-cuoc-hen");
+                  router.push("/");
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="bx text-[#567fea] bxs-home text-[23px]"></i>
                 <span className="text-[16px] font-medium">
-                  Các Cuộc Hẹn
+                  Trang Chủ
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/phieu-dang-ky");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="bx text-[#567fea] bxs-home text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Phiếu Đăng Ký
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/benh-nhan-cua-toi");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="text-[#ff3359] fa-solid fa-heart-pulse text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Bệnh Nhân Của Tôi
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/cuoc-tro-chuyen");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="text-[#ff3359] fa-solid fa-heart-pulse text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Cuộc Trò Chuyện
                 </span>
               </li>
               <li
@@ -443,7 +393,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="bx text-[#ed4c4c] bxs-plus-circle text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -456,7 +406,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="text-[#fb3997] fa-solid fa-comment text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -469,7 +419,7 @@ const Navbar = () => {
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
-                className="flex gap-3 cursor-pointer"
+                className="flex gap-3 cursor-pointer mt-5"
               >
                 <i className="text-[#ff7834] fa-solid fa-blog text-[23px]"></i>
                 <span className="text-[16px] font-medium">
@@ -479,7 +429,7 @@ const Navbar = () => {
             </>
           )}
           {!userData.user && (
-            <li className="flex items-center gap-3 justify-center">
+            <li className="flex items-center gap-3 mt-5 justify-center">
               <button
                 onClick={() => {
                   authHandler.setVisibleMore(false);
@@ -511,7 +461,7 @@ const Navbar = () => {
                 authHandler.hiddenWrapper();
                 authHandler.setVisibleMore(false);
               }}
-              className="flex gap-3 cursor-pointer"
+              className="flex gap-3 cursor-pointer mt-5"
             >
               <i className="text-[#000000] fa-solid fa-right-from-bracket text-[23px]"></i>
               <span className="text-[16px] font-medium">
@@ -521,10 +471,6 @@ const Navbar = () => {
           )}
         </ul>
       </div>
-      <div
-        style={{ height: height + "px" }}
-        className="w-full z-0"
-      ></div>
     </>
   );
 };

@@ -49,7 +49,10 @@ const HoSoBacSi = () => {
     }).then((res) => {
       appointmentHandler.setDoctorRecord(res);
       setDoctorRecord(res);
-    });
+    })
+      .catch(error => {
+        router.push('/bac-si-noi-bat')
+      })
   }, [id]);
 
   useEffect(() => {
@@ -107,11 +110,10 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${
-              star <= rating
-                ? "text-yellow-500"
-                : "text-gray-300"
-            }`}
+            className={`w-6 h-6 ${star <= rating
+              ? "text-yellow-500"
+              : "text-gray-300"
+              }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +126,7 @@ const HoSoBacSi = () => {
   };
   return (
     <>
-      <div className="w-full min-h-screen flex flex-col pb-[2rem]">
+      <div className="w-full pt-[60px] min-h-screen flex flex-col pb-[2rem]">
         <Navbar />
         <div className="flex z-0 overflow-hidden relative text-[30px] pt-[7rem] font-bold text-[#171717] w-[100%] items-center">
           <img
@@ -149,30 +151,59 @@ const HoSoBacSi = () => {
             <p className="text-[17px] font-medium text-[#404040]">
               {doctorRecord?.description}
             </p>
-            <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between">
+
+
+            <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
               <div className="flex flex-col text-[#333333]">
                 <span className="text-[14px]">
                   GIÁ TƯ VẤN TRỰC TUYẾN
                 </span>
-                <span className="text-[19px]">
+                <span className="text-[17px]">
                   {formatMoney(priceList?.price)}
                 </span>
               </div>
               <div>
                 <button
-                  onClick={() =>
-                    appointmentHandler.showFormBooking()
+                  onClick={() => {
+                    appointmentHandler.setPriceList(priceList);
+                    appointmentHandler.showFormBooking('Tư Vấn Trực Tuyến')
+                  }
                   }
                   style={{
                     background:
                       "linear-gradient(to right, #11998e, #38ef7d)",
                   }}
-                  className="text-[16px] scale-[0.95] rounded-3xl px-6 py-3 cursor-pointer text-[white]"
+                  className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
                 >
                   Đặt Khám Ngay
                 </button>
               </div>
             </div>
+
+
+
+            <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+              <div className="flex flex-col text-[#333333]">
+                <span className="text-[14px]">
+                  SỐ ĐIỆN THOẠI
+                </span>
+                <span className="text-[17px]">
+                  {doctorRecord?.doctor?.phone}
+                </span>
+              </div>
+              <div>
+                <button
+                  onClick={() => appointmentHandler.showFormSignUpHealth(doctorRecord)}
+                  style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
+                  className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
+                >
+                  Đăng Ký Theo Dõi Sức Khỏe
+                </button>
+              </div>
+            </div>
+
+
+
           </div>
         </div>
         <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">
@@ -315,7 +346,7 @@ const HoSoBacSi = () => {
           </div>
         </div>
         {/* Bài viết của bác sĩ*/}
-        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start">
+        <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] mt-[1rem] text-[#171717] w-[100%] items-start">
           <span className="font-bold">
             Bài viết của bác sĩ ({forums.length})
           </span>
@@ -328,7 +359,7 @@ const HoSoBacSi = () => {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-4 p-4 cursor-pointer rounded w-[100%] mt-4 "
+                  className="flex items-start gap-4 p-4 cursor-pointer rounded w-[100%] mt-4 "
                   onClick={() => clickItem(forum._id)}
                 >
                   <div
@@ -343,13 +374,13 @@ const HoSoBacSi = () => {
                         {forum.title}
                       </h3>
                       <div
-                        className="text-[18px] text-gray-700"
+                        className="text-[14px] font-normal text-[#636363]"
                         dangerouslySetInnerHTML={{
                           __html: firstParagraph,
                         }}
                       />
                     </div>
-                    <div className="flex items-center text-gray-500 text-[14px]">
+                    <div className="flex items-center text-gray-500 text-[13px] mt-1">
                       <span>
                         {forum.date.day}/{forum.date.month}/
                         {forum.date.year}
@@ -369,7 +400,7 @@ const HoSoBacSi = () => {
             })}
           </div>
         </div>
-      </div>
+      </div >
       <Footer />
     </>
   );

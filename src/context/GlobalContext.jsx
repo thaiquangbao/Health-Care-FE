@@ -87,11 +87,13 @@ const GlobalProvider = ({ children }) => {
       "zero",
       "cong-dong",
       "chi-tiet-cau-hoi",
+      "cuoc-tro-chuyen"
     ];
     const doctorPathname = [
-      "/cuoc-hen",
+      "/phieu-dang-ky",
       "/ho-so-ca-nhan-bac-si",
       "/them-cam-nang",
+      "/benh-nhan-cua-toi",
     ];
     if (pathname !== "/") {
       if (userData.user) {
@@ -114,7 +116,7 @@ const GlobalProvider = ({ children }) => {
               }
             } else {
               if (!doctorPathname.includes(pathname)) {
-                router.push("/cuoc-hen");
+                router.push("/phieu-dang-ky");
               }
             }
           }

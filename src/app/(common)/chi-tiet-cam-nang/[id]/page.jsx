@@ -90,7 +90,7 @@ const CamNangDetail = () => {
                   style={{
                     cursor:
                       userData?.user &&
-                      !likes?.includes(userData?.user?._id)
+                        !likes?.includes(userData?.user?._id)
                         ? "pointer"
                         : "default",
                   }}

@@ -53,7 +53,7 @@ const BenhLy = () => {
     }
 
     return (
-        <div className="w-full min-h-screen flex flex-col pb-[3%] background-public">
+        <div className="w-full min-h-screen flex flex-col pb-[3%] pt-[60px] background-public">
             <Navbar />
             <div className="flex z-0 relative text-[30px] font-bold text-[#171717] w-[100%] items-center">
                 <img className='opacity-0' src='https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/general-care-bg.svg' width={'100%'} />

@@ -41,19 +41,19 @@ const FormDetailAppointment = ({
       style={
         data
           ? {
-              height: "80%",
-              width: "80%",
-              transition: "0.3s",
-              backgroundSize: "cover",
-              overflow: "hidden",
-              backgroundImage: "url(/bg.png)",
-            }
+            height: "90%",
+            width: "80%",
+            transition: "0.3s",
+            backgroundSize: "cover",
+            overflow: "hidden",
+            backgroundImage: "url(/bg.png)",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="z-[41] w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -65,11 +65,10 @@ const FormDetailAppointment = ({
               className="w-[60px] aspect-square shadow-xl rounded-full"
               style={{
                 backgroundSize: "cover",
-                backgroundImage: `url(${
-                  userData.user?.role !== "DOCTOR"
-                    ? doctorRecord?.doctor?.image
-                    : data?.patient?.image
-                })`,
+                backgroundImage: `url(${userData.user?.role !== "DOCTOR"
+                  ? doctorRecord?.doctor?.image
+                  : data?.patient?.image
+                  })`,
               }}
             ></div>
             <div className="flex flex-col">
@@ -100,18 +99,18 @@ const FormDetailAppointment = ({
                     data?.status === "ACCEPTED"
                       ? "green"
                       : data?.status === "QUEUE"
-                      ? "#999"
-                      : "red",
+                        ? "#999"
+                        : "red",
                 }}
                 className="font-medium text-[14px]"
               >
                 {data?.status === "ACCEPTED"
                   ? calculateDetailedTimeDifference(
-                      convertDateToDayMonthYearTimeObject(
-                        new Date().toISOString()
-                      ),
-                      data?.appointment_date
-                    )
+                    convertDateToDayMonthYearTimeObject(
+                      new Date().toISOString()
+                    ),
+                    data?.appointment_date
+                  )
                   : data?.status_message}
               </span>
               <div className="relative flex h-4 w-4">
@@ -121,8 +120,8 @@ const FormDetailAppointment = ({
                       data?.status === "ACCEPTED"
                         ? "green"
                         : data?.status === "QUEUE"
-                        ? "#999"
-                        : "red",
+                          ? "#999"
+                          : "red",
                   }}
                   className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
@@ -132,8 +131,8 @@ const FormDetailAppointment = ({
                       data?.status === "ACCEPTED"
                         ? "green"
                         : data?.status === "QUEUE"
-                        ? "#999"
-                        : "red",
+                          ? "#999"
+                          : "red",
                   }}
                   className="relative inline-flex h-4 w-4 rounded-full"
                 ></span>
@@ -141,7 +140,7 @@ const FormDetailAppointment = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-between px-4 text-[14px] mt-2">
+        <div className="flex justify-between items-center px-4 text-[14px] mt-2">
           <span>
             <span className="font-semibold">
               Triệu Chứng:
@@ -153,12 +152,10 @@ const FormDetailAppointment = ({
               onClick={() => {
                 hidden();
                 router.push(
-                  `http://127.0.0.1:3000/zero/${
-                    data?._id
-                  }/${
-                    userData.user?.role === "USER"
-                      ? "patient"
-                      : "doctor"
+                  `http://127.0.0.1:3000/zero/${data?._id
+                  }/${userData.user?.role === "USER"
+                    ? "patient"
+                    : "doctor"
                   }`
                 );
               }}
@@ -168,6 +165,22 @@ const FormDetailAppointment = ({
             </button>
           )}
         </div>
+        <div className="flex px-4 text-[14px] gap-[2rem]">
+          <span className="font-semibold">Thông Số: </span>
+          <div className="flex items-center gap-5 text-[13px]">
+            <span>Cân Nặng: {data?.weight}</span>
+            <span>Nhịp Tim: {data?.healthRate}</span>
+            <span>Huyết Áp: {data?.bloodPressure}</span>
+          </div>
+        </div>
+        <div className="flex px-4 text-[14px] gap-[2rem]">
+          <span className="font-semibold">Hình Ảnh: </span>
+          <div className="flex items-center gap-5 text-[13px]">
+            {data?.images?.map((image, index) => (
+              <div key={index} style={{ backgroundImage: `url(${image})` }} className="h-[50px] bg-cover aspect-video" />
+            ))}
+          </div>
+        </div>
         <div className="flex justify-between items-center px-4">
           <span className="text-[14px] font-bold">
             Lịch Sử khám
@@ -176,7 +189,7 @@ const FormDetailAppointment = ({
         <div className="w-full max-h-[500px] px-4 overflow-y-auto relative">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
+              <tr className="text-center">
                 <th
                   scope="col"
                   className="w-[5%] py-3 text-center"
@@ -217,32 +230,32 @@ const FormDetailAppointment = ({
                     //   )
                     // }
                     key={index}
-                    className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                    className="odd:bg-white cursor-pointer hover:bg-[#eee] text-[13px] text-center transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 "
                   >
                     <td
                       scope="row"
-                      className="px-6 py-4 text-center font-medium"
+                      className="px-6 py-2 text-center font-medium"
                     >
                       {index + 1}
                     </td>
-                    <td className="py-4 text-[15px]">
+                    <td className="py-2">
                       BS. {medicalRecord.doctor?.fullName}
                     </td>
-                    <td className="py-4">
+                    <td className="py-2">
                       {medicalRecord.symptoms}
                     </td>
-                    <td className="py-4">
+                    <td className="py-2">
                       {medicalRecord.diagnosisDisease}
                     </td>
-                    <td className="py-4">
+                    <td className="py-2">
                       Ngày: {medicalRecord.date?.day}-{" "}
                       {medicalRecord.date?.month}-{" "}
                       {medicalRecord.date?.year}
                     </td>
-                    <td className="py-4">
+                    <td className="py-2">
                       {medicalRecord.note}
                     </td>
-                    <td className="py-4">
+                    <td className="py-2">
                       {medicalRecord.medical
                         .map(
                           (medicine) => medicine.medicalName
@@ -254,16 +267,16 @@ const FormDetailAppointment = ({
               )}
               {/* {sortByAppointmentDate(appointments).map((appointment, index) => (
                                 <tr onClick={() => appointmentHandler.showFormDetailAppointment(appointment)} key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td scope="row" className="px-6 py-4 text-center font-medium">
+                                    <td scope="row" className="px-6 py-2 text-center font-medium">
                                         {index + 1}
                                     </td>
-                                    <td className="py-4 text-[15px]">
+                                    <td className="py-2 text-[15px]">
                                         BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]?.doctor?.fullName}
                                     </td>
-                                    <td style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
+                                    <td style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-2">
                                         {appointment.status_message}
                                     </td>
-                                    <td className="py-4">
+                                    <td className="py-2">
                                         {`${convertDateToDayMonthYearVietNam(appointment.appointment_date)}`}
                                     </td>
                                     <td className="py-4">

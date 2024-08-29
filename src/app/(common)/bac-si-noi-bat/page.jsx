@@ -17,7 +17,7 @@ const BacSiNoiBat = () => {
             })
     }, [])
     return (
-        <div className="w-full min-h-screen flex flex-col pt-[1%] px-[5%] background-public">
+        <div className="w-full pt-[60px] min-h-screen flex flex-col px-[5%] background-public">
             <Navbar />
             <div className='w-full mt-[3rem] flex flex-col'>
                 <div className='w-full flex flex-col items-center gap-1'>

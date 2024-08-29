@@ -18,11 +18,10 @@ const FormRecordPatient = ({
   visible,
   setVisibleStatusUpdated,
 }) => {
-  const { appointmentData } = useContext(
+  const { appointmentData, appointmentHandler } = useContext(
     appointmentContext
   );
   const [doctorRecord, setDoctorRecord] = useState();
-  const [medicalRecord, setMedicalRecord] = useState();
   const [medical, setMedical] = useState([]);
   const [nameMedical, setNameMedical] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -32,6 +31,14 @@ const FormRecordPatient = ({
   const [diagnosisDisease, setDiagnosisDisease] =
     useState("");
   const [note, setNote] = useState("");
+
+
+  useEffect(() => {
+    if (appointmentData.medicalRecord) {
+      setMedical(appointmentData.medicalRecord.medical)
+    }
+  }, [appointmentData.medicalRecord])
+
   useEffect(() => {
     if (appointmentData.currentAppointment) {
       api({
@@ -55,9 +62,12 @@ const FormRecordPatient = ({
                 appointmentData.currentAppointment?.patient
                   ?._id,
               doctor: record.doctor._id,
-              appointment:
-                appointmentData.currentAppointment?._id,
+              appointment: appointmentData.currentAppointment?._id,
               medical: [],
+              healthRate: appointmentData.currentAppointment?.healthRate,
+              weight: appointmentData.currentAppointment?.weight,
+              bloodPressure: appointmentData.currentAppointment?.bloodPressure,
+              images: appointmentData.currentAppointment?.images
             };
             api({
               path: "/medicalRecords/save",
@@ -65,7 +75,7 @@ const FormRecordPatient = ({
               sendToken: false,
               body,
             }).then((medicalRecord) =>
-              setMedicalRecord(medicalRecord)
+              appointmentHandler.setMedicalRecord(medicalRecord)
             );
           } else {
             api({
@@ -73,7 +83,7 @@ const FormRecordPatient = ({
               type: TypeHTTP.GET,
               sendToken: false,
             }).then((medicalRecords) => {
-              setMedicalRecord(
+              appointmentHandler.setMedicalRecord(
                 medicalRecords.filter(
                   (item) =>
                     item.appointment ===
@@ -110,22 +120,22 @@ const FormRecordPatient = ({
       type: TypeHTTP.POST,
       sendToken: false,
       body: {
-        _id: medicalRecord._id,
-        diagnosisDisease: diagnosisDisease,
-        note: note,
+        _id: appointmentData.medicalRecord._id,
+        diagnosisDisease: appointmentData.medicalRecord.diagnosisDisease,
+        note: appointmentData.medicalRecord?.note,
         medical: medical,
         symptoms: appointmentData.currentAppointment?.note,
         date: appointmentData.currentAppointment
           ?.appointment_date,
+
       },
     }).then((res) => {
+      appointmentHandler.setMedicalRecord(res)
       globalHandler.notify(
         notifyType.SUCCESS,
-        "Cập nhật hồ sơ sức khỏe của bệnh nhân thành công !!!"
+        "Cập nhật hồ sơ sức khỏe thành công !!!"
       );
       setVisibleStatusUpdated(true);
-      localStorage.removeItem("appointmentData");
-      // muon tat di
       hidden();
     });
   };
@@ -134,19 +144,19 @@ const FormRecordPatient = ({
       style={
         visible
           ? {
-              height: "90%",
-              width: "65%",
-              transition: "0.3s",
-              backgroundSize: "cover",
-              overflow: "hidden",
-              backgroundImage: "url(/bg.png)",
-            }
+            height: "90%",
+            width: "65%",
+            transition: "0.3s",
+            backgroundSize: "cover",
+            overflow: "auto",
+            backgroundImage: "url(/bg.png)",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="z-[41] shadow-xl w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -161,15 +171,15 @@ const FormRecordPatient = ({
                 className="w-[60px] aspect-square rounded-full shadow-xl"
                 style={{
                   backgroundSize: "cover",
-                  backgroundImage: `url(${medicalRecord?.patient?.image})`,
+                  backgroundImage: `url(${appointmentData.medicalRecord?.patient?.image})`,
                 }}
               ></div>
               <div className="flex flex-col">
                 <span className="font-medium">
-                  {medicalRecord?.patient?.fullName}
+                  {appointmentData.medicalRecord?.patient?.fullName}
                 </span>
                 <span className="text-[14px]">
-                  {medicalRecord?.patient?.phone}
+                  {appointmentData.medicalRecord?.patient?.phone}
                 </span>
               </div>
             </div>
@@ -191,20 +201,50 @@ const FormRecordPatient = ({
             </span>{" "}
             {appointmentData.currentAppointment?.note}
           </span>
+          <div className="grid grid-cols-3 h-auto gap-x-[0.5rem] mt-[0.5rem]">
+            <div>
+              <span className="font-semibold px-2 mt-[1rem]">
+                Huyết áp:
+              </span>
+              {appointmentData.medicalRecord?.bloodPressure === "" ? 'Không' : appointmentData.medicalRecord?.bloodPressure + ' mmHg'}
+            </div>
+            <div>
+              <span className="font-semibold px-2 mt-[1rem]">
+                Nhịp tim:
+              </span>
+              {appointmentData.medicalRecord?.healthRate === 0 ? 'Không' : appointmentData.medicalRecord?.healthRate + ' bpm'}
+            </div>
+            <div>
+              <span className="font-semibold px-2 mt-[1rem]">
+                Cân nặng:
+              </span>
+              {appointmentData.medicalRecord?.weight === 0 ? 'Không' : appointmentData.medicalRecord?.weight + ' kg'}
+            </div>
+          </div>
+          <div className="flex px-2 py-2 gap-[2rem]">
+            <span className="font-semibold mt-[1rem]">
+              Hình ảnh mô tả:
+            </span>
+            <div className="flex items-center gap-5 text-[13px]">
+              {appointmentData.medicalRecord?.images?.map((image, index) => (
+                <div key={index} style={{ backgroundImage: `url(${image})` }} className="h-[50px] bg-cover aspect-video" />
+              ))}
+            </div>
+          </div>
           <div className="grid grid-cols-2 h-auto gap-x-[0.5rem] mt-[1rem] px-2">
             <textarea
               placeholder="Chuẩn đoán bệnh"
               className="text-[14px] w-[100%] h-[90px] py-2 bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
               onChange={(e) =>
-                setDiagnosisDisease(e.target.value)
+                appointmentHandler.setMedicalRecord({ ...appointmentData.medicalRecord, diagnosisDisease: e.target.value })
               }
-              value={diagnosisDisease}
+              value={appointmentData.medicalRecord?.diagnosisDisease}
             ></textarea>
             <textarea
               placeholder="Lời dặn bác sĩ"
               className="text-[14px] w-[100%] h-[90px] py-2 bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              onChange={(e) => setNote(e.target.value)}
-              value={note}
+              onChange={(e) => appointmentHandler.setMedicalRecord({ ...appointmentData.medicalRecord, note: e.target.value })}
+              value={appointmentData.medicalRecord?.note}
             ></textarea>
           </div>
           <span className="font-semibold px-2 mt-[1rem]">
@@ -319,11 +359,12 @@ const FormRecordPatient = ({
             </button>
           </div>
         </div>
-      )}
+      )
+      }
       <button onClick={() => hidden()}>
         <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
       </button>
-    </section>
+    </section >
   );
 };
 

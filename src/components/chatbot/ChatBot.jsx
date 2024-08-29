@@ -13,7 +13,7 @@ const ChatBot = () => {
 
     useEffect(() => {
         if (userData.user && userData.user?.processSignup === 3) {
-            setMessages([{ sender: 'chatbot', message: `Chào ${userData.user.fullName.split(' ')[userData.user.fullName.split(' ').length - 1]}, tôi có thể giúp gì cho bạn trong lĩnh vực y khoa?` }])
+            setMessages([{ sender: 'chatbot', message: `Chào ${userData.user.fullName.split(' ')[userData.user.fullName.split(' ').length - 1]}, tôi có thể giúp gì cho bạn trong lĩnh vực y khoa về bệnh tim mạch?` }])
         }
     }, [userData.user])
 
@@ -55,7 +55,7 @@ const ChatBot = () => {
 
     if (userData.user) {
         return (
-            <div style={open ? { backgroundColor: '#FFFDFD', width: '400px', height: '500px', transition: '0.5s', } : { width: 'auto', height: 'auto', transition: '0.5s' }} className='form rounded-md overflow-hidden fixed z-[45] bottom-3 right-3'>
+            <div style={open ? { backgroundColor: '#FFFDFD', width: '400px', height: '500px', transition: '0.5s', } : { width: '60px', height: '60px', transition: '0.5s' }} className='form rounded-md overflow-hidden fixed z-[45] bottom-3 right-3'>
                 {open ?
                     <div className='flex flex-col'>
                         <button onClick={() => setOpen(false)}><i className='bx bx-x text-[27px] text-[#999] absolute top-1 right-1'></i></button>

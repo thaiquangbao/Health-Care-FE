@@ -29,7 +29,7 @@ const CacDichVu = () => {
 
     return (
         <>
-            <div className="w-full min-h-screen pb-4 flex flex-col background-public">
+            <div className="w-full min-h-screen pt-[60px] pb-4 flex flex-col background-public">
                 <Navbar />
                 <div className="flex relative flex-col gap-2 text-[30px] font-bold text-[#171717] w-[100%] items-center">
                     <img src='/banner.png' width={'100%'} />

@@ -68,9 +68,8 @@ const HoSo = () => {
     api({
       type: TypeHTTP.POST,
       body: { ...user },
-      path: `/auth/update/${
-        userData.user?.role === "DOCTOR" ? "doctor" : "User"
-      }`,
+      path: `/auth/update/${userData.user?.role === "DOCTOR" ? "doctor" : "User"
+        }`,
       sendToken: true,
     })
       .then((res) => {
@@ -100,11 +99,10 @@ const HoSo = () => {
     api({
       sendToken: true,
       type: TypeHTTP.POST,
-      path: `/auth/update-information/${
-        userData.user?.role === "DOCTOR"
-          ? "doctors"
-          : "patients"
-      }`,
+      path: `/auth/update-information/${userData.user?.role === "DOCTOR"
+        ? "doctors"
+        : "patients"
+        }`,
       body: formData,
     })
       .then((data) => {
@@ -125,7 +123,7 @@ const HoSo = () => {
   };
 
   return (
-    <div className="w-full flex flex-col pt-[1%] pb-[3%] px-[5%] background-public">
+    <div className="w-full pt-[60px] flex flex-col pb-[3%] px-[5%] background-public">
       <Navbar />
       <input
         accept=".png, .jpg, .jpeg"

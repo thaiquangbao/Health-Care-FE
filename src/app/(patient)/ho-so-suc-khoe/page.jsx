@@ -1,4 +1,5 @@
 "use client";
+import DetailMedicalRecord from "@/components/ho-so-suc-khoe/DetailMedicalRecord";
 import FormRecord from "@/components/ho-so-suc-khoe/FormRecord";
 import Navbar from "@/components/navbar";
 import { authContext } from "@/context/AuthContext";
@@ -30,11 +31,8 @@ const HoSoSucKhoe = () => {
       }).then((res) => setMedicalRecords(res));
     }
   }, [userData.user]);
-  const showMedicalRecord = (id) => {
-    router.push(`/ho-so-suc-khoe-detail/${id}`);
-  };
   return (
-    <div className="w-full flex flex-col pt-[1%] pb-[3%] px-[5%] background-public">
+    <div className="w-full flex flex-col min-h-screen pt-[60px] pb-[3%] px-[5%] background-public">
       <Navbar />
       <div className="flex flex-col gap-4 mt-2">
         <div className="items-center flex justify-center">
@@ -42,87 +40,77 @@ const HoSoSucKhoe = () => {
             Hồ sơ sức khỏe
           </span>
         </div>
-        <div className="w-full relative flex justify-around items-end">
-          <div className="flex">
-            <div className="aspect-square w-[12%] relative flex items-center justify-start">
-              <div
-                style={{
-                  backgroundImage: `url(${userData.user?.image})`,
-                  backgroundSize: "cover",
-                }}
-                className="rounded-full w-[800px] aspect-square"
-              />
+        <div className="w-full relative flex justify-start items-center gap-[2rem]">
+          <div className="aspect-square w-[12%] relative flex items-center justify-start">
+            <div
+              style={{
+                backgroundImage: `url(${userData.user?.image})`,
+                backgroundSize: "cover",
+              }}
+              className="rounded-full w-[800px] aspect-square"
+            />
+          </div>
+          <div className="grid grid-cols-3 w-[80%] h-[10%] gap-3">
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Họ và tên:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.fullName}
+              </span>
             </div>
-            <div className="flex flex-col justify-center ml-[2rem] translate-y-[15px]">
-              <div>
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Họ và tên:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.fullName}
-                </span>
-              </div>
-              <div className="mt-9">
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Giới tính:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.sex === true
-                    ? "Nam"
-                    : "Nữ"}{" "}
-                </span>
-              </div>
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Giới tính:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.sex === true
+                  ? "Nam"
+                  : "Nữ"}{" "}
+              </span>
             </div>
-            <div className="flex flex-col justify-center ml-[2rem] translate-y-[15px]">
-              <div>
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Email:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.email}
-                </span>
-              </div>
-              <div className="mt-9">
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Địa chỉ:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.address}
-                </span>
-              </div>
+
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Email:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.email}
+              </span>
             </div>
-            <div className="flex flex-col justify-center ml-[2rem] translate-y-[15px]">
-              <div>
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Số điện thoại:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.phone}
-                </span>
-              </div>
-              <div className="mt-9">
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Ngày sinh:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.dateOfBirth}
-                </span>
-              </div>
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Địa chỉ:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.address}
+              </span>
             </div>
-            <div className="flex flex-col justify-center ml-[2rem] translate-y-[15px]">
-              <div>
-                <span className="text-[16px] text-[#5f5f5f]">
-                  Căn cước công dân:{"   "}
-                </span>
-                <span className="text-[18px] font-semibold">
-                  {userData.user?.cccd}
-                </span>
-              </div>
-              <div>
-                <span className="text-[16px] text-[#5f5f5f]"></span>
-                <span className="text-[20px] font-semibold"></span>
-              </div>
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Số điện thoại:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.phone}
+              </span>
             </div>
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Ngày sinh:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.dateOfBirth}
+              </span>
+            </div>
+            <div className="w-full flex justify-start">
+              <span className="text-[15px] text-[#5f5f5f]">
+                Căn cước công dân:{"   "}
+              </span>
+              <span className="text-[16px] font-semibold">
+                {userData.user?.cccd}
+              </span>
+            </div>
+
           </div>
         </div>
         <div className="w-full max-h-[500px] mt-4 overflow-y-auto relative">
@@ -158,7 +146,7 @@ const HoSoSucKhoe = () => {
                 <tr
                   key={index}
                   onClick={() =>
-                    showMedicalRecord(medical._id)
+                    authHandler.showDetailMedicalRecord(medical)
                   }
                   className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 cursor-pointer even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
@@ -194,6 +182,7 @@ const HoSoSucKhoe = () => {
           )}
         </div>
       </div>
+      <DetailMedicalRecord medicalRecord={authData.detailMedicalRecord} />
     </div>
   );
 };
