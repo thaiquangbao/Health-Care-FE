@@ -1,12 +1,12 @@
 import { userContext } from '@/context/UserContext'
 import React, { useContext } from 'react'
 
-const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoom }) => {
+const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoom, height }) => {
 
     const { userData } = useContext(userContext)
 
     return (
-        <div ref={wrapperRef} className='w-full flex flex-col h-[68%] overflow-auto px-[2rem] py-[1rem]'>
+        <div ref={wrapperRef} style={{ height }} className='w-full flex flex-col overflow-auto px-[2rem] py-[1rem]'>
             <div ref={messageRef} className='flex flex-col w-full gap-2'>
                 {messages && messages.map((message, index) => {
                     if (message.author === 'SYSTEM') {
@@ -15,7 +15,7 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                         </div>
                     } else {
                         if (message.author === currentUser) {
-                            if (message.type !== 'REPORT') {
+                            if (message.type === 'TEXT') {
                                 return <div key={index} className='w-full flex items-center justify-end'>
                                     <div className='flex gap-2 items-start'>
                                         <div className='flex flex-col w-full px-3 py-1 bg-[#eee] rounded-2xl'>
@@ -24,7 +24,18 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                                         </div>
                                     </div>
                                 </div>
-                            } else {
+                            }
+                            else if (message.type === 'IMAGE') {
+                                return <div key={index} className='w-full flex items-center justify-end'>
+                                    <div className='flex gap-2 items-center'>
+                                        <div className='flex flex-col w-auto px-3 py-1 bg-[#eee] rounded-2xl'>
+                                            <img src={message.content} width={'400px'} className='rounded-lg my-2' />
+                                            <span className='text-[12px]'>{message.time.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else {
                                 return <div key={index} className='w-full flex items-center justify-end'>
                                     <div className='flex gap-2 items-start'>
                                         <div className='flex flex-col w-full px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
@@ -49,21 +60,33 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                                 </div>
                             }
                         } else {
-                            if (message.type !== 'REPORT') {
+                            if (message.type === 'TEXT') {
                                 return <div key={index} className='w-full flex items-center justify-start'>
-                                    <div className='flex gap-2 items-start'>
-                                        <img src={currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image} className='w-[40px] h-[40px] rounded-full' />
-                                        <div className='flex flex-col w-full px-3 py-1 bg-[#eee] rounded-2xl'>
+                                    <div className='flex w-[60%] items-center gap-2'>
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div className='flex flex-col w-auto px-3 py-1 bg-[#eee] rounded-2xl'>
                                             <span className='text-[15px]'>{message.content}</span>
                                             <span className='text-[12px]'>{message.time.time}</span>
                                         </div>
                                     </div>
                                 </div>
-                            } else {
+                            }
+                            else if (message.type === 'IMAGE') {
                                 return <div key={index} className='w-full flex items-center justify-start'>
-                                    <div className='flex gap-2 items-start'>
-                                        <img src={currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image} className='w-[40px] h-[40px] rounded-full' />
-                                        <div className='flex flex-col w-full px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
+                                    <div className='flex items-center gap-2'>
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div className='flex flex-col w-auto px-3 py-1 bg-[#eee] rounded-2xl'>
+                                            <img src={message.content} width={'400px'} className='rounded-lg my-2' />
+                                            <span className='text-[12px]'>{message.time.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else {
+                                return <div key={index} className='w-full flex items-center justify-start'>
+                                    <div className='flex w-[60%] items-center gap-2'>
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div className='flex flex-col w-auto px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
                                             <div className='text-[15px] flex gap-4'>
                                                 <div className='flex items-center gap-1'>
                                                     <img src='/heartbeat.png' width={'30px'} />

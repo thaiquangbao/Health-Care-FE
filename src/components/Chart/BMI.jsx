@@ -1,33 +1,39 @@
+import { api, TypeHTTP } from "@/utils/api";
+import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function BMI() {
+export default function BMI({ logBook, setLogBook }) {
   const chartRef = useRef(null);
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [bmiData, setBmiData] = useState([]);
+  const [times, setTimes] = useState([])
+  const [bmis, setBmis] = useState([])
+  const [heights, setHeights] = useState([])
+  const [weights, setWeights] = useState([])
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-
+      const times = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const bmis = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => (item.vitalSign.weight / ((item.vitalSign.height / 100) * (item.vitalSign.height / 100))).toFixed(2)).slice(-10)
+      const heights = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => item.vitalSign.height).slice(-10)
+      const weights = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => item.vitalSign.weight).slice(-10)
+      setTimes(times)
+      setBmis(bmis)
+      setHeights(heights)
+      setWeights(weights)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: [
-            "21-03-2023",
-            "27-03-2023",
-            "28-03-2023",
-            "04-04-2023",
-            "13-04-2023",
-          ],
+          labels: times,
           datasets: [
             {
               label: "BMI Trung bình",
-              data: [20, 30, 25, 35, 38],
+              data: bmis,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0)",
               borderWidth: 2,
@@ -67,7 +73,23 @@ export default function BMI() {
 
       chartRef.current.chart = newChart;
     }
-  }, [bmiData]);
+  }, [logBook]);
+
+  const handleSubmit = () => {
+    const body = {
+      _id: logBook._id,
+      disMonItem: {
+        vitalSign: {
+          height, weight
+        },
+        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+      }
+    }
+    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-bmi', body })
+      .then(res => {
+        setLogBook(res)
+      })
+  }
 
   return (
     <div className="flex flex-col">
@@ -82,9 +104,11 @@ export default function BMI() {
               name="height"
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Chiều cao (cm)..."
+              value={height}
+              onChange={e => setHeight(e.target.value)}
             />
           </div>
-          <div className="my-2"></div>
+          <div className="my-1"></div>
           <div className="w-[40%]">
             <input
               type="text"
@@ -92,12 +116,15 @@ export default function BMI() {
               name="weight"
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Cân nặng (kg)..."
+              value={weight}
+              onChange={e => setWeight(e.target.value)}
             />
           </div>
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
             }}
+            onClick={() => handleSubmit()}
             className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[40%]"
           >
             Xác nhận
@@ -129,15 +156,17 @@ export default function BMI() {
             </tr>
           </thead>
           <tbody className="w-full bg-black font-medium">
-            <tr className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-              <td scope="row" className="px-6 py-2 text-center font-medium">
-                1
-              </td>
-              <td className="py-2">165</td>
-              <td className="py-2">60</td>
-              <td className="py-2">78.5</td>
-              <td className="py-2">06-09-2024 lúc 11:04</td>
-            </tr>
+            {times.map((time, index) => (
+              <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <td scope="row" className="px-6 py-2 text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="py-2">{heights[index]}cm</td>
+                <td className="py-2">{weights[index]}kg</td>
+                <td className="py-2">{bmis[index]}</td>
+                <td className="py-2">{time}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

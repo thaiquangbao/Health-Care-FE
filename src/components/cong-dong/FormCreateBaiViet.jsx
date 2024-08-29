@@ -56,7 +56,7 @@ const FormCreateBaiViet = ({ visible, hidden }) => {
                 body: formData,
                 sendToken: false,
             });
-            return res; // Giả sử API trả về URL của hình ảnh trong thuộc tính `url`
+            return res;
         } catch (error) {
             console.error("Error uploading image:", error);
             throw error;

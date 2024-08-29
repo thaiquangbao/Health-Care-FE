@@ -1,43 +1,40 @@
+import { api, TypeHTTP } from "@/utils/api";
+import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function HeartRate() {
+export default function HeartRate({ logBook, setLogBook }) {
   const chartRef = useRef(null);
+  const [times, setTimes] = useState([])
+  const [heartRates, setHeartRates] = useState([])
+  const [value, setValue] = useState('')
+  const [note, setNote] = useState('')
+  const [symptom, setSymptom] = useState('')
+  const [dsTrieuChung, setDsTrieuChung] = useState([])
+  const [dsNote, setDsNote] = useState([])
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-
+      const times = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const heartRates = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.vitalSign.heartRate).slice(-10)
+      const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.symptom).slice(-10)
+      const dsNote = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.note).slice(-10)
+      setTimes(times)
+      setHeartRates(heartRates)
+      setDsTrieuChung(dsTrieuChung)
+      setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: [
-            "21-03-2023",
-            "27-03-2023",
-            "28-03-2023",
-            "04-04-2023",
-            "13-04-2023",
-            "19-04-2023",
-            "22-04-2023",
-            "30-04-2023",
-            "04-05-2023",
-            "06-05-2023",
-            "09-05-2023",
-            "11-05-2023",
-            "12-05-2023",
-            "13-05-2023",
-            "14-05-2023",
-          ],
+          labels: times,
           datasets: [
             {
               label: "Heart Rate (Nhịp tim)",
-              data: [
-                70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135,
-                140,
-              ],
+              data: heartRates,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0)",
               borderWidth: 2,
@@ -77,7 +74,25 @@ export default function HeartRate() {
 
       chartRef.current.chart = newChart;
     }
-  }, []);
+  }, [logBook]);
+
+  const handleSubmit = () => {
+    const body = {
+      _id: logBook._id,
+      disMonItem: {
+        symptom,
+        vitalSign: {
+          heartRate: value
+        },
+        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        note
+      }
+    }
+    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-health-rate', body })
+      .then(res => {
+        setLogBook(res)
+      })
+  }
 
   return (
     <div className="flex flex-col">
@@ -92,12 +107,39 @@ export default function HeartRate() {
               name="heartRate"
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Nhịp tim..."
+              value={value}
+              onChange={e => setValue(e.target.value)}
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Triệu chứng"
+              value={symptom}
+              onChange={e => setSymptom(e.target.value)}
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Ghi chú"
+              value={note}
+              onChange={e => setNote(e.target.value)}
             />
           </div>
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
             }}
+            onClick={() => handleSubmit()}
             className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[40%]"
           >
             Xác nhận
@@ -120,16 +162,26 @@ export default function HeartRate() {
               <th scope="col" className="w-[20%] py-2">
                 Ngày tạo
               </th>
+              <th scope="col" className="w-[20%] py-2">
+                Triệu chứng
+              </th>
+              <th scope="col" className="w-[20%] py-2">
+                Ghi chú
+              </th>
             </tr>
           </thead>
           <tbody className="w-full bg-black font-medium">
-            <tr className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-              <td scope="row" className="px-6 py-2 text-center font-medium">
-                1
-              </td>
-              <td className="py-2">75</td>
-              <td className="py-2">06-09-2024 lúc 11:04</td>
-            </tr>
+            {times.reverse().map((time, index) => (
+              <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <td scope="row" className="px-6 py-2 text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="py-2">{heartRates[index]}</td>
+                <td className="py-2">{time}</td>
+                <td className="py-2">{dsTrieuChung[index]}</td>
+                <td className="py-2">{dsNote[index]}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -20,6 +20,7 @@ const CuocTroChuyen = () => {
     const { healthHandler } = useContext(healthContext)
     const messageRef = useRef()
     const wrapperRef = useRef()
+    const imageRef = useRef()
 
     useEffect(() => {
         if (userData.user && userData.user?.role === 'USER') {
@@ -104,7 +105,33 @@ const CuocTroChuyen = () => {
             })
     }
 
+    const handleSendImage = (e) => {
+        const file = e.target.files[0];
+        const formData = new FormData()
+        formData.append("files", file);
+        api({ type: TypeHTTP.POST, path: "/upload-image/save", body: formData, sendToken: false })
+            .then(res => {
+                const newMessage = {
+                    content: res[0],
+                    time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                    author: userData.user?.role === 'USER' ? 'PATIENT' : 'DOCTOR',
+                    type: 'IMAGE'
+                }
+                const newMessages = JSON.parse(JSON.stringify(messages))
+                newMessages.messages.push(newMessage)
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
 
+
+                const room = JSON.parse(JSON.stringify(currentRoom))
+                room.lastMessage = {
+                    author: userData.user.role === 'USER' ? 'PATIENT' : 'DOCTOR',
+                    content: 'Đã gửi 1 hình ảnh',
+                    time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                }
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+                setMessage('')
+            })
+    }
 
     return (
         <div className="w-full overflow-hidden h-screen pt-[60px] flex flex-col">
@@ -142,6 +169,7 @@ const CuocTroChuyen = () => {
                 <div className='w-[77%] h-full relative flex flex-col items-center'>
                     {currentRoom && (
                         <>
+                            <input type='file' onChange={e => handleSendImage(e)} ref={imageRef} className='hidden' />
                             <div className='flex w-[100%] h-[11%] px-[1.5rem] justify-between border-b-[1px] border-[#dedede]'>
                                 <div className='flex gap-3 items-center'>
                                     <div style={{ backgroundImage: `url(${userData.user?.role === 'USER' ? currentRoom.doctor.image : currentRoom.patient.image})` }} className='w-[40px] h-[40px] rounded-full bg-cover bg-start' />
@@ -164,11 +192,11 @@ const CuocTroChuyen = () => {
                                     </button>
                                 </div>
                             </div>
-                            <MessageArea currentRoom={currentRoom} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
+                            <MessageArea height={'80%'} currentRoom={currentRoom} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
                             <div className='relative h-[8%] w-[70%]'>
                                 <input onChange={e => setMessage(e.target.value)} value={message} placeholder='Nhập tin nhắn' className='h-full w-full border-[1px] pl-[1.5rem] pr-[5rem] text-[#353535] focus:outline-0 border-[#d6d6d6] rounded-3xl' />
                                 <div className='w-[90px] text-[25px] text-[#999] gap-1 h-full absolute right-0 flex items-center justify-center top-[50%] translate-y-[-50%]'>
-                                    <i className='bx bx-image cursor-pointer' ></i>
+                                    <i onClick={() => imageRef.current.click()} className='bx bx-image cursor-pointer' ></i>
                                     <i onClick={() => handleSentMessage()} className='bx bx-send cursor-pointer' ></i>
                                 </div>
                             </div>

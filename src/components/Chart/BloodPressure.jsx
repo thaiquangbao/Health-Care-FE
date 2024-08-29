@@ -1,43 +1,44 @@
+import { api, TypeHTTP } from "@/utils/api";
+import { adjustDisplayTime, convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function BloodPressure() {
+export default function BloodPressure({ logBook, setLogBook }) {
   const chartRef = useRef(null);
+  const [tamThu, setTamThu] = useState('')
+  const [tamTruong, setTamTruong] = useState('')
+  const [note, setNote] = useState('')
+  const [symptom, setSymptom] = useState('')
+  const [dsTamTruong, setDsTamTruong] = useState([])
+  const [dsTamThu, setDsTamThu] = useState([])
+  const [dsTimes, setDsTimes] = useState([])
+  const [dsTrieuChung, setDsTrieuChung] = useState([])
+  const [dsNote, setDsNote] = useState([])
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-
+      const times = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const dsTamTruong = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[1]).slice(-10)
+      const dsTamThu = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[0]).slice(-10)
+      const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.symptom).slice(-10)
+      const dsNote = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.note).slice(-10)
+      setDsTimes(times)
+      setDsTamTruong(dsTamTruong)
+      setDsTamThu(dsTamThu)
+      setDsTrieuChung(dsTrieuChung)
+      setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: [
-            "21-03-2023",
-            "27-03-2023",
-            "28-03-2023",
-            "04-04-2023",
-            "13-04-2023",
-            "19-04-2023",
-            "22-04-2023",
-            "30-04-2023",
-            "04-05-2023",
-            "06-05-2023",
-            "09-05-2023",
-            "11-05-2023",
-            "12-05-2023",
-            "13-05-2023",
-            "14-05-2023",
-          ],
+          labels: times,
           datasets: [
             {
               label: "Diastolic (Tâm trương)",
-              data: [
-                90, 120, 85, 95, 100, 140, 145, 105, 100, 120, 85, 110, 75, 85,
-                100,
-              ],
+              data: dsTamTruong,
               borderColor: "#007bff",
               backgroundColor: "rgba(0, 123, 255, 0)",
               borderWidth: 2,
@@ -45,10 +46,7 @@ export default function BloodPressure() {
             },
             {
               label: "Systolic (Tâm thu)",
-              data: [
-                110, 100, 95, 110, 105, 100, 120, 110, 120, 130, 125, 110, 120,
-                125, 130,
-              ],
+              data: dsTamThu,
               borderColor: "#28a745",
               backgroundColor: "rgba(40, 167, 69, 0)",
               borderWidth: 2,
@@ -88,7 +86,25 @@ export default function BloodPressure() {
 
       chartRef.current.chart = newChart;
     }
-  }, []);
+  }, [logBook]);
+
+  const handleSubmit = () => {
+    const body = {
+      _id: logBook._id,
+      disMonItem: {
+        symptom,
+        vitalSign: {
+          bloodPressure: tamThu + '/' + tamTruong
+        },
+        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        note
+      }
+    }
+    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
+      .then(res => {
+        setLogBook(res)
+      })
+  }
 
   return (
     <div className="flex flex-col">
@@ -101,24 +117,53 @@ export default function BloodPressure() {
               type="text"
               id="title"
               name="title"
+              value={tamThu}
+              onChange={e => setTamThu(e.target.value)}
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Tâm thu..."
             />
           </div>
-          <div className="my-2"></div>
+          <div className="my-1"></div>
           <div className="w-[40%]">
             <input
               type="text"
               id="title"
               name="title"
+              value={tamTruong}
+              onChange={e => setTamTruong(e.target.value)}
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Tâm trương..."
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={symptom}
+              onChange={e => setSymptom(e.target.value)}
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Triệu chứng"
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Ghi chú"
             />
           </div>
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
             }}
+            onClick={() => handleSubmit()}
             className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[40%]"
           >
             Xác nhận
@@ -142,19 +187,29 @@ export default function BloodPressure() {
                 Tâm thu
               </th>
               <th scope="col" className="w-[20%] py-2">
-                Ngày tạo
+                Thời gian
+              </th>
+              <th scope="col" className="w-[20%] py-2">
+                Triệu chứng
+              </th>
+              <th scope="col" className="w-[20%] py-2">
+                Ghi chú
               </th>
             </tr>
           </thead>
           <tbody className=" w-[full] bg-black font-medium">
-            <tr className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-              <td scope="row" className="px-6 py-2 text-center font-medium">
-                1
-              </td>
-              <td className="py-2">110</td>
-              <td className="py-2">90</td>
-              <td className="py-2">06-09-2024 lúc 11:04</td>
-            </tr>
+            {dsTimes.map((time, index) => (
+              <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <td scope="row" className="px-6 py-2 text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="py-2">{dsTamTruong[index]}</td>
+                <td className="py-2">{dsTamThu[index]}</td>
+                <td className="py-2">{time}</td>
+                <td className="py-2">{dsTrieuChung[index]}</td>
+                <td className="py-2">{dsNote[index]}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

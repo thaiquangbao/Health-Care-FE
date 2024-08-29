@@ -12,6 +12,7 @@ import {
 } from "react";
 import { appointmentContext } from "./AppointmentContext";
 import { userContext } from "./UserContext";
+import MessageIcon from "@/components/shortcut/MessageIcon";
 export const globalContext = createContext();
 
 export const notifyType = {
@@ -32,7 +33,6 @@ const GlobalProvider = ({ children }) => {
   const router = useRouter();
   const { appointmentHandler, appointmentData } =
     useContext(appointmentContext);
-
   const notify = (status, message) =>
     setInfo({ status, message });
 

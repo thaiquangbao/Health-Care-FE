@@ -409,3 +409,11 @@ export function isALargerThanBPlus60Minutes(A, B) {
     // Kiểm tra nếu A lớn hơn B cộng thêm 60 phút
     return minutesA > minutesBPlus60;
 }
+
+export const adjustDisplayTime = (time) => {
+    const timeNumber = Number(time)
+    if (timeNumber < 10) {
+        return `0${timeNumber}`
+    }
+    return timeNumber
+}

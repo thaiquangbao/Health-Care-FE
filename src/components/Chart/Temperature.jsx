@@ -1,32 +1,40 @@
+import { api, TypeHTTP } from "@/utils/api";
+import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Temperature() {
+export default function Temperature({ logBook, setLogBook }) {
   const chartRef = useRef(null);
   const [temperature, setTemperature] = useState("");
-  const [temperatureData, setTemperatureData] = useState([]);
+  const [times, setTimes] = useState([])
+  const [temperatures, setTemperatures] = useState([])
+  const [note, setNote] = useState('')
+  const [symptom, setSymptom] = useState('')
+  const [dsTrieuChung, setDsTrieuChung] = useState([])
+  const [dsNote, setDsNote] = useState([])
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-
+      const times = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const temperatures = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => item.vitalSign.temperature).slice(-10)
+      const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => item.symptom).slice(-10)
+      const dsNote = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => item.note).slice(-10)
+      setTimes(times)
+      setTemperatures(temperatures)
+      setDsTrieuChung(dsTrieuChung)
+      setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: [
-            "21-03-2023",
-            "27-03-2023",
-            "28-03-2023",
-            "04-04-2023",
-            "13-04-2023",
-          ],
+          labels: times,
           datasets: [
             {
               label: "Nhiệt độ cơ thể",
-              data: [20, 30, 25, 35, 38],
+              data: temperatures,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0.2)",
               borderWidth: 2,
@@ -66,7 +74,25 @@ export default function Temperature() {
 
       chartRef.current.chart = newChart;
     }
-  }, [temperatureData]);
+  }, [logBook]);
+
+  const handleSubmit = () => {
+    const body = {
+      _id: logBook._id,
+      disMonItem: {
+        symptom,
+        vitalSign: {
+          temperature
+        },
+        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        note
+      }
+    }
+    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-temperature', body })
+      .then(res => {
+        setLogBook(res)
+      })
+  }
 
   return (
     <div className="flex flex-col">
@@ -81,12 +107,39 @@ export default function Temperature() {
               name="temperature"
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Nhiệt độ (°C)..."
+              value={temperature}
+              onChange={e => setTemperature(e.target.value)}
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Triệu chứng"
+              value={symptom}
+              onChange={e => setSymptom(e.target.value)}
+            />
+          </div>
+          <div className="my-1"></div>
+          <div className="w-[40%]">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Ghi chú"
+              value={note}
+              onChange={e => setNote(e.target.value)}
             />
           </div>
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
             }}
+            onClick={() => handleSubmit()}
             className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[40%]"
           >
             Xác nhận
@@ -109,16 +162,26 @@ export default function Temperature() {
               <th scope="col" className="w-[20%] py-2">
                 Ngày tạo
               </th>
+              <th scope="col" className="w-[20%] py-2">
+                Triệu chứng
+              </th>
+              <th scope="col" className="w-[20%] py-2">
+                Ghi Chú
+              </th>
             </tr>
           </thead>
           <tbody className="w-full bg-black font-medium">
-            <tr className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-              <td scope="row" className="px-6 py-2 text-center font-medium">
-                1
-              </td>
-              <td className="py-2">30</td>
-              <td className="py-2">06-09-2024 lúc 11:04</td>
-            </tr>
+            {times.map((time, index) => (
+              <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                <td scope="row" className="px-6 py-2 text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="py-2">{temperatures[index]}</td>
+                <td className="py-2">{time}</td>
+                <td className="py-2">{dsTrieuChung[index]}</td>
+                <td className="py-2">{dsNote[index]}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

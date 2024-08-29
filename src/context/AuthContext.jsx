@@ -32,6 +32,7 @@ const AuthContext = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { userData } = useContext(userContext);
   const [detailMedicalRecord, setDetailMedicalRecord] = useState()
+  const [currentRoom, setCurrentRoom] = useState()
 
   const handleWaitTime = () => {
     if (!globalThis.localStorage.getItem("refreshToken"))
@@ -133,7 +134,8 @@ const AuthContext = ({ children }) => {
     setVisibleFormCreateBaiViet(false);
     setVisibleMedicalRecord(false);
     hiddenAssessment();
-    hiddenDetailMedicalRecord()
+    hiddenDetailMedicalRecord();
+    setCurrentRoom()
   };
 
   const data = {
@@ -141,7 +143,8 @@ const AuthContext = ({ children }) => {
     visibleFormCreateBaiViet,
     visibleMedicalRecord,
     visibleAssessment,
-    detailMedicalRecord
+    detailMedicalRecord,
+    currentRoom
   };
 
   const handler = {
@@ -159,7 +162,8 @@ const AuthContext = ({ children }) => {
     showAssessment,
     hiddenAssessment,
     showDetailMedicalRecord,
-    hiddenDetailMedicalRecord
+    hiddenDetailMedicalRecord,
+    setCurrentRoom
   };
 
   return (
@@ -178,7 +182,7 @@ const AuthContext = ({ children }) => {
         />
         {children}
       </div>
-      {/* {loading && <Loading />} */}
+      {loading && <Loading />}
     </authContext.Provider>
   );
 };
