@@ -5,7 +5,7 @@ import UpdateHealthForm from "@/components/theo-doi-suc-khoe/patient/UpdateHealt
 import MessageIcon from "@/components/shortcut/MessageIcon";
 import { userContext } from "./UserContext";
 import { api, TypeHTTP } from "@/utils/api";
-import LineChart from "@/components/chart/LineChart";
+import LineChart from "@/components/Chart/LineChart";
 import { usePathname } from "next/navigation";
 
 export const healthContext = createContext()
