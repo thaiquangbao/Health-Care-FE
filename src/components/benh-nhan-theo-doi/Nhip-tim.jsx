@@ -2,22 +2,28 @@ import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
-export default function NhipTim() {
+export default function NhipTim({ logBook }) {
     const chartRef = useRef(null);
+    const [times, setTimes] = useState([])
+    const [heartRates, setHeartRates] = useState([])
     useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
+      const times = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const heartRates = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.vitalSign.heartRate).slice(-10)
+      setTimes(times)
+      setHeartRates(heartRates)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: ["20-02-2024", "21-02-2024", "22-02-2024", "23-02-2024", "24-02-2024", "25-02-2024", "26-02-2024", "27-02-2024", "28-02-2024", "01-03-2024"],
+          labels: times,
           datasets: [
             {
               label: "Heart Rate (Nhịp tim)",
-              data: [70, 71, 72, 73, 74, 75, 76, 77, 78, 79],
+              data: heartRates,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0)",
               borderWidth: 2,

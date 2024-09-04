@@ -1,9 +1,11 @@
 import { appointmentContext } from '@/context/AppointmentContext';
 import { userContext } from '@/context/UserContext';
-import { api, TypeHTTP } from '@/utils/api';
+import { api, baseURL, TypeHTTP } from '@/utils/api'
+import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
-
+import { io } from 'socket.io-client'
+const socket = io.connect(baseURL)
 const NotificationApp = () => {
 
     const { userData } = useContext(userContext)
@@ -28,7 +30,15 @@ const NotificationApp = () => {
             });
         }
     }, [userData.user]);
-
+    useEffect(() => {
+        socket.on(`notice.create${userData.user?._id}`, (notice) => {
+            setNotifications([...notifications,notice]);
+            setLengthNotice(lengthNotice + 1);
+        })
+        return () => {
+            socket.off(`notice.create${userData.user?._id}`);
+        }
+    },[lengthNotice, notifications, userData.user?._id])
     const clickNotice = (item) => {
         if (
             item.category === "APPOINTMENT" &&

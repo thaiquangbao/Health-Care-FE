@@ -10,9 +10,10 @@ import HuyetAp from "@/components/benh-nhan-theo-doi/Huyet-ap";
 import BMI from "@/components/benh-nhan-theo-doi/Chi-so-BMI";
 import NhipTim from "@/components/benh-nhan-theo-doi/Nhip-tim";
 import { api, TypeHTTP } from "@/utils/api";
-const FormBenhNhanDetail = () => {
-    return (
-         <section
+const FormBenhNhanDetail = ({ logBook }) => {
+
+  return (
+    <section
       style={{
             height: "90%",
             width: "95%",
@@ -34,31 +35,31 @@ const FormBenhNhanDetail = () => {
                   <label className="text-[#5e5e5e] text-[15px]">
                     Họ và tên:
                   </label>
-                  <span className="px-2 py-2">Thái Quang Bảo</span>
+                  <span className="px-2 py-2">{logBook.patient?.fullName}</span>
                 </div>
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
                     Ngày sinh:
                   </label>
-                  <span className="px-2 py-2">10-04-2002</span>
+                  <span className="px-2 py-2">{logBook.patient?.dateOfBirth}</span>
                 </div>
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
                     Giới tính:
                   </label>
-                  <span className="px-2 py-2">Nam</span>
+                  <span className="px-2 py-2">{logBook.patient?.sex === true ? "Nam" : "Nữ" }</span>
                 </div>
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
                     Số điện thoại:
                   </label>
-                  <span className="px-2 py-2">0916868340</span>
+                  <span className="px-2 py-2">{logBook.patient?.phone}</span>
                 </div>
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
                     Email:
                   </label>
-                  <span className="px-2 py-2">thaibaodev2002@gmail.com</span>
+                  <span className="px-2 py-2">{logBook.patient?.email}</span>
                 </div>
                  <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
@@ -86,13 +87,13 @@ const FormBenhNhanDetail = () => {
                     <div className="flex justify-center">
                       <span className="font-bold">Nhiệt độ cơ thể</span>
                     </div>
-                    <NhietDo />
+                    <NhietDo logBook={logBook}/>
                   </div>
                   <div className="w-[50%]">
                      <div className="flex justify-center">
                       <span className="font-bold">Huyết áp</span>
                     </div>
-                    <HuyetAp />
+                    <HuyetAp logBook={logBook}/>
                   </div>
               </div>
               <div className="flex flex-row gap-4 p-2 h-[50%]">
@@ -100,13 +101,13 @@ const FormBenhNhanDetail = () => {
                      <div className="flex justify-center">
                       <span className="font-bold">Chỉ số BMI</span>
                     </div>
-                    <BMI />
+                    <BMI logBook={logBook}/>
                   </div>
                   <div className="w-[50%]">
                      <div className="flex justify-center">
                       <span className="font-bold">Nhịp tim</span>
                     </div>
-                    <NhipTim />
+                    <NhipTim logBook={logBook}/>
                   </div>
               </div>
             </div>

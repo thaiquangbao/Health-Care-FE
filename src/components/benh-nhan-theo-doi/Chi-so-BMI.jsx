@@ -2,22 +2,34 @@ import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
-export default function BMI() {
+export default function BMI({ logBook }) {
     const chartRef = useRef(null);
+    const [times, setTimes] = useState([])
+    const [bmis, setBmis] = useState([])
+    const [heights, setHeights] = useState([])
+    const [weights, setWeights] = useState([])
     useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
+      const times = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const bmis = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => (item.vitalSign.weight / ((item.vitalSign.height / 100) * (item.vitalSign.height / 100))).toFixed(2)).slice(-10)
+      const heights = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => item.vitalSign.height).slice(-10)
+      const weights = logBook.disMon.filter(item => item.vitalSign.height !== 0 && item.vitalSign.weight !== 0).map(item => item.vitalSign.weight).slice(-10)
+      setTimes(times)
+      setBmis(bmis)
+      setHeights(heights)
+      setWeights(weights)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: ["20-02-2024", "21-02-2024", "22-02-2024", "23-02-2024", "24-02-2024", "25-02-2024", "26-02-2024", "27-02-2024", "28-02-2024", "01-03-2024"],
+          labels: times,
           datasets: [
             {
               label: "BMI Trung bình",
-              data: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+              data: bmis,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0)",
               borderWidth: 2,

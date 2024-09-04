@@ -10,19 +10,50 @@ const BenhNhanCuaToi = () => {
      const { userData } = useContext(userContext);
     const [logBooks, setLogBooks] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedLogBook, setSelectedLogBook] = useState();
      useEffect(() => {
         if (userData.user) {
             setLoading(true)
             api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByDoctor/${userData.user._id}`, sendToken: true })
                 .then(logBooks => {
                     setLogBooks(logBooks)
+                   
                     setLoading(false)
                 })
         }
     }, [userData.user])
-    const formDetail = () => {
+    const formDetail = (logBook) => {
+        setSelectedLogBook(logBook);
         setIsFormVisible(true);
+        
     };
+    const dataHealth = (data, type) => {
+        if((type === "BLOODPRESSURE")) {
+            const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.bloodPressure !== "");
+            const bloodPressure = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.bloodPressure : 'N/A';
+            return bloodPressure;
+        } else if((type === "TEMPERATURE")) {
+            const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.temperature !== 0);
+            const temperature = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.temperature : 'N/A';
+            return temperature;
+        } else if((type === "BMI")) {
+           const filteredWeight = data.disMon?.filter(item => item.vitalSign?.weight !== 0);
+            const filteredHeight = data.disMon?.filter(item => item.vitalSign?.height !== 0);
+
+            if (filteredWeight.length > 0 && filteredHeight.length > 0) {
+                const weight = filteredWeight[0].vitalSign?.weight;
+                const height = filteredHeight[0].vitalSign?.height / 100; // Convert height from cm to meters
+                const bmi = weight / (height * height);
+                return bmi.toFixed(2); // Return BMI rounded to 2 decimal places
+            } else {
+                return 'N/A';
+            }
+        } else {
+            const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.heartRate !== 0);
+            const heartRate = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.heartRate : 'N/A';
+            return heartRate;
+        } 
+    }
     return (
         <div className="w-full h-screen flex flex-col pt-[60px] px-[5%] background-public">
             <Navbar />
@@ -85,18 +116,21 @@ const BenhNhanCuaToi = () => {
                         </thead>
                         <tbody className=' w-[full] bg-black font-medium'>
                             {!loading &&
-                            <tr className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" onClick={() => formDetail()}>
-                                <td className=' py-2 text-center text-white'>1</td>
-                                <td className=' py-2 text-white'>Nguyễn Văn A</td>
-                                <td className=' py-2 text-white'>120/80</td>
-                                <td className=' py-2 text-white'>36.5°C</td>
-                                <td className=' py-2 text-white'>22.5</td>
-                                <td className=' py-2 text-white'>75 bpm</td>
-                                <td className=' py-2 text-white'>Không có</td>
-                                <td className=' py-2 text-white'>Ho, sốt</td>
-                                <td className=' py-2 text-white'>Tốt</td>
-                            </tr>
-                            }
+                            logBooks.map((logBook, index) => {
+                                return (
+                                    <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" onClick={() => formDetail(logBook)}>
+                                        <td className=' py-2 text-center text-white'>{index + 1}</td>
+                                        <td className=' py-2 text-white'>{logBook.patient?.fullName}</td>
+                                        <td className=' py-2 text-white'>{dataHealth(logBook, "BLOODPRESSURE")}</td>
+                                        <td className=' py-2 text-white'>{dataHealth(logBook, "TEMPERATURE")} °C</td>
+                                        <td className=' py-2 text-white'>{dataHealth(logBook, "BMI")}</td>
+                                        <td className=' py-2 text-white'>{dataHealth(logBook, "HEARTRATE")} bpm</td>
+                                        <td className=' py-2 text-white'>Không có</td>
+                                        <td className=' py-2 text-white'>Ho, sốt</td>
+                                        <td className=' py-2 text-white'>Tốt</td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                     {loading && (
@@ -119,7 +153,7 @@ const BenhNhanCuaToi = () => {
                             </svg>
                         </div>
                     )}
-                    {isFormVisible && <FormBenhNhanDetail />}
+                    {isFormVisible && <FormBenhNhanDetail logBook={selectedLogBook} />}
                 </div>
             </div>
         </div>

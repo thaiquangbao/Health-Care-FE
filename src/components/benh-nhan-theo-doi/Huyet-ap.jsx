@@ -2,22 +2,31 @@ import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
-export default function HuyetAp() {
+export default function HuyetAp({ logBook }) {
     const chartRef = useRef(null);
+    const [dsTamTruong, setDsTamTruong] = useState([])
+    const [dsTamThu, setDsTamThu] = useState([])
+    const [dsTimes, setDsTimes] = useState([])
     useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
+      const times = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const dsTamTruong = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[1]).slice(-10)
+      const dsTamThu = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[0]).slice(-10)
+      setDsTimes(times)
+      setDsTamTruong(dsTamTruong)
+      setDsTamThu(dsTamThu)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: ["20-02-2024", "21-02-2024", "22-02-2024", "23-02-2024", "24-02-2024", "25-02-2024", "26-02-2024", "27-02-2024", "28-02-2024", "01-03-2024"],
+          labels: times,
           datasets: [
             {
               label: "Diastolic (Tâm trương)",
-              data: ["76", "76", "87", "88", "89", "90", "91", "92", "73", "74"],
+              data: dsTamTruong,
               borderColor: "#007bff",
               backgroundColor: "rgba(0, 123, 255, 0)",
               borderWidth: 2,
@@ -25,7 +34,7 @@ export default function HuyetAp() {
             },
             {
               label: "Systolic (Tâm thu)",
-              data: ["120", "120", "120", "120", "120", "120", "120", "120", "120", "120"],
+              data: dsTamThu,
               borderColor: "#28a745",
               backgroundColor: "rgba(40, 167, 69, 0)",
               borderWidth: 2,

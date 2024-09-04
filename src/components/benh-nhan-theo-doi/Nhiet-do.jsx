@@ -2,22 +2,31 @@ import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
-export default function NhietDo() {
+export default function NhietDo({ logBook }) {
     const chartRef = useRef(null);
+    const [temperature, setTemperature] = useState("");
+    const [times, setTimes] = useState([])
+    const [temperatures, setTemperatures] = useState([])
     useEffect(() => {
     if (chartRef.current) {
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
+        if (chartRef.current && logBook) {
+          if (chartRef.current.chart) {
+          chartRef.current.chart.destroy();
+        }
       }
+      const times = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const temperatures = logBook.disMon.filter(item => item.vitalSign.temperature !== 0).map(item => item.vitalSign.temperature).slice(-10)
+      setTimes(times)
+      setTemperatures(temperatures)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
         data: {
-          labels: ["20-02-2024", "21-02-2024", "22-02-2024", "23-02-2024", "24-02-2024", "25-02-2024", "26-02-2024", "27-02-2024", "28-02-2024", "01-03-2024"],
+          labels: times,
           datasets: [
             {
               label: "Nhiệt độ cơ thể",
-              data: [36.5, 36.6, 36.7, 36.8, 36.9, 37.0, 37.1, 37.2, 37.3, 37.4],
+              data: temperatures,
               borderColor: "#ff6384",
               backgroundColor: "rgba(255, 99, 132, 0)",
               borderWidth: 2,
