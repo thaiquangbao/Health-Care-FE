@@ -62,7 +62,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
             }
             else {
                 api({
-                    path: `/healthLogBooks/findBy${type === 3 ? 'Week' : type === 4 ? 'Month' : 'NextMonth'}`, type: TypeHTTP.POST, sendToken: true, body: {
+                    path: `/healthLogBooks/findBy${type === "3" ? 'Week' : type === "4" ? 'Month' : 'NextMonth'}`, type: TypeHTTP.POST, sendToken: true, body: {
                         doctor: userData.user._id,
                     }
                 })
