@@ -1,6 +1,7 @@
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
+import { set } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Temperature({ logBook, setLogBook }) {
@@ -91,6 +92,9 @@ export default function Temperature({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-temperature', body })
       .then(res => {
         setLogBook(res)
+        setTemperature("")
+        setSymptom("")
+        setNote("")
       })
   }
 

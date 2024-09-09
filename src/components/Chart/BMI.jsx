@@ -88,6 +88,8 @@ export default function BMI({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-bmi', body })
       .then(res => {
         setLogBook(res)
+        setHeight("")
+        setWeight("")
       })
   }
 

@@ -1,7 +1,8 @@
 "use client";
 import Navbar from '@/components/navbar'
 import React, { useState, useEffect, useContext } from 'react'
-import DonutChart from '@/components/Chart/DonutChart'
+import StatusChart from '@/components/chart/StatusChart'
+import SexChart from '@/components/chart/SexChart'
 import FormBenhNhanDetail from "@/components/benh-nhan-theo-doi/FormBenhNhanDetail"
 import { api, TypeHTTP } from '@/utils/api'
 import { userContext } from '@/context/UserContext'
@@ -11,13 +12,13 @@ const BenhNhanCuaToi = () => {
     const [logBooks, setLogBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedLogBook, setSelectedLogBook] = useState();
+    
      useEffect(() => {
         if (userData.user) {
             setLoading(true)
             api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByDoctor/${userData.user._id}`, sendToken: true })
                 .then(logBooks => {
                     setLogBooks(logBooks)
-                   
                     setLoading(false)
                 })
         }
@@ -27,22 +28,25 @@ const BenhNhanCuaToi = () => {
         setIsFormVisible(true);
         
     };
+    const handleCloseForm = () => {
+        setIsFormVisible(false); // Thay đổi trạng thái để ẩn form
+    };
     const dataHealth = (data, type) => {
         if((type === "BLOODPRESSURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.bloodPressure !== "");
-            const bloodPressure = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.bloodPressure : 'N/A';
+            const bloodPressure = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.bloodPressure : 'N/A';
             return bloodPressure;
         } else if((type === "TEMPERATURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.temperature !== 0);
-            const temperature = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.temperature : 'N/A';
+            const temperature = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.temperature : 'N/A';
             return temperature;
         } else if((type === "BMI")) {
            const filteredWeight = data.disMon?.filter(item => item.vitalSign?.weight !== 0);
             const filteredHeight = data.disMon?.filter(item => item.vitalSign?.height !== 0);
 
             if (filteredWeight.length > 0 && filteredHeight.length > 0) {
-                const weight = filteredWeight[0].vitalSign?.weight;
-                const height = filteredHeight[0].vitalSign?.height / 100; // Convert height from cm to meters
+                const weight = filteredWeight[filteredWeight.length - 1].vitalSign?.weight;
+                const height = filteredHeight[filteredHeight.length - 1].vitalSign?.height / 100; // Convert height from cm to meters
                 const bmi = weight / (height * height);
                 return bmi.toFixed(2); // Return BMI rounded to 2 decimal places
             } else {
@@ -50,7 +54,7 @@ const BenhNhanCuaToi = () => {
             }
         } else {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.heartRate !== 0);
-            const heartRate = filteredDisMon.length > 0 ? filteredDisMon[0].vitalSign?.heartRate : 'N/A';
+            const heartRate = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.heartRate : 'N/A';
             return heartRate;
         } 
     }
@@ -69,15 +73,15 @@ const BenhNhanCuaToi = () => {
                             Thống kê trạng thái sức khỏe bệnh nhân
                         </span>
                         <div className="flex items-center justify-center w-full">
-                            <DonutChart />
+                            <StatusChart />
                         </div>
                     </div>
                     <div className="flex flex-col justify-center items-center w-[50%]">
                         <span className="font-bold text-[20px]">
-                            Thống kê trạng thái sức khỏe bệnh nhân
+                            Thống kê giới tính bệnh nhân
                         </span>
                         <div className="flex items-center justify-center w-full">
-                            <DonutChart />
+                            <SexChart />
                         </div>
                     </div>
                 </div>
@@ -153,7 +157,9 @@ const BenhNhanCuaToi = () => {
                             </svg>
                         </div>
                     )}
-                    {isFormVisible && <FormBenhNhanDetail logBook={selectedLogBook} />}
+                    {isFormVisible && (
+                        <FormBenhNhanDetail logBook={selectedLogBook} onClose={handleCloseForm} />
+                    )}
                 </div>
             </div>
         </div>

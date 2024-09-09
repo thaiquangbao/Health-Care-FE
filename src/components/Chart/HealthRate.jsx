@@ -91,6 +91,9 @@ export default function HeartRate({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-health-rate', body })
       .then(res => {
         setLogBook(res)
+        setValue('')
+        setSymptom('')
+        setNote('')
       })
   }
 

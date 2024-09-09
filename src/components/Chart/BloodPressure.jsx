@@ -103,6 +103,10 @@ export default function BloodPressure({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
       .then(res => {
         setLogBook(res)
+        setTamThu("")
+        setTamTruong("")
+        setSymptom("")
+        setNote("")
       })
   }
 

@@ -12,11 +12,7 @@ import React, {
   useState,
 } from "react";
 
-const FormDetailAppointment = ({
-  hidden,
-  data,
-  display,
-}) => {
+const FormNoticeAppointment = ({ hidden, data, display }) => {
   const router = useRouter();
   const [doctorRecord, setDoctorRecord] = useState();
   const { userData } = useContext(userContext);
@@ -265,42 +261,8 @@ const FormDetailAppointment = ({
                   </tr>
                 )
               )}
-              {/* {sortByAppointmentDate(appointments).map((appointment, index) => (
-                                <tr onClick={() => appointmentHandler.showFormDetailAppointment(appointment)} key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td scope="row" className="px-6 py-2 text-center font-medium">
-                                        {index + 1}
-                                    </td>
-                                    <td className="py-2 text-[15px]">
-                                        BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]?.doctor?.fullName}
-                                    </td>
-                                    <td style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-2">
-                                        {appointment.status_message}
-                                    </td>
-                                    <td className="py-2">
-                                        {`${convertDateToDayMonthYearVietNam(appointment.appointment_date)}`}
-                                    </td>
-                                    <td className="py-4">
-                                        {appointment.note}
-                                    </td>
-                                    <td className="py-4 flex gap-2 items-center justify-center">
-                                        {!['CANCELED', 'ACCEPTED', 'REJECTED'].includes(appointment.status) && (
-                                            <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
-                                        )}
-                                        {(displayConnect === appointment._id) && (
-                                            <Link href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
-                                                <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
-                                            </Link>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))} */}
             </tbody>
           </table>
-          {/* {appointments.length === 0 && (
-                        <div className='w-full flex items-center justify-center my-10 text-[18px] font-medium'>
-                            Không có cuộc hẹn khám trong hôm nay
-                        </div>
-                    )} */}
         </div>
       </div>
       <button onClick={() => hidden()}>
@@ -310,4 +272,4 @@ const FormDetailAppointment = ({
   );
 };
 
-export default FormDetailAppointment;
+export default FormNoticeAppointment;

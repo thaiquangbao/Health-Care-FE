@@ -1,6 +1,6 @@
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
-export default function DonutChart() {
+export default function StatusChart() {
     const chartRef = useRef(null);
     useEffect(() => {
     if (chartRef.current) {
@@ -12,12 +12,12 @@ export default function DonutChart() {
         type: 'doughnut',
         data: {
           labels: [
-            'Red',
-            'Blue',
-            'Yellow'
+            'Bình thường',
+            'Cảnh báo',
+            'Báo động'
         ],
         datasets: [{
-            label: 'My First Dataset',
+            label: 'Số lượng',
             data: [300, 50, 100],
             backgroundColor: [
             'rgb(255, 99, 132)',

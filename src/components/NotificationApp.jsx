@@ -62,6 +62,11 @@ const NotificationApp = () => {
                     router.push("/cuoc-hen-cua-ban");
                 }
             });
+        }  else if (
+            item.category === "HEARTLOGBOOK" &&
+            userData.user?.role === "USER"
+        ) {
+             router.push("/cuoc-tro-chuyen");
         } else {
             api({
                 type: TypeHTTP.POST,

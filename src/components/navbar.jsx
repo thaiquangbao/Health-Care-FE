@@ -29,9 +29,7 @@ const Navbar = () => {
   const [visibleHealth, setVisibleHealth] = useState(false)
   const [user, setUser] = useState();
   const [visibleHealthDoctor, setVisibleHealthDoctor] = useState(false)
-  const { appointmentHandler } = useContext(
-    appointmentContext
-  );
+
   const router = useRouter();
 
   const handleScroll = () => {
