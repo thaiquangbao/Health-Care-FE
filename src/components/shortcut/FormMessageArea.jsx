@@ -90,6 +90,13 @@ const FormMessageArea = ({ room, setCurrentRoom }) => {
             })
     }
 
+    const handleKeyDown = async (event) => {
+        if (event.code === 'Enter') {
+            event.preventDefault();
+            handleSentMessage()
+        }
+    };
+
     return (
         <section style={{
             bottom: room ? '50%' : '12px',
@@ -130,9 +137,9 @@ const FormMessageArea = ({ room, setCurrentRoom }) => {
                                 </button>
                             </div>
                         </div>
-                        <MessageArea height={'75%'} room={room} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
+                        <MessageArea height={'75%'} currentRoom={room} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
                         <div className='relative h-[8%] w-[70%]'>
-                            <input onChange={e => setMessage(e.target.value)} value={message} placeholder='Nhập tin nhắn' className='h-full w-full border-[1px] pl-[1.5rem] pr-[5rem] text-[#353535] focus:outline-0 border-[#d6d6d6] rounded-3xl' />
+                            <input onKeyDown={handleKeyDown} onChange={e => setMessage(e.target.value)} value={message} placeholder='Nhập tin nhắn' className='h-full w-full border-[1px] pl-[1.5rem] pr-[5rem] text-[#353535] focus:outline-0 border-[#d6d6d6] rounded-3xl' />
                             <div className='w-[90px] text-[25px] text-[#999] gap-1 h-full absolute right-0 flex items-center justify-center top-[50%] translate-y-[-50%]'>
                                 <i onClick={() => imageRef.current.click()} className='bx bx-image cursor-pointer' ></i>
                                 <i onClick={() => handleSentMessage()} className='bx bx-send cursor-pointer' ></i>

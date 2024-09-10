@@ -46,24 +46,26 @@ const CuocTroChuyen = () => {
     }, [currentRoom])
 
     const handleSentMessage = () => {
-        const newMessage = {
-            content: message,
-            time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-            author: userData.user?.role === 'USER' ? 'PATIENT' : 'DOCTOR',
-            type: 'TEXT'
-        }
-        const newMessages = JSON.parse(JSON.stringify(messages))
-        newMessages.messages.push(newMessage)
-        api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+        if (message !== '') {
+            const newMessage = {
+                content: message,
+                time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                author: userData.user?.role === 'USER' ? 'PATIENT' : 'DOCTOR',
+                type: 'TEXT'
+            }
+            const newMessages = JSON.parse(JSON.stringify(messages))
+            newMessages.messages.push(newMessage)
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
 
-        const room = JSON.parse(JSON.stringify(currentRoom))
-        room.lastMessage = {
-            author: userData.user.role === 'USER' ? 'PATIENT' : 'DOCTOR',
-            content: message,
-            time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+            const room = JSON.parse(JSON.stringify(currentRoom))
+            room.lastMessage = {
+                author: userData.user.role === 'USER' ? 'PATIENT' : 'DOCTOR',
+                content: message,
+                time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+            }
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+            setMessage('')
         }
-        api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
-        setMessage('')
     }
 
     useEffect(() => {
@@ -133,6 +135,13 @@ const CuocTroChuyen = () => {
             })
     }
 
+    const handleKeyDown = async (event) => {
+        if (event.code === 'Enter') {
+            event.preventDefault();
+            handleSentMessage()
+        }
+    };
+
     return (
         <div className="w-full overflow-hidden h-screen pt-[60px] flex flex-col">
             <Navbar />
@@ -192,9 +201,9 @@ const CuocTroChuyen = () => {
                                     </button>
                                 </div>
                             </div>
-                            <MessageArea height={'80%'} currentRoom={currentRoom} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
+                            <MessageArea height={'70%'} currentRoom={currentRoom} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />
                             <div className='relative h-[8%] w-[70%]'>
-                                <input onChange={e => setMessage(e.target.value)} value={message} placeholder='Nhập tin nhắn' className='h-full w-full border-[1px] pl-[1.5rem] pr-[5rem] text-[#353535] focus:outline-0 border-[#d6d6d6] rounded-3xl' />
+                                <input onKeyDown={handleKeyDown} onChange={e => setMessage(e.target.value)} value={message} placeholder='Nhập tin nhắn' className='h-full w-full border-[1px] pl-[1.5rem] pr-[5rem] text-[#353535] focus:outline-0 border-[#d6d6d6] rounded-3xl' />
                                 <div className='w-[90px] text-[25px] text-[#999] gap-1 h-full absolute right-0 flex items-center justify-center top-[50%] translate-y-[-50%]'>
                                     <i onClick={() => imageRef.current.click()} className='bx bx-image cursor-pointer' ></i>
                                     <i onClick={() => handleSentMessage()} className='bx bx-send cursor-pointer' ></i>

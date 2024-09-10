@@ -3,16 +3,16 @@ import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
 export default function NhipTim({ logBook }) {
-    const chartRef = useRef(null);
-    const [times, setTimes] = useState([])
-    const [heartRates, setHeartRates] = useState([])
-    useEffect(() => {
+  const chartRef = useRef(null);
+  const [times, setTimes] = useState([])
+  const [heartRates, setHeartRates] = useState([])
+  useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-      const times = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
-      const heartRates = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.vitalSign.heartRate).slice(-10)
+      const times = logBook?.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
+      const heartRates = logBook?.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.vitalSign.heartRate).slice(-10)
       setTimes(times)
       setHeartRates(heartRates)
       const context = chartRef.current.getContext("2d");
@@ -63,12 +63,12 @@ export default function NhipTim({ logBook }) {
 
       chartRef.current.chart = newChart;
     }
-  }, []);
+  }, [logBook]);
   return (
     <div className="flex flex-col">
-        <div className="mt-4 relative h-[250px]">
-            <canvas ref={chartRef} />
-        </div>
+      <div className="mt-4 relative h-[250px]">
+        <canvas ref={chartRef} />
+      </div>
     </div>
   )
 }

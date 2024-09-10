@@ -4,9 +4,12 @@ import { authContext } from "./AuthContext";
 import UpdateHealthForm from "@/components/theo-doi-suc-khoe/patient/UpdateHealthForm";
 import MessageIcon from "@/components/shortcut/MessageIcon";
 import { userContext } from "./UserContext";
-import { api, TypeHTTP } from "@/utils/api";
-import LineChart from "@/components/Chart/LineChart";
+import { api, baseURL, TypeHTTP } from "@/utils/api";
+import LineChart from "@/components/chart/LineChart";
 import { usePathname } from "next/navigation";
+import { io } from 'socket.io-client'
+import { globalContext, notifyType } from "./GlobalContext";
+const socket = io.connect(baseURL)
 
 export const healthContext = createContext()
 
@@ -18,6 +21,83 @@ const HealthProvider = ({ children }) => {
     const [rooms, setRooms] = useState([])
     const [temporaryData, setTemporaryData] = useState()
     const pathname = usePathname()
+    const [logBooks, setLogBooks] = useState([]);
+    const { globalHandler } = useContext(globalContext)
+
+    useEffect(() => {
+        if (userData.user) {
+            api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByDoctor/${userData.user._id}`, sendToken: true })
+                .then(logBooks => {
+                    setLogBooks(logBooks)
+                })
+        }
+    }, [userData.user])
+
+    // Health Socket
+
+    useEffect(() => {
+        logBooks.forEach(logBook => {
+            socket.on(`health-logbook-blood.update${logBook._id}`, (data) => {
+                setLogBooks(prev => prev.map(item => {
+                    if (item._id === data.data._id) {
+                        return data.data
+                    }
+                    return item
+                }))
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật huyết áp ( ${data.data.disMon[data.data.disMon.length - 1].vitalSign.bloodPressure} )`)
+            })
+            socket.on(`health-logbook-temperature.update${logBook._id}`, (data) => {
+                setLogBooks(prev => prev.map(item => {
+                    if (item._id === data.data._id) {
+                        return data.data
+                    }
+                    return item
+                }))
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật nhiệt độ ( ${data.data.disMon[data.data.disMon.length - 1].vitalSign.temperature} )`)
+
+            })
+            socket.on(`health-logbook-health.update${logBook._id}`, (data) => {
+                setLogBooks(prev => prev.map(item => {
+                    if (item._id === data.data._id) {
+                        return data.data
+                    }
+                    return item
+                }))
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật nhịp tim ( ${data.data.disMon[data.data.disMon.length - 1].vitalSign.heartRate} )`)
+            })
+            socket.on(`health-logbook-bmi.update${logBook._id}`, (data) => {
+                setLogBooks(prev => prev.map(item => {
+                    if (item._id === data.data._id) {
+                        return data.data
+                    }
+                    return item
+                }))
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật BMI ( ${(data.data.disMon[data.data.disMon.length - 1].vitalSign.weight / ((data.data.disMon[data.data.disMon.length - 1].vitalSign.height / 100) * (data.data.disMon[data.data.disMon.length - 1].vitalSign.height / 100))).toFixed(2)} )`)
+            })
+            socket.on(`health-logbook-symptom.update${logBook._id}`, (data) => {
+                setLogBooks(prev => prev.map(item => {
+                    if (item._id === data.data._id) {
+                        return data.data
+                    }
+                    return item
+                }))
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật triệu chứng ( ${data.data.disMon[data.data.disMon.length - 1].symptom} ${data.data.disMon[data.data.disMon.length - 1].note !== "" ? `. Ghi chú:${data.data.disMon[data.data.disMon.length - 1].note}`: ""} )`)
+            })
+        })
+
+        return () => {
+            logBooks.forEach(logBook => {
+                socket.off(`health-logbook-blood.update${logBook._id}`);
+                socket.off(`health-logbook-temperature.update${logBook._id}`)
+                socket.off(`health-logbook-health.update${logBook._id}`)
+                socket.off(`health-logbook-bmi.update${logBook._id}`)
+                socket.off(`health-logbook-symptom.update${logBook._id}`)
+            })
+        }
+    }, [logBooks])
+
+
+    // --------
 
     useEffect(() => {
         if (userData.user && userData.user?.role === 'USER') {
@@ -48,12 +128,14 @@ const HealthProvider = ({ children }) => {
     }
 
     const data = {
-        temporaryData
+        temporaryData,
+        logBooks
     }
     const handler = {
         showUpdateHealthForm,
         hiddenUpdateHealthForm,
-        setTemporaryData
+        setTemporaryData,
+        setLogBooks
     }
 
     return (

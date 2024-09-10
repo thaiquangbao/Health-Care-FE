@@ -29,7 +29,9 @@ const Navbar = () => {
   const [visibleHealth, setVisibleHealth] = useState(false)
   const [user, setUser] = useState();
   const [visibleHealthDoctor, setVisibleHealthDoctor] = useState(false)
-
+  const { appointmentHandler } = useContext(
+    appointmentContext
+  );
   const router = useRouter();
 
   const handleScroll = () => {
@@ -354,7 +356,7 @@ const Navbar = () => {
                 }}
                 className="flex gap-3 cursor-pointer mt-5"
               >
-                <i className="bx text-[#567fea] bxs-home text-[23px]"></i>
+                <i className="text-[#ff3359] fa-solid fa-clipboard text-[23px]"></i>
                 <span className="text-[16px] font-medium">
                   Phiếu Đăng Ký
                 </span>
@@ -380,7 +382,7 @@ const Navbar = () => {
                 }}
                 className="flex gap-3 cursor-pointer mt-5"
               >
-                <i className="text-[#ff3359] fa-solid fa-heart-pulse text-[23px]"></i>
+                <i className="text-[#567fea] fa-solid fa-comments text-[23px]"></i>
                 <span className="text-[16px] font-medium">
                   Cuộc Trò Chuyện
                 </span>

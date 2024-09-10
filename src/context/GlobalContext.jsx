@@ -20,6 +20,7 @@ export const notifyType = {
   FAIL: "fail",
   WARNING: "warning",
   LOADING: "loading",
+  HEALTH: 'health',
   NONE: "none",
 };
 

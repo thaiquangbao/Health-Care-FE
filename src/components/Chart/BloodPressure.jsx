@@ -15,6 +15,13 @@ export default function BloodPressure({ logBook, setLogBook }) {
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
 
+  const resetForm = () => {
+    setTamTruong('')
+    setTamThu('')
+    setNote('')
+    setSymptom('')
+  }
+
   useEffect(() => {
     if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
@@ -103,10 +110,37 @@ export default function BloodPressure({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
       .then(res => {
         setLogBook(res)
-        setTamThu("")
-        setTamTruong("")
-        setSymptom("")
-        setNote("")
+        api({
+          type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
+            patient_id: logBook.patient._id,
+            doctor_id: logBook.doctor._id
+          }
+        })
+          .then(res => {
+            const newMessage = {
+              content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
+              vitals: {
+                bloodPressure: tamThu + '/' + tamTruong
+              },
+              time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+              author: 'PATIENT',
+              type: 'REPORT'
+            }
+            resetForm()
+            const newMessages = JSON.parse(JSON.stringify(res[0]))
+            newMessages.messages.push(newMessage)
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+            api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
+              .then(room1 => {
+                const room = JSON.parse(JSON.stringify(room1))
+                room.lastMessage = {
+                  author: 'PATIENT',
+                  content: 'Đã gửi báo cáo huyết áp',
+                  time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                }
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+              })
+          })
       })
   }
 

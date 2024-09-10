@@ -1,7 +1,9 @@
-import { api, TypeHTTP } from "@/utils/api";
+import { api, baseURL, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
+import { io } from 'socket.io-client'
+const socket = io.connect(baseURL)
 
 export default function BMI({ logBook, setLogBook }) {
   const chartRef = useRef(null);
@@ -11,6 +13,11 @@ export default function BMI({ logBook, setLogBook }) {
   const [bmis, setBmis] = useState([])
   const [heights, setHeights] = useState([])
   const [weights, setWeights] = useState([])
+
+  const resetForm = () => {
+    setHeight('')
+    setWeight('')
+  }
 
   useEffect(() => {
     if (chartRef.current && logBook) {
@@ -88,8 +95,36 @@ export default function BMI({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-bmi', body })
       .then(res => {
         setLogBook(res)
-        setHeight("")
-        setWeight("")
+        api({
+          type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
+            patient_id: logBook.patient._id,
+            doctor_id: logBook.doctor._id
+          }
+        })
+          .then(res => {
+            const newMessage = {
+              vitals: {
+                weight, height
+              },
+              time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+              author: 'PATIENT',
+              type: 'REPORT'
+            }
+            const newMessages = JSON.parse(JSON.stringify(res[0]))
+            newMessages.messages.push(newMessage)
+            resetForm()
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+            api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
+              .then(room1 => {
+                const room = JSON.parse(JSON.stringify(room1))
+                room.lastMessage = {
+                  author: 'PATIENT',
+                  content: 'Đã gửi báo cáo BMI',
+                  time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                }
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+              })
+          })
       })
   }
 

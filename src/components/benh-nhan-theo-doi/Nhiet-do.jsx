@@ -3,14 +3,14 @@ import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef, useState } from "react";
 export default function NhietDo({ logBook }) {
-    const chartRef = useRef(null);
-    const [temperature, setTemperature] = useState("");
-    const [times, setTimes] = useState([])
-    const [temperatures, setTemperatures] = useState([])
-    useEffect(() => {
+  const chartRef = useRef(null);
+  const [temperature, setTemperature] = useState("");
+  const [times, setTimes] = useState([])
+  const [temperatures, setTemperatures] = useState([])
+  useEffect(() => {
     if (chartRef.current) {
-        if (chartRef.current && logBook) {
-          if (chartRef.current.chart) {
+      if (chartRef.current && logBook) {
+        if (chartRef.current.chart) {
           chartRef.current.chart.destroy();
         }
       }
@@ -66,12 +66,12 @@ export default function NhietDo({ logBook }) {
 
       chartRef.current.chart = newChart;
     }
-  }, []);
+  }, [logBook]);
   return (
     <div className="flex flex-col">
-        <div className="mt-4 relative h-[250px]">
-            <canvas ref={chartRef} />
-        </div>
+      <div className="mt-4 relative h-[250px]">
+        <canvas ref={chartRef} />
+      </div>
     </div>
   )
 }

@@ -44,6 +44,8 @@ const PhieuTheoDoi = ({ type, setType }) => {
                     }
                 })
                     .then(logBooks => {
+                        console.log(logBooks);
+                        
                         setLogBooks(logBooks)
                         setLoading(false)
                     })
@@ -274,6 +276,18 @@ const PhieuTheoDoi = ({ type, setType }) => {
                                         {formatMoney(logBook.priceList.price)}đ/{logBook.priceList.type}
                                     </td>
                                     <td className="py-4 flex gap-2 items-center justify-center">
+                                        {logBook.status.status_type === "TRANSFER" && (
+                                            <>
+                                                <button
+                                                    onClick={() =>
+                                                        handleAcceptLogBook(logBook)
+                                                    }
+                                                    className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                                                >
+                                                    Chấp Nhận
+                                                </button>
+                                            </>
+                                        )}
                                         {logBook.status.status_type === "QUEUE" && (
                                             <>
                                                 <button

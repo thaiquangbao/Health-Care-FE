@@ -1,7 +1,6 @@
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import { set } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Temperature({ logBook, setLogBook }) {
@@ -13,6 +12,12 @@ export default function Temperature({ logBook, setLogBook }) {
   const [symptom, setSymptom] = useState('')
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
+
+  const resetForm = () => {
+    setTemperature('')
+    setNote('')
+    setSymptom('')
+  }
 
   useEffect(() => {
     if (chartRef.current && logBook) {
@@ -92,9 +97,39 @@ export default function Temperature({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-temperature', body })
       .then(res => {
         setLogBook(res)
-        setTemperature("")
-        setSymptom("")
-        setNote("")
+        api({
+          type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
+            patient_id: logBook.patient._id,
+            doctor_id: logBook.doctor._id
+          }
+        })
+          .then(res => {
+            const newMessage = {
+              content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
+              vitals: {
+                temperature
+              },
+              time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+              author: 'PATIENT',
+              type: 'REPORT'
+            }
+            resetForm()
+            const newMessages = JSON.parse(JSON.stringify(res[0]))
+            newMessages.messages.push(newMessage)
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+
+            api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
+              .then(room1 => {
+                const room = JSON.parse(JSON.stringify(room1))
+                room.lastMessage = {
+                  author: 'PATIENT',
+                  content: 'Đã gửi báo cáo nhiệt độ',
+                  time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                }
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+              })
+
+          })
       })
   }
 

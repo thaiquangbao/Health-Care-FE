@@ -1,7 +1,8 @@
-import BloodPressure from "@/components/Chart/BloodPressure";
-import HeartRate from "@/components/Chart/HealthRate";
-import BMI from "@/components/Chart/BMI";
-import Temperature from "@/components/Chart/Temperature";
+import BloodPressure from "@/components/chart/BloodPressure";
+import HeartRate from "@/components/chart/HealthRate";
+import BMI from "@/components/chart/BMI";
+import Temperature from "@/components/chart/Temperature";
+import Symptom from "@/components/chart/Symptom";
 import React, { useContext, useEffect, useRef, useState } from "react";
 export default function LineChart({ logBook, hidden, setLogBook }) {
   const [activeMetric, setActiveMetric] = useState("huyetAp"); // default to Huyết áp
@@ -16,6 +17,8 @@ export default function LineChart({ logBook, hidden, setLogBook }) {
         return <BloodPressure logBook={logBook} setLogBook={setLogBook} />; // Show BloodPressure component
       case "temperature":
         return <Temperature logBook={logBook} setLogBook={setLogBook} />; // Show Temperature component
+      case "symptom":
+        return <Symptom logBook={logBook} setLogBook={setLogBook} />; // Show Temperature component
       default:
         return null;
     }
@@ -71,6 +74,15 @@ export default function LineChart({ logBook, hidden, setLogBook }) {
               onClick={() => setActiveMetric("temperature")}
             >
               Nhiệt độ cơ thể
+            </button>
+            <button
+              className={`border border-gray-300 rounded-full px-4 text-black ${activeMetric === "symptom"
+                ? "bg-blue-600 text-white"
+                : "bg-white"
+                }`}
+              onClick={() => setActiveMetric("symptom")}
+            >
+              Triệu chứng
             </button>
           </div>
           <div className="w-[100%]">{renderChart()}</div>

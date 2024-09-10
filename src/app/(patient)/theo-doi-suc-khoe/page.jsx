@@ -3,19 +3,22 @@
 import Navbar from '@/components/navbar'
 import PhieuTheoDoi from '@/components/phieu-dang-ky/PhieuTheoDoi'
 import { globalContext } from '@/context/GlobalContext'
+import { healthContext } from '@/context/HealthContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
 import { convertDateToDayMonthYearVietNam } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
 import React, { useContext, useEffect, useState } from 'react'
-
+import FormDetailLogBook from '@/components/ho-so-dang-ky-theo-doi/FormDetailLogBook'
+import { authContext } from '@/context/AuthContext';
 const TheoDoiSucKhoe = () => {
-
+    const { authHandler } = useContext(authContext)
     const [loading, setLoading] = useState(false);
     const { userData } = useContext(userContext);
     const [logBooks, setLogBooks] = useState([]);
     const { globalHandler } = useContext(globalContext);
-
+    const { healthData, healthHandler } = useContext(healthContext)
+    const [selectedLogBook, setSelectedLogBook] = useState()
     useEffect(() => {
         if (userData.user) {
             setLoading(true)
@@ -27,6 +30,17 @@ const TheoDoiSucKhoe = () => {
         }
     }, [userData.user])
 
+    const formDetail = (logBook) => {
+        authHandler.showWrapper()
+        setSelectedLogBook(logBook);
+    };
+    const handleShowHealthForm = (logBook) => {
+        healthHandler.showUpdateHealthForm(logBook)
+    }
+    const handleCloseForm = () => {
+        authHandler.hiddenWrapper()
+        setSelectedLogBook()
+    };
     return (
         <div className="w-full min-h-screen pb-4 flex flex-col pt-[60px] px-[5%]">
             <Navbar />
@@ -113,17 +127,13 @@ const TheoDoiSucKhoe = () => {
                                             {logBook.status.status_type === "ACCEPTED" && (
                                                 <>
                                                     <button
-                                                        onClick={() =>
-                                                            handleAcceptLogBook(logBook)
-                                                        }
+                                                        onClick={() => formDetail(logBook)}
                                                         className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                     >
                                                         Xem
                                                     </button>
                                                     <button
-                                                        onClick={() =>
-                                                            handleAcceptLogBook(logBook)
-                                                        }
+                                                        onClick={() => handleShowHealthForm(logBook)}
                                                         className="hover:scale-[1.05] transition-all bg-[#1dcbb6] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                     >
                                                         Cập nhật sức khỏe
@@ -155,6 +165,7 @@ const TheoDoiSucKhoe = () => {
                             </svg>
                         </div>
                     )}
+                    <FormDetailLogBook data={selectedLogBook} onClose={handleCloseForm} />
                 </div>
             </div>
         </div >

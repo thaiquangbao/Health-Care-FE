@@ -6,42 +6,52 @@ import SexChart from '@/components/chart/SexChart'
 import FormBenhNhanDetail from "@/components/benh-nhan-theo-doi/FormBenhNhanDetail"
 import { api, TypeHTTP } from '@/utils/api'
 import { userContext } from '@/context/UserContext'
+import { authContext } from '@/context/AuthContext';
+import { healthContext } from '@/context/HealthContext';
+import FormChuyenBacSi from '@/components/chuyen-bac-si/FormChuyenBacSi';
+import FormHoSoSucKhoe from '@/components/benh-nhan-theo-doi/FormHoSoSucKhoe';
 const BenhNhanCuaToi = () => {
-    const [isFormVisible, setIsFormVisible] = useState(false);
-     const { userData } = useContext(userContext);
+    const { authHandler } = useContext(authContext)
+    const { userData } = useContext(userContext);
     const [logBooks, setLogBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedLogBook, setSelectedLogBook] = useState();
-    
-     useEffect(() => {
-        if (userData.user) {
-            setLoading(true)
-            api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByDoctor/${userData.user._id}`, sendToken: true })
-                .then(logBooks => {
-                    setLogBooks(logBooks)
-                    setLoading(false)
-                })
+    const { healthData } = useContext(healthContext)
+    const [visibleTransfer, setVisibleTransfer] = useState(false)
+    const [visibleMedicalRecord, setVisibleMedicalRecord] = useState(false)
+    useEffect(() => {
+        setLogBooks(healthData.logBooks)
+        if (selectedLogBook) {
+            setSelectedLogBook(healthData.logBooks.filter(item => item._id === selectedLogBook._id)[0])
         }
-    }, [userData.user])
+    }, [healthData.logBooks])
+
+
     const formDetail = (logBook) => {
+        authHandler.showWrapper()
         setSelectedLogBook(logBook);
-        setIsFormVisible(true);
-        
     };
     const handleCloseForm = () => {
-        setIsFormVisible(false); // Thay đổi trạng thái để ẩn form
+        authHandler.hiddenWrapper()
+        setSelectedLogBook()
     };
+    const hiddenTransfer = () => {
+        setVisibleTransfer(false)
+    }
+    const hiddenMedicalRecord = () => {
+        setVisibleMedicalRecord(false)
+    }
     const dataHealth = (data, type) => {
-        if((type === "BLOODPRESSURE")) {
+        if ((type === "BLOODPRESSURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.bloodPressure !== "");
             const bloodPressure = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.bloodPressure : 'N/A';
             return bloodPressure;
-        } else if((type === "TEMPERATURE")) {
+        } else if ((type === "TEMPERATURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.temperature !== 0);
             const temperature = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.temperature : 'N/A';
             return temperature;
-        } else if((type === "BMI")) {
-           const filteredWeight = data.disMon?.filter(item => item.vitalSign?.weight !== 0);
+        } else if ((type === "BMI")) {
+            const filteredWeight = data.disMon?.filter(item => item.vitalSign?.weight !== 0);
             const filteredHeight = data.disMon?.filter(item => item.vitalSign?.height !== 0);
 
             if (filteredWeight.length > 0 && filteredHeight.length > 0) {
@@ -52,11 +62,19 @@ const BenhNhanCuaToi = () => {
             } else {
                 return 'N/A';
             }
+        } else if ((type === "SYMPTOM")) {
+            const filteredDisMon = data.disMon?.filter(item => item.symptom !== "");
+            const symptom = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].symptom +" " +  `(${filteredDisMon[filteredDisMon.length - 1].date?.day}/${filteredDisMon[filteredDisMon.length - 1].date?.month}/${filteredDisMon[filteredDisMon.length - 1].date?.year})` : 'Không';
+            return symptom;
+        } else if ((type === "NOTE")) {
+            const filteredDisMon = data.disMon?.filter(item => item.note !== "");
+            const note = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].note  : 'Không';
+            return note;    
         } else {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.heartRate !== 0);
             const heartRate = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.heartRate : 'N/A';
             return heartRate;
-        } 
+        }
     }
     return (
         <div className="w-full h-screen flex flex-col pt-[60px] px-[5%] background-public">
@@ -107,34 +125,36 @@ const BenhNhanCuaToi = () => {
                                 <th scope="col" className="w-[10%] py-3">
                                     Nhịp tim
                                 </th>
-                                <th scope="col" className="w-[10%] py-3">
+                                <th scope="col" className="w-[13%] py-3">
                                     Ghi Chú
                                 </th>
                                 <th scope="col" className="w-[15%] py-3">
                                     Triệu chứng
                                 </th>
-                                <th scope="col" className="w-[15%] py-3">
+                                <th scope="col" className="w-[12%] py-3">
                                     Trạng thái sức khỏe
                                 </th>
                             </tr>
                         </thead>
                         <tbody className=' w-[full] bg-black font-medium'>
                             {!loading &&
-                            logBooks.map((logBook, index) => {
-                                return (
-                                    <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" onClick={() => formDetail(logBook)}>
-                                        <td className=' py-2 text-center text-white'>{index + 1}</td>
-                                        <td className=' py-2 text-white'>{logBook.patient?.fullName}</td>
-                                        <td className=' py-2 text-white'>{dataHealth(logBook, "BLOODPRESSURE")}</td>
-                                        <td className=' py-2 text-white'>{dataHealth(logBook, "TEMPERATURE")} °C</td>
-                                        <td className=' py-2 text-white'>{dataHealth(logBook, "BMI")}</td>
-                                        <td className=' py-2 text-white'>{dataHealth(logBook, "HEARTRATE")} bpm</td>
-                                        <td className=' py-2 text-white'>Không có</td>
-                                        <td className=' py-2 text-white'>Ho, sốt</td>
-                                        <td className=' py-2 text-white'>Tốt</td>
-                                    </tr>
-                                )
-                            })}
+                                logBooks.map((logBook, index) => {
+                                    if (logBook.status.status_type === 'ACCEPTED') {
+                                        return (
+                                            <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700" onClick={() => formDetail(logBook)}>
+                                                <td className=' py-2 text-center text-[#252525]'>{index + 1}</td>
+                                                <td className=' py-2 text-[#252525]'>{logBook.patient?.fullName}</td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "BLOODPRESSURE")}</td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "TEMPERATURE")} °C</td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "BMI")}</td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "HEARTRATE")} bpm</td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "NOTE")} </td>
+                                                <td className=' py-2 text-[#252525]'>{dataHealth(logBook, "SYMPTOM")} </td>
+                                                <td className=' py-2 text-[#252525]'>Tốt</td>
+                                            </tr>
+                                        )
+                                    }
+                                })}
                         </tbody>
                     </table>
                     {loading && (
@@ -157,9 +177,9 @@ const BenhNhanCuaToi = () => {
                             </svg>
                         </div>
                     )}
-                    {isFormVisible && (
-                        <FormBenhNhanDetail logBook={selectedLogBook} onClose={handleCloseForm} />
-                    )}
+                    <FormBenhNhanDetail setVisibleMedicalRecord={setVisibleMedicalRecord} visibleMedicalRecord={visibleMedicalRecord} setVisibleTransfer={setVisibleTransfer} visibleTransfer={visibleTransfer} logBookUpdate={selectedLogBook} onClose={handleCloseForm} />
+                    <FormChuyenBacSi hidden={hiddenTransfer} visibleTransfer={visibleTransfer} logBook={selectedLogBook} />
+                    <FormHoSoSucKhoe hidden={hiddenMedicalRecord} visibleMedicalRecord={visibleMedicalRecord} logBook={selectedLogBook} />
                 </div>
             </div>
         </div>

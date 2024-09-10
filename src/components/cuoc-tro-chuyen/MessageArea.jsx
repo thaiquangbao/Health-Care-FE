@@ -40,21 +40,45 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                                     <div className='flex gap-2 items-start'>
                                         <div className='flex flex-col w-full px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
                                             <div className='text-[15px] flex gap-4'>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/heartbeat.png' width={'30px'} />
-                                                    <span className='font-bold'>120 bpm</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/bloodpressure.png' width={'30px'} />
-                                                    <span className='font-bold'>120 mmHg</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/tempurature.png' width={'30px'} />
-                                                    <span className='font-bold'>36 °C</span>
-                                                </div>
+                                                {message.vitals.height !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/height.png' width={'30px'} />
+                                                        <span className='font-bold'>{((message.vitals.height / 100) + '').split('.')[0] + 'm' + ((message.vitals.height / 100) + '').split('.')[1]}</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.weight !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/weight.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.weight} kg</span>
+                                                    </div>
+                                                )}
+                                                {(message.vitals.weight !== 0 && message.vitals.height !== 0) && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/bmi.png' width={'30px'} />
+                                                        <span className='font-bold'>{(message.vitals.weight / ((message.vitals.height / 100) * (message.vitals.height / 100))).toFixed(2)}</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.temperature !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/tempurature.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.temperature}°C</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.bloodPressure !== '' && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/bloodpressure.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.bloodPressure} mmHg</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.heartRate !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/heartbeat.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.heartRate}</span>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <span className='text-[15px]'>Tôi mới vừa luyện tập xong ấy mà</span>
-                                            <span className='text-[12px]'>5:09 AM</span>
+                                            <span className='text-[15px]'>{!message.content ? 'Tôi vừa cập nhật thông tin sức khỏe' : message.content}</span>
+                                            <span className='text-[12px]'>{message.time.time}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -88,21 +112,45 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                                         <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
                                         <div className='flex flex-col w-auto px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
                                             <div className='text-[15px] flex gap-4'>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/heartbeat.png' width={'30px'} />
-                                                    <span className='font-bold'>120 bpm</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/bloodpressure.png' width={'30px'} />
-                                                    <span className='font-bold'>120 mmHg</span>
-                                                </div>
-                                                <div className='flex items-center gap-1'>
-                                                    <img src='/tempurature.png' width={'30px'} />
-                                                    <span className='font-bold'>36 °C</span>
-                                                </div>
+                                                {message.vitals.height !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/height.png' width={'30px'} />
+                                                        <span className='font-bold'>{((message.vitals.height / 100) + '').split('.')[0] + 'm' + ((message.vitals.height / 100) + '').split('.')[1]}</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.weight !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/weight.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.weight} kg</span>
+                                                    </div>
+                                                )}
+                                                {(message.vitals.weight !== 0 && message.vitals.height !== 0) && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/bmi.png' width={'30px'} />
+                                                        <span className='font-bold'>{(message.vitals.weight / ((message.vitals.height / 100) * (message.vitals.height / 100))).toFixed(2)}</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.temperature !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/tempurature.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.temperature}°C</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.bloodPressure !== '' && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/bloodpressure.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.bloodPressure} mmHg</span>
+                                                    </div>
+                                                )}
+                                                {message.vitals.heartRate !== 0 && (
+                                                    <div className='flex items-center gap-1'>
+                                                        <img src='/heartbeat.png' width={'30px'} />
+                                                        <span className='font-bold'>{message.vitals.heartRate}</span>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <span className='text-[15px]'>Tôi mới vừa luyện tập xong ấy mà</span>
-                                            <span className='text-[12px]'>5:09 AM</span>
+                                            <span className='text-[15px]'>{!message.content ? 'Tôi vừa cập nhật thông tin sức khỏe' : message.content}</span>
+                                            <span className='text-[12px]'>{message.time.time}</span>
                                         </div>
                                     </div>
                                 </div>

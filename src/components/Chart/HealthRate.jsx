@@ -13,6 +13,13 @@ export default function HeartRate({ logBook, setLogBook }) {
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
 
+  const resetForm = () => {
+    setValue('')
+    setNote('')
+    setSymptom('')
+  }
+
+
   useEffect(() => {
     if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
@@ -91,9 +98,37 @@ export default function HeartRate({ logBook, setLogBook }) {
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-health-rate', body })
       .then(res => {
         setLogBook(res)
-        setValue('')
-        setSymptom('')
-        setNote('')
+        api({
+          type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
+            patient_id: logBook.patient._id,
+            doctor_id: logBook.doctor._id
+          }
+        })
+          .then(res => {
+            const newMessage = {
+              content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
+              vitals: {
+                heartRate: value
+              },
+              time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+              author: 'PATIENT',
+              type: 'REPORT'
+            }
+            const newMessages = JSON.parse(JSON.stringify(res[0]))
+            newMessages.messages.push(newMessage)
+            resetForm()
+            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+            api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
+              .then(room1 => {
+                const room = JSON.parse(JSON.stringify(room1))
+                room.lastMessage = {
+                  author: 'PATIENT',
+                  content: 'Đã gửi báo cáo nhịp tim',
+                  time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                }
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+              })
+          })
       })
   }
 
@@ -174,7 +209,7 @@ export default function HeartRate({ logBook, setLogBook }) {
             </tr>
           </thead>
           <tbody className="w-full bg-black font-medium">
-            {times.reverse().map((time, index) => (
+            {times.map((time, index) => (
               <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                 <td scope="row" className="px-6 py-2 text-center font-medium">
                   {index + 1}

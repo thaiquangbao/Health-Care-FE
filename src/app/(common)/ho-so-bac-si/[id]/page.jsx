@@ -30,7 +30,7 @@ import React, {
   useState,
 } from "react";
 import Calendar from "../../../../components/Calendar";
-
+import { set } from "date-fns";
 const HoSoBacSi = () => {
   const param = useParams();
   const { id } = param;
@@ -40,7 +40,9 @@ const HoSoBacSi = () => {
   const [priceList, setPriceList] = useState(0);
   const [assessments, setAssessments] = useState([]);
   const [forums, setForums] = useState([]);
+  const { userData } = useContext(userContext);
   const router = useRouter();
+  const [healthLogBooks, setHealthLogBooks] = useState([]);
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -49,12 +51,23 @@ const HoSoBacSi = () => {
     }).then((res) => {
       appointmentHandler.setDoctorRecord(res);
       setDoctorRecord(res);
+      
     })
       .catch(error => {
         router.push('/bac-si-noi-bat')
       })
   }, [id]);
+  // check tồn tại health log book
 
+  useEffect(() => {
+    if (userData.user) {
+       api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByPatient/${userData.user?._id}`, sendToken: true})
+      .then(res => {
+        setHealthLogBooks(res)
+      })
+    }
+   
+  },[userData.user]);
   useEffect(() => {
     api({
       path: "/price-lists/getAll",
@@ -180,8 +193,11 @@ const HoSoBacSi = () => {
               </div>
             </div>
 
-
-
+{/* chổ này */}
+          {(!healthLogBooks?.length || !healthLogBooks.filter(log => log.status.status_type === 'ACCEPTED').length || 
+          !healthLogBooks.filter(log => log.status.status_type === 'STOPPED').length || 
+          !healthLogBooks.filter(log => log.status.status_type === 'TRANSFER').length ||
+          !healthLogBooks.filter(log => log.status.status_type === 'QUEUE').length ) && (
             <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
               <div className="flex flex-col text-[#333333]">
                 <span className="text-[14px]">
@@ -192,6 +208,7 @@ const HoSoBacSi = () => {
                 </span>
               </div>
               <div>
+                
                 <button
                   onClick={() => appointmentHandler.showFormSignUpHealth(doctorRecord)}
                   style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
@@ -201,7 +218,7 @@ const HoSoBacSi = () => {
                 </button>
               </div>
             </div>
-
+        )}
 
 
           </div>

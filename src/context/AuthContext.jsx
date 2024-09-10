@@ -11,6 +11,7 @@ import React, {
   useState,
 } from "react";
 import { userContext } from "./UserContext";
+import { api, TypeHTTP } from "@/utils/api";
 
 export const authContext = createContext();
 
@@ -33,6 +34,21 @@ const AuthContext = ({ children }) => {
   const { userData } = useContext(userContext);
   const [detailMedicalRecord, setDetailMedicalRecord] = useState()
   const [currentRoom, setCurrentRoom] = useState()
+  const [rooms, setRooms] = useState([])
+
+  useEffect(() => {
+    if (userData.user && userData.user?.role === 'USER') {
+      api({ type: TypeHTTP.GET, sendToken: true, path: `/rooms/get-room-patient/${userData.user._id}` })
+        .then(rooms => {
+          setRooms(rooms)
+        })
+    } else if (userData.user && userData.user?.role === 'DOCTOR') {
+      api({ type: TypeHTTP.GET, sendToken: true, path: `/rooms/get-room-doctor/${userData.user._id}` })
+        .then(rooms => {
+          setRooms(rooms)
+        })
+    }
+  }, [userData.user])
 
   const handleWaitTime = () => {
     if (!globalThis.localStorage.getItem("refreshToken"))
@@ -144,7 +160,8 @@ const AuthContext = ({ children }) => {
     visibleMedicalRecord,
     visibleAssessment,
     detailMedicalRecord,
-    currentRoom
+    currentRoom,
+    rooms
   };
 
   const handler = {
@@ -163,7 +180,8 @@ const AuthContext = ({ children }) => {
     hiddenAssessment,
     showDetailMedicalRecord,
     hiddenDetailMedicalRecord,
-    setCurrentRoom
+    setCurrentRoom,
+    setRooms
   };
 
   return (

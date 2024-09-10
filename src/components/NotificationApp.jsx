@@ -1,7 +1,6 @@
 import { appointmentContext } from '@/context/AppointmentContext';
 import { userContext } from '@/context/UserContext';
-import { api, baseURL, TypeHTTP } from '@/utils/api'
-import { set } from 'date-fns';
+import { api, baseURL, TypeHTTP } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
@@ -32,13 +31,13 @@ const NotificationApp = () => {
     }, [userData.user]);
     useEffect(() => {
         socket.on(`notice.create${userData.user?._id}`, (notice) => {
-            setNotifications([...notifications,notice]);
+            setNotifications([...notifications, notice]);
             setLengthNotice(lengthNotice + 1);
         })
         return () => {
             socket.off(`notice.create${userData.user?._id}`);
         }
-    },[lengthNotice, notifications, userData.user?._id])
+    }, [lengthNotice, notifications, userData.user?._id])
     const clickNotice = (item) => {
         if (
             item.category === "APPOINTMENT" &&
@@ -62,11 +61,6 @@ const NotificationApp = () => {
                     router.push("/cuoc-hen-cua-ban");
                 }
             });
-        }  else if (
-            item.category === "HEARTLOGBOOK" &&
-            userData.user?.role === "USER"
-        ) {
-             router.push("/cuoc-tro-chuyen");
         } else {
             api({
                 type: TypeHTTP.POST,
