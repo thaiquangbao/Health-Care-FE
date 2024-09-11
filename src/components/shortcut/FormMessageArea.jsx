@@ -81,7 +81,7 @@ const FormMessageArea = ({ room, setCurrentRoom }) => {
     const handleShowHealthForm = () => {
         api({ type: TypeHTTP.GET, sendToken: true, path: `/healthLogBooks/findByPatient/${userData.user._id}` })
             .then(logBooks => {
-                const logBook = logBooks.filter(item => item.doctor._id === room.doctor._id)[0]
+                const logBook = logBooks.filter(item => item.doctor._id === room.doctor._id && item.status.status_type === 'ACCEPTED')[0];
                 healthHandler.setTemporaryData(room)
                 setCurrentRoom()
                 setTimeout(() => {

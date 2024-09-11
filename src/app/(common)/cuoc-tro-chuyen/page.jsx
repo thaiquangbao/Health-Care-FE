@@ -26,12 +26,12 @@ const CuocTroChuyen = () => {
         if (userData.user && userData.user?.role === 'USER') {
             api({ type: TypeHTTP.GET, sendToken: true, path: `/rooms/get-room-patient/${userData.user._id}` })
                 .then(rooms => {
-                    setRooms(rooms)
+                    setRooms(rooms.filter(item => item.status === "ACTIVE"))
                 })
         } else if (userData.user && userData.user?.role === 'DOCTOR') {
             api({ type: TypeHTTP.GET, sendToken: true, path: `/rooms/get-room-doctor/${userData.user._id}` })
                 .then(rooms => {
-                    setRooms(rooms)
+                    setRooms(rooms.filter(item => item.status === "ACTIVE"))
                 })
         }
     }, [userData.user])

@@ -45,6 +45,7 @@ const BenhNhanCuaToi = () => {
         if ((type === "BLOODPRESSURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.bloodPressure !== "");
             const bloodPressure = filteredDisMon.length > 0 ? filteredDisMon[filteredDisMon.length - 1].vitalSign?.bloodPressure : 'N/A';
+            
             return bloodPressure;
         } else if ((type === "TEMPERATURE")) {
             const filteredDisMon = data.disMon?.filter(item => item.vitalSign?.temperature !== 0);
@@ -99,7 +100,7 @@ const BenhNhanCuaToi = () => {
                             Thống kê giới tính bệnh nhân
                         </span>
                         <div className="flex items-center justify-center w-full">
-                            <SexChart />
+                            <SexChart logBooks={logBooks} />
                         </div>
                     </div>
                 </div>

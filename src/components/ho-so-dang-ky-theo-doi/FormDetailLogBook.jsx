@@ -204,10 +204,11 @@ const FormDetailLogBook = ({ data, onClose}) => {
                     <label className="text-[#5e5e5e] text-[15px]">
                       Triệu chứng:
                     </label>
-                    <span className="px-2 py-1">{logBooks?.disMon?.filter(item => item.symptom !== "").length > 0 ? logBooks.disMon?.filter(item => item.symptom !== "")[logBook.disMon?.filter(item => item.symptom !== "").length - 1].symptom + " " +
-                    `(${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.day}/
-                    ${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.month}/
-                    ${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.year})` : 'Không'}</span>
+                    <span className="px-2 py-1">{logBooks?.disMon?.filter(item => item.symptom !== "").length > 0 ? 
+                    logBooks.disMon?.filter(item => item.symptom !== "")[logBooks.disMon?.filter(item => item.symptom !== "").length - 1].symptom + " " +
+                    `(${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.day}/
+                    ${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.month}/
+                    ${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.year})` : 'Không'}</span>
                   </div>
                 </div>
                

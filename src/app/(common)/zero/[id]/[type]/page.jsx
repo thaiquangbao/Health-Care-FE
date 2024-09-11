@@ -49,8 +49,8 @@ const Zero = () => {
   }, [id]);
 
   const endMeet = () => {
-    const appId = 9941651;
-    const server = "0a4c93dcfcc779f9ce39d72e555284b4";
+    const appId = 990593542;
+    const server = "2cb25276b88aed6a8b25fb750babb23a";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,
@@ -74,8 +74,8 @@ const Zero = () => {
   };
 
   const myMeeting = async (element) => {
-    const appId = 9941651;
-    const server = "0a4c93dcfcc779f9ce39d72e555284b4";
+    const appId = 990593542;
+    const server = "2cb25276b88aed6a8b25fb750babb23a";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,

@@ -15,8 +15,8 @@ export default function HeartRate({ logBook, setLogBook }) {
 
   const resetForm = () => {
     setValue('')
-    setNote('')
-    setSymptom('')
+    // setNote('')
+    // setSymptom('')
   }
 
 
@@ -27,12 +27,12 @@ export default function HeartRate({ logBook, setLogBook }) {
       }
       const times = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
       const heartRates = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.vitalSign.heartRate).slice(-10)
-      const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.symptom).slice(-10)
-      const dsNote = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.note).slice(-10)
+      // const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.symptom).slice(-10)
+      // const dsNote = logBook.disMon.filter(item => item.vitalSign.heartRate !== 0).map(item => item.note).slice(-10)
       setTimes(times)
       setHeartRates(heartRates)
-      setDsTrieuChung(dsTrieuChung)
-      setDsNote(dsNote)
+      // setDsTrieuChung(dsTrieuChung)
+      // setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
@@ -144,12 +144,12 @@ export default function HeartRate({ logBook, setLogBook }) {
               id="heartRate"
               name="heartRate"
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Nhịp tim..."
+              placeholder="Nhịp tim (bpm)..."
               value={value}
               onChange={e => setValue(e.target.value)}
             />
           </div>
-          <div className="my-1"></div>
+          {/* <div className="my-1"></div>
           <div className="w-[40%]">
             <input
               type="text"
@@ -161,8 +161,8 @@ export default function HeartRate({ logBook, setLogBook }) {
               onChange={e => setSymptom(e.target.value)}
             />
           </div>
-          <div className="my-1"></div>
-          <div className="w-[40%]">
+          <div className="my-1"></div> */}
+          {/* <div className="w-[40%]">
             <input
               type="text"
               id="title"
@@ -172,7 +172,7 @@ export default function HeartRate({ logBook, setLogBook }) {
               value={note}
               onChange={e => setNote(e.target.value)}
             />
-          </div>
+          </div> */}
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
@@ -195,17 +195,17 @@ export default function HeartRate({ logBook, setLogBook }) {
                 #
               </th>
               <th scope="col" className="w-[20%] py-2">
-                Nhịp tim
+                Nhịp tim (bpm)
               </th>
               <th scope="col" className="w-[20%] py-2">
                 Ngày tạo
               </th>
-              <th scope="col" className="w-[20%] py-2">
+              {/* <th scope="col" className="w-[20%] py-2">
                 Triệu chứng
               </th>
               <th scope="col" className="w-[20%] py-2">
                 Ghi chú
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className="w-full bg-black font-medium">
@@ -216,8 +216,8 @@ export default function HeartRate({ logBook, setLogBook }) {
                 </td>
                 <td className="py-2">{heartRates[index]}</td>
                 <td className="py-2">{time}</td>
-                <td className="py-2">{dsTrieuChung[index]}</td>
-                <td className="py-2">{dsNote[index]}</td>
+                {/* <td className="py-2">{dsTrieuChung[index]}</td>
+                <td className="py-2">{dsNote[index]}</td> */}
               </tr>
             ))}
           </tbody>

@@ -18,8 +18,8 @@ export default function BloodPressure({ logBook, setLogBook }) {
   const resetForm = () => {
     setTamTruong('')
     setTamThu('')
-    setNote('')
-    setSymptom('')
+    // setNote('')
+    // setSymptom('')
   }
 
   useEffect(() => {
@@ -30,13 +30,13 @@ export default function BloodPressure({ logBook, setLogBook }) {
       const times = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
       const dsTamTruong = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[1]).slice(-10)
       const dsTamThu = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[0]).slice(-10)
-      const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.symptom).slice(-10)
-      const dsNote = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.note).slice(-10)
+      // const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.symptom).slice(-10)
+      // const dsNote = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.note).slice(-10)
       setDsTimes(times)
       setDsTamTruong(dsTamTruong)
       setDsTamThu(dsTamThu)
-      setDsTrieuChung(dsTrieuChung)
-      setDsNote(dsNote)
+      // setDsTrieuChung(dsTrieuChung)
+      // setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
       const newChart = new Chart(context, {
         type: "line",
@@ -173,7 +173,7 @@ export default function BloodPressure({ logBook, setLogBook }) {
               placeholder="Tâm trương..."
             />
           </div>
-          <div className="my-1"></div>
+          {/* <div className="my-1"></div>
           <div className="w-[40%]">
             <input
               type="text"
@@ -185,8 +185,8 @@ export default function BloodPressure({ logBook, setLogBook }) {
               placeholder="Triệu chứng"
             />
           </div>
-          <div className="my-1"></div>
-          <div className="w-[40%]">
+          <div className="my-1"></div> */}
+          {/* <div className="w-[40%]">
             <input
               type="text"
               id="title"
@@ -196,7 +196,7 @@ export default function BloodPressure({ logBook, setLogBook }) {
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Ghi chú"
             />
-          </div>
+          </div> */}
           <button
             style={{
               background: "linear-gradient(to right, #11998e, #38ef7d)",
@@ -227,12 +227,12 @@ export default function BloodPressure({ logBook, setLogBook }) {
               <th scope="col" className="w-[20%] py-2">
                 Thời gian
               </th>
-              <th scope="col" className="w-[20%] py-2">
+              {/* <th scope="col" className="w-[20%] py-2">
                 Triệu chứng
               </th>
               <th scope="col" className="w-[20%] py-2">
                 Ghi chú
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className=" w-[full] bg-black font-medium">
@@ -244,8 +244,8 @@ export default function BloodPressure({ logBook, setLogBook }) {
                 <td className="py-2">{dsTamTruong[index]}</td>
                 <td className="py-2">{dsTamThu[index]}</td>
                 <td className="py-2">{time}</td>
-                <td className="py-2">{dsTrieuChung[index]}</td>
-                <td className="py-2">{dsNote[index]}</td>
+                {/* <td className="py-2">{dsTrieuChung[index]}</td>
+                <td className="py-2">{dsNote[index]}</td> */}
               </tr>
             ))}
           </tbody>
