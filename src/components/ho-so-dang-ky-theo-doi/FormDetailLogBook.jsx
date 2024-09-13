@@ -16,18 +16,19 @@ import NhietDo from "@/components/benh-nhan-theo-doi/Nhiet-do";
 import HuyetAp from "@/components/benh-nhan-theo-doi/Huyet-ap";
 import BMI from "@/components/benh-nhan-theo-doi/Chi-so-BMI";
 import NhipTim from "@/components/benh-nhan-theo-doi/Nhip-tim";
-const FormDetailLogBook = ({ data, onClose}) => {
+import { formatMoney } from "@/utils/other";
+const FormDetailLogBook = ({ data, onClose }) => {
   const router = useRouter();
   const [doctorRecord, setDoctorRecord] = useState();
   const { userData } = useContext(userContext);
   const [medicalRecords, setMedicalRecords] = useState([]);
-  const [logBooks, setLogBooks] = useState([]);
+  const [logBook, setLogBook] = useState();
   const itemRef = useRef()
   useEffect(() => {
     if (data) {
-        setLogBooks(data)
+      setLogBook(data)
     }
-  },[data])
+  }, [data])
   return (
     <div
       ref={itemRef}
@@ -45,12 +46,12 @@ const FormDetailLogBook = ({ data, onClose}) => {
             height: 0,
             width: 0,
             transition: "0.3s",
-            overflow: "hidden",
+            overflow: "auto",
           }
       }
       className="z-[41] w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
-      <div className="px-[2rem] py-[1.5rem] w-full flex flex-col gap-2">
+      <div className="px-[2rem] py-[1.5rem] w-full flex flex-col gap-2 h-[100%] overflow-auto">
         <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (Đặt khám lâu dài)`}</span>
         <div className="flex justify-between items-center px-4 mt-4">
           <div className="flex items-center gap-4">
@@ -59,8 +60,8 @@ const FormDetailLogBook = ({ data, onClose}) => {
               style={{
                 backgroundSize: "cover",
                 backgroundImage: `url(${userData.user?.role !== "DOCTOR"
-                  ? logBooks?.doctor?.image
-                  : logBooks?.patient?.image
+                  ? logBook?.doctor?.image
+                  : logBook?.patient?.image
                   })`,
               }}
             ></div>
@@ -68,180 +69,175 @@ const FormDetailLogBook = ({ data, onClose}) => {
               <span className="font-semibold text-[15px]">
                 BS.{" "}
                 {userData.user?.role !== "DOCTOR"
-                  ? logBooks?.doctor?.fullName
-                  : logBooks?.patient?.fullName}
+                  ? logBook?.doctor?.fullName
+                  : logBook?.patient?.fullName}
               </span>
               <span className="text-[14px]">
                 {userData.user?.role !== "DOCTOR"
-                  ? logBooks?.doctor?.phone
-                  : logBooks?.patient?.phone}
+                  ? logBook?.doctor?.phone
+                  : logBook?.patient?.phone}
               </span>
             </div>
           </div>
           {/* Khúc chổ này để hiển thị vào phòng khám định kỳ */}
           <div className="flex flex-col gap-1">
             <span className="text-[14px]">
-              Thời gian hẹn: {logBooks?.date?.time}{" "}
-              ngày {logBooks?.date?.day} tháng{" "}
-              {logBooks?.date?.month},{" "}
-              {logBooks?.date?.year}
+              Thời gian hẹn: {logBook?.date?.time}{" "}
+              ngày {logBook?.date?.day} tháng{" "}
+              {logBook?.date?.month},{" "}
+              {logBook?.date?.year}
             </span>
             <div className="flex items-center space-x-2 justify-end">
               <span
                 style={{
                   color:
-                    logBooks?.status?.status_type === "ACCEPTED"
+                    logBook?.status?.status_type === "ACCEPTED"
                       ? "green"
-                      : logBooks?.status?.status_type === "QUEUE"
+                      : logBook?.status?.status_type === "QUEUE"
                         ? "#999"
-                        : "red",
+                        : logBook?.status?.status_type === "COMPLETED" ? 'blue' : "red",
                 }}
                 className="font-medium text-[14px]"
               >
-                {logBooks?.status?.status_type === "ACCEPTED"
-                  ? calculateDetailedTimeDifference(
-                    convertDateToDayMonthYearTimeObject(
-                      new Date().toISOString()
-                    ),
-                    logBooks?.date
-                  )
-                  : logBooks?.status?.status_message}
+                {logBook?.status?.status_type === "ACCEPTED"
+                  ? "Bác sĩ đã đồng ý" : logBook?.status?.message}
               </span>
               <div className="relative flex h-4 w-4">
                 <span
                   style={{
                     backgroundColor:
-                      logBooks?.status?.status_type === "ACCEPTED"
+                      logBook?.status?.status_type === "ACCEPTED"
                         ? "green"
-                        : logBooks?.status?.status_type === "QUEUE"
+                        : logBook?.status?.status_type === "QUEUE"
                           ? "#999"
-                          : "red",
+                          : logBook?.status?.status_type === "COMPLETED" ? 'blue' : "red",
                   }}
                   className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
                 <span
                   style={{
                     backgroundColor:
-                      logBooks?.status?.status_type === "ACCEPTED"
+                      logBook?.status?.status_type === "ACCEPTED"
                         ? "green"
-                        : logBooks?.status?.status_type === "QUEUE"
+                        : logBook?.status?.status_type === "QUEUE"
                           ? "#999"
-                          : "red",
+                          : logBook?.status?.status_type === "COMPLETED" ? 'blue' : "red",
                   }}
                   className="relative inline-flex h-4 w-4 rounded-full"
                 ></span>
               </div>
             </div>
           </div>
-           
-        </div> 
+
+        </div>
         <div className="py-[1.5rem] min-w-[100%] flex flex-col">
-          <span style={{ color: logBooks?.status?.status_type !== 'STOPPED' ? 'black' : 'red' }} className="font-semibold text-[18px]">
-              Thông tin bệnh nhân  ({logBooks?.status?.status_type !== 'STOPPED' ? 'Đang theo dõi sức khỏe' : "Đã dừng theo dõi sức khỏe"})
-            </span>
-            <div className="flex flex-row gap-2 w-full">
-             <div className="flex flex-col w-[30%]">
-                <div className="flex flex-col py-4 gap-3">
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Họ và tên:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.patient?.fullName}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Ngày sinh:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.patient?.dateOfBirth}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Giới tính:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.patient?.sex === true ? "Nam" : "Nữ"}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Số điện thoại:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.patient?.phone}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Email:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.patient?.email}</span>
-                  </div>
-                 
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Loại phiếu:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.priceList?.price}đ/{logBooks?.priceList?.type}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Ngày đặt khám:
-                    </label>
-                    <span className="px-2 py-1">
-                        {logBooks?.date?.time}{" "}
-                        ngày {logBooks?.date?.day} tháng{" "}
-                        {logBooks?.date?.month},{" "}
-                        {logBooks?.date?.year}
-                    </span>
-                  </div>
-                   <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Ghi chú:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.disMon?.filter(item => item.note !== "").length > 0  ? 
-                    logBooks?.disMon?.filter(item => item.note !== "")[logBooks.disMon?.filter(item => item.note !== "").length - 1].note + " " + 
-                    `(${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.day}/
-                    ${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.month}/
-                    ${logBooks?.disMon?.filter(item => item.note !== "")[logBooks?.disMon?.filter(item => item.note !== "").length - 1].date?.year})` : 'Không'}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="text-[#5e5e5e] text-[15px]">
-                      Triệu chứng:
-                    </label>
-                    <span className="px-2 py-1">{logBooks?.disMon?.filter(item => item.symptom !== "").length > 0 ? 
-                    logBooks.disMon?.filter(item => item.symptom !== "")[logBooks.disMon?.filter(item => item.symptom !== "").length - 1].symptom + " " +
-                    `(${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.day}/
-                    ${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.month}/
-                    ${logBooks?.disMon?.filter(item => item.symptom !== "")[logBooks?.disMon?.filter(item => item.symptom !== "").length - 1].date?.year})` : 'Không'}</span>
-                  </div>
+          <span style={{ color: logBook?.status?.status_type !== 'STOPPED' ? 'black' : 'red' }} className="font-semibold text-[18px]">
+            Thông tin bệnh nhân  ({logBook?.status?.status_type !== 'STOPPED' ? 'Đang theo dõi sức khỏe' : "Đã dừng theo dõi sức khỏe"})
+          </span>
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-col w-full">
+              <div className="grid grid-cols-3 py-4 gap-3">
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Họ và tên:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.patient?.fullName}</span>
                 </div>
-               
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Ngày sinh:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.patient?.dateOfBirth}</span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Giới tính:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.patient?.sex === true ? "Nam" : "Nữ"}</span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Số điện thoại:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.patient?.phone}</span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Email:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.patient?.email}</span>
+                </div>
+
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Loại phiếu:
+                  </label>
+                  <span className="px-2 py-1">{formatMoney(logBook?.priceList?.price)}đ/{logBook?.priceList?.type}</span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Ngày đặt khám:
+                  </label>
+                  <span className="px-2 py-1">
+                    {logBook?.date?.time}{" "}
+                    ngày {logBook?.date?.day} tháng{" "}
+                    {logBook?.date?.month},{" "}
+                    {logBook?.date?.year}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Ghi chú:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.disMon?.filter(item => item.note !== "").length > 0 ?
+                    logBook?.disMon?.filter(item => item.note !== "")[logBook?.disMon?.filter(item => item.note !== "").length - 1].note + " " +
+                    `(${logBook?.disMon?.filter(item => item.note !== "")[logBook?.disMon?.filter(item => item.note !== "").length - 1].date?.day}/
+                    ${logBook?.disMon?.filter(item => item.note !== "")[logBook?.disMon?.filter(item => item.note !== "").length - 1].date?.month}/
+                    ${logBook?.disMon?.filter(item => item.note !== "")[logBook?.disMon?.filter(item => item.note !== "").length - 1].date?.year})` : 'Không'}</span>
+                </div>
+                <div className="flex items-center">
+                  <label className="text-[#5e5e5e] text-[15px]">
+                    Triệu chứng:
+                  </label>
+                  <span className="px-2 py-1">{logBook?.disMon?.filter(item => item.symptom !== "").length > 0 ?
+                    logBook?.disMon?.filter(item => item.symptom !== "")[logBook?.disMon?.filter(item => item.symptom !== "").length - 1].symptom + " " +
+                    `(${logBook?.disMon?.filter(item => item.symptom !== "")[logBook?.disMon?.filter(item => item.symptom !== "").length - 1].date?.day}/
+                    ${logBook?.disMon?.filter(item => item.symptom !== "")[logBook?.disMon?.filter(item => item.symptom !== "").length - 1].date?.month}/
+                    ${logBook?.disMon?.filter(item => item.symptom !== "")[logBook?.disMon?.filter(item => item.symptom !== "").length - 1].date?.year})` : 'Không'}</span>
+                </div>
               </div>
-              {/* <div className="flex flex-col gap-1 w-[75%]">
-                {logBooks?.status?.status_type !== 'STOPPED' ? (
+
+            </div>
+            {logBook && (
+              <div className="flex flex-col gap-1 w-full">
+                {logBook?.status?.status_type !== 'STOPPED' ? (
                   <>
-                    <div className="flex flex-row gap-4 p-2 h-[50%]">
+                    <div className="flex flex-row gap-4 p-2 w-full">
                       <div className="w-[50%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Nhiệt độ cơ thể</span>
                         </div>
-                        <NhietDo logBook={logBooks} />
+                        <NhietDo logBook={logBook} />
                       </div>
                       <div className="w-[50%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Huyết áp</span>
                         </div>
-                        <HuyetAp logBook={logBooks} />
+                        <HuyetAp logBook={logBook} />
                       </div>
                     </div>
                     <div className="flex flex-row gap-4 p-2 h-[50%]">
-                      <div className="w-[50%]">
+                      <div className="w-[60%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Chỉ số BMI</span>
                         </div>
-                        <BMI logBook={logBooks} />
+                        <BMI logBook={logBook} />
                       </div>
-                      <div className="w-[50%]">
+                      <div className="w-[60%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Nhịp tim</span>
                         </div>
-                        <NhipTim logBook={logBooks} />
+                        <NhipTim logBook={logBook} />
                       </div>
                     </div>
                   </>
@@ -250,8 +246,9 @@ const FormDetailLogBook = ({ data, onClose}) => {
                     <span className="text-[20px] font-semibold">Đã Dừng Theo Dõi Sức Khỏe</span>
                   </div>
                 )}
-              </div> */}
-            </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <button onClick={onClose}>

@@ -18,6 +18,7 @@ import {
 import React, {
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 const Zero = () => {
@@ -32,6 +33,25 @@ const Zero = () => {
     useState(false);
   const { globalHandler } = useContext(globalContext);
   const router = useRouter();
+  const [offset, setOffset] = useState()
+  const wrapperRef = useRef()
+
+  useEffect(() => {
+    const element = document.querySelector('.QeMJj1LEulq1ApqLHxuM');
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const position = {
+        top: rect.top,
+        left: rect.left,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height
+      };
+      setOffset(position)
+    }
+
+  }, [document.querySelector('.QeMJj1LEulq1ApqLHxuM')])
 
   useEffect(() => {
     if (userData.user) {
@@ -64,6 +84,10 @@ const Zero = () => {
       authHandler.showAssessment();
       zc.hangUp();
     } else {
+
+      // them api gmail o day
+
+
       globalThis.window.location.href = "/cuoc-hen";
       zc.hangUp();
     }
@@ -139,11 +163,13 @@ const Zero = () => {
           ref={myMeeting}
         ></div>
       )}
-      {!checkMedicalRecord(appointmentData.medicalRecord) && (
+      {(offset && !checkMedicalRecord(appointmentData.medicalRecord) && type !== 'patient') && (
         <button onClick={() => {
           authHandler.showMedicalRecord();
           globalHandler.notify(notifyType.WARNING, 'Bác sĩ cần hoàn thành thông tin bệnh nhân trước khi rời khỏi phòng')
-        }} className="absolute bottom-[1.5%] left-[53.5%] rounded-xl translate-x-[-50%] h-[4.7%] w-[4.8%] z-[1]">
+        }}
+          style={{ width: offset.width + 'px', height: offset.height + 'px', top: offset.top + 'px', left: offset.left + 'px' }}
+          className="fixed z-[1]">
         </button>
       )}
       {userData.user?.role === "DOCTOR" && (

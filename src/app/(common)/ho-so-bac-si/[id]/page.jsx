@@ -51,7 +51,7 @@ const HoSoBacSi = () => {
     }).then((res) => {
       appointmentHandler.setDoctorRecord(res);
       setDoctorRecord(res);
-      
+
     })
       .catch(error => {
         router.push('/bac-si-noi-bat')
@@ -61,13 +61,13 @@ const HoSoBacSi = () => {
 
   useEffect(() => {
     if (userData.user) {
-       api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByPatient/${userData.user?._id}`, sendToken: true})
-      .then(res => {
-        setHealthLogBooks(res)
-      })
+      api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByPatient/${userData.user?._id}`, sendToken: true })
+        .then(res => {
+          setHealthLogBooks(res)
+        })
     }
-   
-  },[userData.user]);
+
+  }, [userData.user]);
   useEffect(() => {
     api({
       path: "/price-lists/getAll",
@@ -193,32 +193,29 @@ const HoSoBacSi = () => {
               </div>
             </div>
 
-{/* chổ này */}
-          {(!healthLogBooks?.length || !healthLogBooks.filter(log => log.status.status_type === 'ACCEPTED').length || 
-          !healthLogBooks.filter(log => log.status.status_type === 'STOPPED').length || 
-          !healthLogBooks.filter(log => log.status.status_type === 'TRANSFER').length ||
-          !healthLogBooks.filter(log => log.status.status_type === 'QUEUE').length ) && (
-            <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
-              <div className="flex flex-col text-[#333333]">
-                <span className="text-[14px]">
-                  SỐ ĐIỆN THOẠI
-                </span>
-                <span className="text-[17px]">
-                  {doctorRecord?.doctor?.phone}
-                </span>
+            {/* chổ này */}
+
+            {!healthLogBooks.filter(log => (log.status.status_type === 'ACCEPTED' || log.status.status_type === 'QUEUE' || log.status.status_type === 'TRANSFER')).length > 0 && (
+              <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+                <div className="flex flex-col text-[#333333]">
+                  <span className="text-[14px]">
+                    SỐ ĐIỆN THOẠI
+                  </span>
+                  <span className="text-[17px]">
+                    {doctorRecord?.doctor?.phone}
+                  </span>
+                </div>
+                <div>
+                  <button
+                    onClick={() => appointmentHandler.showFormSignUpHealth(doctorRecord)}
+                    style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
+                    className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
+                  >
+                    Đăng Ký Theo Dõi Sức Khỏe
+                  </button>
+                </div>
               </div>
-              <div>
-                
-                <button
-                  onClick={() => appointmentHandler.showFormSignUpHealth(doctorRecord)}
-                  style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
-                  className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
-                >
-                  Đăng Ký Theo Dõi Sức Khỏe
-                </button>
-              </div>
-            </div>
-        )}
+            )}
 
 
           </div>

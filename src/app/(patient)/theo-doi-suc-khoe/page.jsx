@@ -105,7 +105,7 @@ const TheoDoiSucKhoe = () => {
                                                         : logBook.status.status_type ===
                                                             "ACCEPTED"
                                                             ? "green"
-                                                            : "red",
+                                                            : logBook.status.status_type === "COMPLETED" ? 'blue' : "red",
                                             }}
                                             className="py-4"
                                         >

@@ -1,8 +1,9 @@
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef, useState } from "react";
-
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { userContext } from "@/context/UserContext";
+import { authContext } from "@/context/AuthContext";
 export default function Temperature({ logBook, setLogBook }) {
   const chartRef = useRef(null);
   const [temperature, setTemperature] = useState("");
@@ -12,7 +13,8 @@ export default function Temperature({ logBook, setLogBook }) {
   const [symptom, setSymptom] = useState('')
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
-
+  const { authHandler } = useContext(authContext)
+  const { userData } = useContext(userContext)
   const resetForm = () => {
     setTemperature('')
     // setNote('')
@@ -83,18 +85,32 @@ export default function Temperature({ logBook, setLogBook }) {
   }, [logBook]);
 
   const handleSubmit = () => {
-    const body = {
-      _id: logBook._id,
-      disMonItem: {
-        symptom,
-        vitalSign: {
-          temperature
-        },
-        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-        note
-      }
+    
+    const dataAI = {
+      patient: {
+        sex: userData.user?.sex,
+        dateOfBirth: userData.user?.dateOfBirth
+      },
+      temperature: temperature
     }
-    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-temperature', body })
+    
+    api({ sendToken: false, type: TypeHTTP.POST, path: '/chats/temperature-warning', body: dataAI })
+      .then(resAI => {
+        authHandler.showHealthResponse({ message: `Nhiệt độ cơ thể ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}` })
+        const body = {
+          _id: logBook._id,
+          disMonItem: {
+            vitalSign: {
+              temperature
+            },
+            date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+          },
+          status_temperature: {
+            status_type: resAI.status,
+            message: resAI.comment
+          }
+        }
+        api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-temperature', body })
       .then(res => {
         setLogBook(res)
         api({
@@ -131,6 +147,8 @@ export default function Temperature({ logBook, setLogBook }) {
 
           })
       })
+    })
+    
   }
 
   return (

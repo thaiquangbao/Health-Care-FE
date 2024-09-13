@@ -7,6 +7,7 @@ export default function NhietDo({ logBook }) {
   const [temperature, setTemperature] = useState("");
   const [times, setTimes] = useState([])
   const [temperatures, setTemperatures] = useState([])
+
   useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current && logBook) {
@@ -63,10 +64,10 @@ export default function NhietDo({ logBook }) {
           maintainAspectRatio: false,
         },
       });
-
       chartRef.current.chart = newChart;
     }
   }, [logBook]);
+
   return (
     <div className="flex flex-col">
       <div className="mt-4 relative h-[250px]">

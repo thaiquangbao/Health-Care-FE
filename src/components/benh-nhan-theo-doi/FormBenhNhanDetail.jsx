@@ -104,6 +104,12 @@ const FormBenhNhanDetail = ({ logBookUpdate, onClose, visibleTransfer, setVisibl
                   </div>
                   <div className="flex items-center">
                     <label className="text-[#5e5e5e] text-[15px]">
+                      Trạng thái sức khỏe:
+                    </label>
+                    <span className="px-2 py-1">Tốt</span>
+                  </div>
+                  <div className="flex items-center">
+                    <label className="text-[#5e5e5e] text-[15px]">
                       Ngày tái khám:
                     </label>
                     <span className="px-2 py-1">(10:30) 10-04-2002</span>

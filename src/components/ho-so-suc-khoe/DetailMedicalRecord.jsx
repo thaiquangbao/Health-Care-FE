@@ -129,6 +129,16 @@ const DetailMedicalRecord = ({ medicalRecord }) => {
                         {medicalRecord?.weight === 0 ? 'Không' : medicalRecord?.weight + ' kg'}
                     </div>
                 </div>
+                <div className="flex px-2 py-2 gap-[2rem]">
+                    <span className="font-semibold mt-[1rem]">
+                        Hình ảnh mô tả:
+                    </span>
+                    <div className="flex items-center gap-5 text-[13px]">
+                    {medicalRecord?.images?.map((image, index) => (
+                        <div key={index} style={{ backgroundImage: `url(${image})` }} className="h-[50px] bg-cover aspect-video" />
+                    ))}
+                    </div>
+                </div>
                 <div className="grid grid-cols-2 h-auto gap-x-[0.5rem] mt-[1rem] px-2">
                     <div>
                         <span className="font-semibold px-2 mt-[1rem]">

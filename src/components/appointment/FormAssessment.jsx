@@ -64,8 +64,6 @@ const FormAssessment = ({ visible, hidden }) => {
     });
   };
 
-  console.log(appointmentData.currentAppointment)
-
   return (
     <div
       style={{

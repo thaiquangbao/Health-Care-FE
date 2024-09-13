@@ -100,7 +100,7 @@ const FormDetailAppointment = ({
                       ? "green"
                       : data?.status === "QUEUE"
                         ? "#999"
-                        : "red",
+                        : data?.status === "COMPLETED" ? 'blue' : "red",
                 }}
                 className="font-medium text-[14px]"
               >
@@ -121,7 +121,7 @@ const FormDetailAppointment = ({
                         ? "green"
                         : data?.status === "QUEUE"
                           ? "#999"
-                          : "red",
+                          : data?.status === "COMPLETED" ? 'blue' : "red",
                   }}
                   className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
@@ -132,7 +132,7 @@ const FormDetailAppointment = ({
                         ? "green"
                         : data?.status === "QUEUE"
                           ? "#999"
-                          : "red",
+                          : data?.status === "COMPLETED" ? 'blue' : "red",
                   }}
                   className="relative inline-flex h-4 w-4 rounded-full"
                 ></span>

@@ -12,23 +12,19 @@ import React, {
 } from "react";
 import { userContext } from "./UserContext";
 import { api, TypeHTTP } from "@/utils/api";
+import HealthResponseForm from "@/components/benh-nhan-theo-doi/HealthResponseForm";
 
 export const authContext = createContext();
 
 const AuthContext = ({ children }) => {
   const [visibleSignUp, setVisibleSignUp] = useState(false);
   const [visibleSignIn, setVisibleSignIn] = useState(false);
-  const [visibleWrapper, setVisibleWrapper] =
-    useState(false);
-  const [
-    visibleFormCreateBaiViet,
-    setVisibleFormCreateBaiViet,
-  ] = useState(false);
+  const [visibleWrapper, setVisibleWrapper] = useState(false);
+  const [visibleFormCreateBaiViet, setVisibleFormCreateBaiViet] = useState(false);
   const [visibleMore, setVisibleMore] = useState(false);
-  const [visibleAssessment, setVisibleAssessment] =
-    useState(false);
-  const [visibleMedicalRecord, setVisibleMedicalRecord] =
-    useState(false);
+  const [visibleAssessment, setVisibleAssessment] = useState(false);
+  const [visibleMedicalRecord, setVisibleMedicalRecord] = useState(false);
+  const [healthResponse, setHealthResponse] = useState()
   const wrapperRef = useRef();
   const [loading, setLoading] = useState(true);
   const { userData } = useContext(userContext);
@@ -142,6 +138,14 @@ const AuthContext = ({ children }) => {
     setDetailMedicalRecord()
   };
 
+  const showHealthResponse = (data) => {
+    setHealthResponse(data)
+  }
+
+  const hiddenHealthResponse = () => {
+    setHealthResponse()
+  }
+
   const hidden = () => {
     hiddenWrapper();
     hiddenSignUp();
@@ -161,7 +165,8 @@ const AuthContext = ({ children }) => {
     visibleAssessment,
     detailMedicalRecord,
     currentRoom,
-    rooms
+    rooms,
+    healthResponse
   };
 
   const handler = {
@@ -181,7 +186,9 @@ const AuthContext = ({ children }) => {
     showDetailMedicalRecord,
     hiddenDetailMedicalRecord,
     setCurrentRoom,
-    setRooms
+    setRooms,
+    showHealthResponse,
+    hiddenHealthResponse
   };
 
   return (
@@ -198,6 +205,7 @@ const AuthContext = ({ children }) => {
           visible={visibleSignIn}
           hidden={hiddenSignIn}
         />
+        <HealthResponseForm healthResponse={healthResponse} setHealthResponse={setHealthResponse} />
         {children}
       </div>
       {loading && <Loading />}

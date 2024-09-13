@@ -1,5 +1,6 @@
 import { appointmentContext } from '@/context/AppointmentContext'
 import { globalContext, notifyType } from '@/context/GlobalContext'
+import { healthContext } from '@/context/HealthContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
 import { compare2Date, compareDate1GetterThanDate2, convertDateToDayMonthYearObject, formatVietnameseDate, generateTimes } from '@/utils/date'
@@ -7,10 +8,42 @@ import React, { useContext, useEffect, useState } from 'react'
 
 const FormSchedule = ({ visible, hidden, day }) => {
     const [currentStep, setCurrentStep] = useState(1)
-    let times = generateTimes('08:00', '20:00', 30);
+    let times = generateTimes('08:00', '20:00', 60);
     const [doctorRecord, setDoctorRecord] = useState()
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
-    const { userHandler } = useContext(userContext)
+    const { userHandler, userData } = useContext(userContext)
+    const [currentIndex, setCurrentIndex] = useState(-1)
+    const [visibleList, setVisibleList] = useState(false)
+    const [logBooks, setLogBooks] = useState([]);
+    const [priceList, setPriceList] = useState()
+
+    useEffect(() => {
+        if (visible === false) {
+            setCurrentIndex(-1)
+            setVisibleList(false)
+        }
+    }, [visible])
+
+    useEffect(() => {
+        api({
+            path: "/price-lists/getAll",
+            sendToken: false,
+            type: TypeHTTP.GET,
+        }).then((res) => {
+            setPriceList(
+                res.filter((item) => item.type === "Theo Dõi Hàng Tuần")[0]
+            );
+        });
+    }, [appointmentData.sicks]);
+
+    useEffect(() => {
+        if (userData.user) {
+            api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByDoctor/${userData.user._id}`, sendToken: true })
+                .then(logBooks => {
+                    setLogBooks(logBooks)
+                })
+        }
+    }, [userData.user])
 
     useEffect(() => {
         setDoctorRecord(appointmentData.doctorRecord)
@@ -25,7 +58,11 @@ const FormSchedule = ({ visible, hidden, day }) => {
                     const timeItem = scheduleItem.times[j]
                     if (timeItem.time === time) {
                         if (timeItem.status !== '') {
-                            return 2
+                            if (timeItem.status === 'health') {
+                                return 3
+                            } else {
+                                return 2
+                            }
                         } else
                             return 1
                     }
@@ -79,6 +116,68 @@ const FormSchedule = ({ visible, hidden, day }) => {
         }
     }
 
+    const handleCreateLichTheoDoi = (time, patientId) => {
+        let currentDay = appointmentData.currentDay
+        let record = JSON.parse(JSON.stringify(doctorRecord))
+        const body = {
+            doctor_record_id: appointmentData.doctorRecord._id,
+            patient: patientId,
+            appointment_date: {
+                day: currentDay.day,
+                month: currentDay.month,
+                year: currentDay.year,
+                time
+            },
+            status: "ACCEPTED",
+            note: "Theo dõi sức khỏe hàng tuần",
+            priceList: priceList,
+            price_list: priceList._id,
+            status_message: 'Đã xác nhận',
+            sick: 'Theo dõi sức khỏe hàng tuần'
+        }
+        api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body })
+            .then(res => {
+
+                api({
+                    type: TypeHTTP.POST, path: '/doctorRecords/update', body: {
+                        ...record, schedules: [
+                            ...record.schedules,
+                            {
+                                date: currentDay,
+                                times: [
+                                    {
+                                        time: time,
+                                        status: 'health',
+                                        price: 0
+                                    }
+                                ]
+                            }
+                        ]
+                    }, sendToken: false
+                })
+                    .then(res => {
+                        appointmentHandler.setDoctorRecord({ ...res, doctor: appointmentData.doctorRecord.doctor })
+                        setDoctorRecord({
+                            ...record, schedules: [
+                                ...record.schedules,
+                                {
+                                    date: currentDay,
+                                    times: [
+                                        {
+                                            time: time,
+                                            status: 'health',
+                                            price: 0
+                                        }
+                                    ]
+                                }
+                            ]
+                        })
+                        setVisibleList(false)
+                        setCurrentIndex(-1)
+                    })
+            })
+    }
+
     const handleUpdate = () => {
         const body = {
             ...doctorRecord, doctor: appointmentData.doctorRecord.doctor.id
@@ -103,10 +202,74 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                 if (new Date().getHours() + 2 >= Number(time.split(':')[0])) {
                                     // return <div key={index} className={`px-4 flex item-center justify-center py-2 transition-all border-[1px] border-[#999] text-[13px] font-medium bg-[#b7b7b7] rounded-md`}>{time}</div>
                                 } else {
-                                    return <button key={index} onClick={() => handleTime(time, checkSchedule(time) === 2 ? true : false)} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className={`px-4 py-2 transition-all cursor-pointer border-[1px] border-[#999] text-[13px] font-medium bg-[white] rounded-md`}>{time}</button>
+                                    return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
+                                        <button onClick={() => {
+                                            if (checkSchedule(time) === 1) {
+                                                handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                            } else {
+                                                setVisibleList(false)
+                                                setCurrentIndex(index)
+                                            }
+                                        }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
+                                        <div style={{ transition: '0.5s', width: currentIndex === index ? '195px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                            {visibleList === false ? (
+                                                <>
+                                                    <button onClick={() => {
+                                                        setCurrentIndex(-1)
+                                                        handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
+                                                        Thường
+                                                    </button>
+                                                    <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
+                                                        Theo Dõi
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
+                                                    {logBooks.map((item, index) => {
+                                                        if (item.status.status_type === 'ACCEPTED') {
+                                                            return <button onClick={() => handleCreateLichTheoDoi(time, item.patient._id)} className='w-full bg-[green] text-[white] text-[14px] py-2 ' key={index}>{item.patient.fullName}</button>
+                                                        }
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 }
                             } else {
-                                return <button key={index} onClick={() => handleTime(time, checkSchedule(time) === 2 ? true : false)} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className={`px-4 py-2 transition-all cursor-pointer border-[1px] border-[#999] text-[13px] font-medium bg-[white] rounded-md`}>{time}</button>
+                                return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
+                                    <button onClick={() => {
+                                        if (checkSchedule(time) === 1) {
+                                            handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                        } else {
+                                            setVisibleList(false)
+                                            setCurrentIndex(index)
+                                        }
+                                    }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
+                                    <div style={{ transition: '0.5s', width: currentIndex === index ? '195px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                        {visibleList === false ? (
+                                            <>
+                                                <button onClick={() => {
+                                                    setCurrentIndex(-1)
+                                                    handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                                }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
+                                                    Thường
+                                                </button>
+                                                <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
+                                                    Theo Dõi
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
+                                                {logBooks.map((item, index) => {
+                                                    if (item.status.status_type === 'ACCEPTED') {
+                                                        return <button onClick={() => handleCreateLichTheoDoi(time, item.patient._id)} className='w-full bg-[green] text-[white] text-[14px] py-2 ' key={index}>{item.patient.fullName}</button>
+                                                    }
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             }
                         })}
                     </div>

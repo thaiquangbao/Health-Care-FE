@@ -36,7 +36,7 @@ const ResultBooking = () => {
                                     appointmentHandler.setDoctorRecord()
                                     globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
                                     router.push('/bac-si-noi-bat')
-                                    globalHandler.reload()
+                                    // globalHandler.reload()
                                 })
                         })
                 })

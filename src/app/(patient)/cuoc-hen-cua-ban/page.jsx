@@ -132,7 +132,7 @@ const CuocHenCuaBan = () => {
                                     <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4 text-[15px]">
                                         BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]?.doctor?.fullName}
                                     </td>
-                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : 'red' }} className="py-4">
+                                    <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : appointment.status === "COMPLETED" ? 'blue' : "red" }} className="py-4">
                                         {appointment.status_message}
                                     </td>
                                     <td onClick={() => appointmentHandler.showFormDetailAppointment(appointment, displayConnect === appointment._id ? true : false)} className="py-4">
@@ -142,7 +142,7 @@ const CuocHenCuaBan = () => {
                                         {appointment.note}
                                     </td>
                                     <td className="py-4 flex gap-2 items-center justify-center">
-                                        {!['CANCELED', 'ACCEPTED', 'REJECTED'].includes(appointment.status) && (
+                                        {!['CANCELED', 'ACCEPTED', 'REJECTED', 'COMPLETED'].includes(appointment.status) && (
                                             <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
                                         )}
                                         {(displayConnect === appointment._id) && (

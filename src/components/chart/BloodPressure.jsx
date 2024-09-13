@@ -1,8 +1,9 @@
+import { authContext } from "@/context/AuthContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { adjustDisplayTime, convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef, useState } from "react";
-
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { userContext } from "@/context/UserContext";
 export default function BloodPressure({ logBook, setLogBook }) {
   const chartRef = useRef(null);
   const [tamThu, setTamThu] = useState('')
@@ -14,7 +15,8 @@ export default function BloodPressure({ logBook, setLogBook }) {
   const [dsTimes, setDsTimes] = useState([])
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
-
+  const { authHandler } = useContext(authContext)
+  const { userData } = useContext(userContext)
   const resetForm = () => {
     setTamTruong('')
     setTamThu('')
@@ -96,52 +98,78 @@ export default function BloodPressure({ logBook, setLogBook }) {
   }, [logBook]);
 
   const handleSubmit = () => {
-    const body = {
-      _id: logBook._id,
-      disMonItem: {
-        symptom,
-        vitalSign: {
-          bloodPressure: tamThu + '/' + tamTruong
-        },
-        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-        note
+
+    // show 
+   
+
+    
+    // AI gợi ý
+    const dataAI = {
+      patient: {
+        sex: userData.user?.sex,
+        dateOfBirth: userData.user?.dateOfBirth
+      },
+      vitalSign: {
+        bloodPressure: tamThu + '/' + tamTruong
       }
     }
-    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
-      .then(res => {
-        setLogBook(res)
-        api({
-          type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
-            patient_id: logBook.patient._id,
-            doctor_id: logBook.doctor._id
+    api({ sendToken: false, type: TypeHTTP.POST, path: '/chats/bloodPressure-warning', body: dataAI })
+      .then(resAI => {
+        authHandler.showHealthResponse({ message: `Huyết áp ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}` })
+        const body = {
+          _id: logBook._id,
+          disMonItem: {
+            vitalSign: {
+              bloodPressure: tamThu + '/' + tamTruong
+            },
+            date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+          },
+          status_bloodPressure: {
+            status_type: resAI.status,
+            message: resAI.comment,
           }
-        })
+        }
+        api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
           .then(res => {
-            const newMessage = {
-              content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
-              vitals: {
-                bloodPressure: tamThu + '/' + tamTruong
-              },
-              time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-              author: 'PATIENT',
-              type: 'REPORT'
-            }
-            resetForm()
-            const newMessages = JSON.parse(JSON.stringify(res[0]))
-            newMessages.messages.push(newMessage)
-            api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
-            api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
-              .then(room1 => {
-                const room = JSON.parse(JSON.stringify(room1))
-                room.lastMessage = {
-                  author: 'PATIENT',
-                  content: 'Đã gửi báo cáo huyết áp',
+            setLogBook(res)
+          
+            api({
+              type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
+                patient_id: logBook.patient._id,
+                doctor_id: logBook.doctor._id
+              }
+            })
+              .then(res => {
+                const newMessage = {
+                  content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
+                  vitals: {
+                    bloodPressure: tamThu + '/' + tamTruong
+                  },
                   time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                  author: 'PATIENT',
+                  type: 'REPORT'
                 }
-                api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+                resetForm()
+                const newMessages = JSON.parse(JSON.stringify(res[0]))
+                newMessages.messages.push(newMessage)
+                api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
+                api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
+                  .then(room1 => {
+                    const room = JSON.parse(JSON.stringify(room1))
+                    room.lastMessage = {
+                      author: 'PATIENT',
+                      content: 'Đã gửi báo cáo huyết áp',
+                      time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+                    }
+                    api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
+                  })
+                
               })
+              
+            
           })
       })
+   
   }
 
   return (

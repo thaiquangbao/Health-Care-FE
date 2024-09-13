@@ -494,7 +494,7 @@ const CuocHen = ({ type, setType }) => {
                                                     : appointment.status ===
                                                         "ACCEPTED"
                                                         ? "green"
-                                                        : "red",
+                                                        : appointment?.status === "COMPLETED" ? 'blue' : "red",
                                         }}
                                         className="py-4"
                                     >

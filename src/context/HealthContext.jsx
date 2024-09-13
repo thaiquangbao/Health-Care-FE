@@ -15,7 +15,7 @@ export const healthContext = createContext()
 
 const HealthProvider = ({ children }) => {
 
-    const { authHandler } = useContext(authContext)
+    const { authHandler, authData } = useContext(authContext)
     const { userData } = useContext(userContext)
     const [logBook, setLogBook] = useState()
     const [rooms, setRooms] = useState([])
@@ -81,7 +81,7 @@ const HealthProvider = ({ children }) => {
                     }
                     return item
                 }))
-                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật triệu chứng ( ${data.data.disMon[data.data.disMon.length - 1].symptom} ${data.data.disMon[data.data.disMon.length - 1].note !== "" ? `. Ghi chú:${data.data.disMon[data.data.disMon.length - 1].note}`: ""} )`)
+                globalHandler.notify(notifyType.HEALTH, `Bệnh nhân ${data.data.patient.fullName} vừa cập nhật triệu chứng ( ${data.data.disMon[data.data.disMon.length - 1].symptom} ${data.data.disMon[data.data.disMon.length - 1].note !== "" ? `. Ghi chú:${data.data.disMon[data.data.disMon.length - 1].note}` : ""} )`)
             })
         })
 
@@ -95,8 +95,48 @@ const HealthProvider = ({ children }) => {
             })
         }
     }, [logBooks])
-
-
+    useEffect(() => {
+        rooms.forEach(room => {
+            socket.on(`health-logbook-completed.update${room._id}`, (data) => {
+                 setRooms(prev => prev.map(item => {
+                    if (item._id === data._id) {
+                        return data
+                    }
+                    return item
+                }))
+            })
+            socket.on(`health-logbook-doctor.transfer${room._id}`, (data) => {
+                setRooms(prev => prev.map(item => {
+                    if (item._id === data._id) {
+                        return data
+                    }
+                    return item
+                }))
+            })
+           
+        })
+        return () => {
+            rooms.forEach(room => {
+                socket.off(`health-logbook-completed.update${room._id}`);
+                socket.off(`health-logbook-doctor.transfer${room._id}`)
+            })
+        }
+    }, [rooms])
+    // useEffect(() => {
+    //      socket.on(`health-logbook-doctor.accepted${userData.user?._id}`, (data) => {
+    //         console.log(data);
+            
+    //             setRooms(prev => prev.map(item => {
+    //                 if (item._id === data._id) {
+    //                     return data
+    //                 }
+    //                 return item
+    //              }))    
+    //     })
+    //     return () => {
+    //         socket.off(`health-logbook-doctor.accepted${userData.user?._id}`);
+    //     }
+    // },[userData.user])
     // --------
 
     useEffect(() => {
