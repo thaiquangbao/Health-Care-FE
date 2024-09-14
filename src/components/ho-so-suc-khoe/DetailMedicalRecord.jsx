@@ -1,16 +1,16 @@
 "use client";
 import { authContext } from "@/context/AuthContext";
 import {
-    globalContext,
-    notifyType,
+  globalContext,
+  notifyType,
 } from "@/context/GlobalContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearVietNam2 } from "@/utils/date";
 import { useParams, useRouter } from "next/navigation";
 import React, {
-    useContext,
-    useEffect,
-    useState,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 const DetailMedicalRecord = ({ medicalRecord }) => {
     const { authHandler } = useContext(authContext)
@@ -128,6 +128,19 @@ const DetailMedicalRecord = ({ medicalRecord }) => {
                         </span>
                         {medicalRecord?.weight === 0 ? 'Không' : medicalRecord?.weight + ' kg'}
                     </div>
+                    <div>
+                        <span className="font-semibold px-2 mt-[1rem]">
+                            Chiều cao:
+                        </span>
+                        {medicalRecord?.height=== 0 ? 'Không' : medicalRecord?.height + ' cm'}
+                    </div>
+                    <div>
+                        <span className="font-semibold px-2 mt-[1rem]">
+                            Nhiệt độ:
+                        </span>
+                        {medicalRecord?.temperature=== 0 ? 'Không' : medicalRecord?.temperature + ' °C'}
+                    </div>
+                    
                 </div>
                 <div className="flex px-2 py-2 gap-[2rem]">
                     <span className="font-semibold mt-[1rem]">

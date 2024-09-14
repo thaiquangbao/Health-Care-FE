@@ -67,7 +67,9 @@ const FormRecordPatient = ({
               healthRate: appointmentData.currentAppointment?.healthRate,
               weight: appointmentData.currentAppointment?.weight,
               bloodPressure: appointmentData.currentAppointment?.bloodPressure,
-              images: appointmentData.currentAppointment?.images
+              images: appointmentData.currentAppointment?.images,
+              temperature: appointmentData.currentAppointment?.temperature,
+              height: appointmentData.currentAppointment?.height,
             };
             api({
               path: "/medicalRecords/save",
@@ -219,6 +221,18 @@ const FormRecordPatient = ({
                 Cân nặng:
               </span>
               {appointmentData.medicalRecord?.weight === 0 ? 'Không' : appointmentData.medicalRecord?.weight + ' kg'}
+            </div>
+            <div>
+              <span className="font-semibold px-2 mt-[1rem]">
+                Chiều cao:
+              </span>
+              {appointmentData.medicalRecord?.height === 0 ? 'Không' : appointmentData.medicalRecord?.height + ' kg'}
+            </div>
+            <div>
+              <span className="font-semibold px-2 mt-[1rem]">
+                Nhiệt độ:
+              </span>
+              {appointmentData.medicalRecord?.temperature === 0 ? 'Không' : appointmentData.medicalRecord?.temperature + ' bpm'}
             </div>
           </div>
           <div className="flex px-2 py-2 gap-[2rem]">

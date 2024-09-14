@@ -68,7 +68,7 @@ const Zero = () => {
     });
   }, [id]);
 
-  const endMeet = () => {
+  const endMeet = async () => {
     const appId = 990593542;
     const server = "2cb25276b88aed6a8b25fb750babb23a";
     const kitToken =
@@ -86,9 +86,22 @@ const Zero = () => {
     } else {
 
       // them api gmail o day
-
+     
+      
 
       globalThis.window.location.href = "/cuoc-hen";
+        const res = await api({
+          path: `/medicalRecords/check-appointment`,
+          type: TypeHTTP.POST,
+          body: { appointment: id },
+          sendToken: false,
+        });
+        await api({
+          path: `/medicalRecords/send-mail/${res._id}`,
+          type: TypeHTTP.POST,
+          sendToken: false,
+        });
+      
       zc.hangUp();
     }
 
