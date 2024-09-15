@@ -135,7 +135,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
             status_message: 'Đã xác nhận',
             sick: 'Theo dõi sức khỏe hàng tuần'
         }
-        api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body })
+        api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/create-appointment-logbook', body })
             .then(res => {
 
                 api({

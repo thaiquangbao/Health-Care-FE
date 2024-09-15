@@ -106,7 +106,8 @@ const DetailMedicalRecord = ({ medicalRecord }) => {
                         <span className="font-semibold px-2">
                             Ngày tái khám:
                         </span>{" "}
-                        Không
+                        {medicalRecord?.reExaminationDate?.day !== 0 &&medicalRecord?.reExaminationDate?.month !== 0 &&medicalRecord?.reExaminationDate?.year !== 0 ? `${medicalRecord?.reExaminationDate?.day}/${medicalRecord?.reExaminationDate?.month}/${medicalRecord?.reExaminationDate?.year}` : 'Không'}
+                       
                     </span>
                 </div>
                 <div className="grid grid-cols-3 h-auto gap-x-[0.5rem] mt-[0.5rem]">
