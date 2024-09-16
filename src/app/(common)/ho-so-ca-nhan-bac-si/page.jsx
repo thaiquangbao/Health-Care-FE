@@ -1,13 +1,13 @@
 'use client'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from 'date-fns';
-import Navbar from '@/components/navbar'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Select, SelectItem } from "@nextui-org/select";
-import { changeDate, compareDate1GetterThanDate2, compareDateIsHaveInSchedule, convertDateToDayMonth, convertDateToDayMonthYearObject, convertObjectToDate, formatDateISOByVietNam } from '@/utils/date';
+import Navbar from '@/components/navbar';
 import { appointmentContext } from '@/context/AppointmentContext';
+import { globalContext, notifyType } from '@/context/GlobalContext';
 import { userContext } from '@/context/UserContext';
 import { api, TypeHTTP } from '@/utils/api';
-import { globalContext, notifyType } from '@/context/GlobalContext';
+import { changeDate, compareDate1GetterThanDate2, compareDateIsHaveInSchedule, convertDateToDayMonth, convertDateToDayMonthYearObject, convertObjectToDate, formatDateISOByVietNam } from '@/utils/date';
+import { Select, SelectItem } from "@nextui-org/select";
+import { eachDayOfInterval, endOfMonth, format, isSameMonth, isToday, startOfMonth } from 'date-fns';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 const HoSoBacSi = () => {
     const [days, setDays] = useState([])
@@ -111,7 +111,8 @@ const HoSoBacSi = () => {
                                 {(day + '') !== '' && (
                                     <>
                                         {compareDate1GetterThanDate2(convertDateToDayMonthYearObject(day + ''), convertDateToDayMonthYearObject(new Date().toISOString())) ? (
-                                            <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + ''))} className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
+                                            <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => {userData.user?.email === null ? globalHandler.notify(notifyType.WARNING, "Bác sĩ hãy cập nhật địa chỉ email trước khi đăng k1y lịch khám !!!") : appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + ''))}} 
+                                            className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
                                                 <span>{convertDateToDayMonth(day + '')}</span>
                                                 {compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) !== 0 && (
                                                     <span>{`(${compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules)}) Cuộc Hẹn`}</span>

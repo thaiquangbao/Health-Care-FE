@@ -1,11 +1,11 @@
+import { globalContext, notifyType } from '@/context/GlobalContext'
+import { userContext } from '@/context/UserContext'
+import { api, TypeHTTP } from '@/utils/api'
+import { dsKhoa } from '@/utils/chuyenKhoa'
 import React, { useContext, useEffect, useState } from 'react'
+import { connectToGoogle } from '../firebase/firebase'
 import Input from '../input'
 import Select from '../select'
-import { userContext } from '@/context/UserContext'
-import { dsKhoa } from '@/utils/chuyenKhoa'
-import { connectToGoogle } from '../firebase/firebase'
-import { globalContext, notifyType } from '@/context/GlobalContext'
-import { api, TypeHTTP } from '@/utils/api'
 
 const UserInformation = ({ user, setUser }) => {
   const { userData, userHandler } = useContext(userContext)
