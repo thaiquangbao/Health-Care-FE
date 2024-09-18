@@ -20,7 +20,7 @@ const UserInformation = ({ user, setUser }) => {
           ...userData.user,
           email
         }
-        api({ type: TypeHTTP.POST, body: { ...user }, path: `/auth/update/${userData.user?.role === 'DOCTOR' ? 'doctor' : 'User'}`, sendToken: true })
+        api({ type: TypeHTTP.POST, body: { ...user }, path: `/auth/update-email/${userData.user?.role === 'DOCTOR' ? 'doctor' : 'User'}`, sendToken: true })
           .then(res => {
             userHandler.setUser(res)
             globalHandler.notify(notifyType.SUCCESS, 'Liên Kết Thành Công')
