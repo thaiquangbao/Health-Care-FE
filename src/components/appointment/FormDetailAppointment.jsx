@@ -152,7 +152,7 @@ const FormDetailAppointment = ({
               onClick={() => {
                 hidden();
                 router.push(
-                  `https://shoeshop-backend.online/zero/${data?._id
+                  `https://health-care-fe-two.vercel.app/zero/${data?._id
                   }/${userData.user?.role === "USER"
                     ? "patient"
                     : "doctor"

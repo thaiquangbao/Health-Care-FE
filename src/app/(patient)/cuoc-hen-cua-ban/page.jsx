@@ -146,7 +146,7 @@ const CuocHenCuaBan = () => {
                                             <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
                                         )}
                                         {(displayConnect === appointment._id) && (
-                                            <Link href={`https://shoeshop-backend.online/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
+                                            <Link href={`https://health-care-fe-two.vercel.app/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
                                                 <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
                                             </Link>
                                         )}
