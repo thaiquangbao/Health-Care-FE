@@ -1,29 +1,29 @@
 
 import { appointmentContext } from "@/context/AppointmentContext";
 import {
-    globalContext,
-    notifyType,
+  globalContext,
+  notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
-    compare2Date,
-    compareTimeDate1GreaterThanDate2,
-    convertDateToDayMonthYearObject,
-    convertDateToDayMonthYearTimeObject,
-    convertDateToDayMonthYearVietNam,
-    isALargerThanBPlus60Minutes,
-    isALargerWithin10Minutes,
-    isALargerWithin60Minutes,
-    sortByAppointmentDate,
+  compare2Date,
+  compareTimeDate1GreaterThanDate2,
+  convertDateToDayMonthYearObject,
+  convertDateToDayMonthYearTimeObject,
+  convertDateToDayMonthYearVietNam,
+  isALargerThanBPlus60Minutes,
+  isALargerWithin10Minutes,
+  isALargerWithin60Minutes,
+  sortByAppointmentDate,
 } from "@/utils/date";
 import { returnNumber } from "@/utils/other";
 import Link from "next/link";
 import React, {
-    useContext,
-    useEffect,
-    useRef,
-    useState,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 const CuocHen = ({ type, setType }) => {
 
@@ -570,7 +570,7 @@ const CuocHen = ({ type, setType }) => {
                                         {displayConnect ===
                                             appointment._id && (
                                                 <Link
-                                                    href={`http://127.0.0.1:3000/zero/${appointment._id
+                                                    href={`https://shoeshop-backend.online/zero/${appointment._id
                                                         }/${userData.user?.role === "USER"
                                                             ? "patient"
                                                             : "doctor"

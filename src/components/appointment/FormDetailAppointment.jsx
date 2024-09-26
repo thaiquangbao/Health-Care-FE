@@ -152,7 +152,7 @@ const FormDetailAppointment = ({
               onClick={() => {
                 hidden();
                 router.push(
-                  `http://127.0.0.1:3000/zero/${data?._id
+                  `https://shoeshop-backend.online/zero/${data?._id
                   }/${userData.user?.role === "USER"
                     ? "patient"
                     : "doctor"
