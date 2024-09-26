@@ -31,9 +31,8 @@ const FormRecordPatient = ({
   const [diagnosisDisease, setDiagnosisDisease] =
     useState("");
   const [note, setNote] = useState("");
-  const [reAppointmentDay, setReAppointmentDay] = useState(0);
-  const [reAppointmentMonth, setReAppointmentMonth] = useState(0);
-  const [reAppointmentYear, setReAppointmentYear] = useState(0);
+
+
   useEffect(() => {
     if (appointmentData.medicalRecord) {
       setMedical(appointmentData.medicalRecord.medical)
@@ -68,9 +67,7 @@ const FormRecordPatient = ({
               healthRate: appointmentData.currentAppointment?.healthRate,
               weight: appointmentData.currentAppointment?.weight,
               bloodPressure: appointmentData.currentAppointment?.bloodPressure,
-              images: appointmentData.currentAppointment?.images,
-              temperature: appointmentData.currentAppointment?.temperature,
-              height: appointmentData.currentAppointment?.height,
+              images: appointmentData.currentAppointment?.images
             };
             api({
               path: "/medicalRecords/save",
@@ -118,7 +115,6 @@ const FormRecordPatient = ({
     setUnitOfCalculation("Đơn vị tính");
   }, [medical]);
   const updateMedicalRecord = () => {
-
     api({
       path: "/medicalRecords/update",
       type: TypeHTTP.POST,
@@ -131,11 +127,7 @@ const FormRecordPatient = ({
         symptoms: appointmentData.currentAppointment?.note,
         date: appointmentData.currentAppointment
           ?.appointment_date,
-        reExaminationDate: {
-          day: reAppointmentDay,
-          month: reAppointmentMonth,
-          year: reAppointmentYear,
-        },
+
       },
     }).then((res) => {
       appointmentHandler.setMedicalRecord(res)
@@ -152,7 +144,7 @@ const FormRecordPatient = ({
       style={
         visible
           ? {
-            height: "95%",
+            height: "90%",
             width: "65%",
             transition: "0.3s",
             backgroundSize: "cover",
@@ -227,18 +219,6 @@ const FormRecordPatient = ({
                 Cân nặng:
               </span>
               {appointmentData.medicalRecord?.weight === 0 ? 'Không' : appointmentData.medicalRecord?.weight + ' kg'}
-            </div>
-            <div>
-              <span className="font-semibold px-2 mt-[1rem]">
-                Chiều cao:
-              </span>
-              {appointmentData.medicalRecord?.height === 0 ? 'Không' : appointmentData.medicalRecord?.height + ' kg'}
-            </div>
-            <div>
-              <span className="font-semibold px-2 mt-[1rem]">
-                Nhiệt độ:
-              </span>
-              {appointmentData.medicalRecord?.temperature === 0 ? 'Không' : appointmentData.medicalRecord?.temperature + ' bpm'}
             </div>
           </div>
           <div className="flex px-2 py-2 gap-[2rem]">
@@ -370,41 +350,13 @@ const FormRecordPatient = ({
               </table>
             </div>
           </div>
-          <span className="font-semibold px-2 mt-[1rem]">
-           Ngày tái khám
-          </span>
-          <div className="w-full flex mt-3 px-2">
-          
-            <div className="w-[50%] flex items-center justify-between">
-              
-              <input
-                placeholder="Ngày (DD)"
-                className="text-[14px] w-[30%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                onChange={(e) => setReAppointmentDay(e.target.value)}
-                value={reAppointmentDay}
-              />
-              <input
-                placeholder="Tháng (MM)"
-                className="text-[14px] w-[30%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                onChange={(e) => setReAppointmentMonth(e.target.value)}
-                value={reAppointmentMonth}
-              />
-              
-              <input
-                placeholder="Năm (YYYY)"
-                className="text-[14px] w-[30%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                onChange={(e) => setReAppointmentYear(e.target.value)}
-                value={reAppointmentYear}
-              />
-            </div>
-            <div className="w-[50%] flex justify-end">
-              <button
-                onClick={() => updateMedicalRecord()}
-                className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
-              >
-                Cập Nhật Hồ Sơ
-              </button>
-            </div>
+          <div className="w-full flex justify-end mt-3 px-2">
+            <button
+              onClick={() => updateMedicalRecord()}
+              className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
+            >
+              Cập Nhật Hồ Sơ
+            </button>
           </div>
         </div>
       )

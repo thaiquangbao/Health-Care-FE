@@ -257,7 +257,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
                                                     : logBook.status.status_type ===
                                                         "ACCEPTED"
                                                         ? "green"
-                                                        : logBook?.status.status_type === "COMPLETED" ? 'blue' : "red",
+                                                        : "red",
                                         }}
                                         className="py-4"
                                     >

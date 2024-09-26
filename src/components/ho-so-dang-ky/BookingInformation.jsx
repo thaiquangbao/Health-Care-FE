@@ -82,20 +82,12 @@ const BookingInformation = () => {
                         <input value={bookingData.booking?.weight} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, weight: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
                     </div>
                     <div className='flex gap-2 text-[14px]'>
-                        <span className=''>Chiều cao (cm):</span>
-                        <input value={bookingData.booking?.height} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, height: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
-                    </div>
-                    <div className='flex gap-2 text-[14px]'>
                         <span className=''>Huyết áp (mmHg):</span>
                         <input value={bookingData.booking?.bloodPressure} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, bloodPressure: e.target.value })} className='w-[60px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
                     </div>
                     <div className='flex gap-2 text-[14px]'>
                         <span className=''>Nhịp tim (bpm):</span>
                         <input value={bookingData.booking?.healthRate} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, healthRate: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
-                    </div>
-                    <div className='flex gap-2 text-[14px]'>
-                        <span className=''>Nhiệt độ (°C):</span>
-                        <input value={bookingData.booking?.temperature} onChange={e => bookingHandler.setBooking({ ...bookingData.booking, temperature: e.target.value })} className='w-[40px] text-center h-full border-b-[1px] border-[#999] focus:outline-0 bg-[#ffffff00]' />
                     </div>
                 </div>
             </div>

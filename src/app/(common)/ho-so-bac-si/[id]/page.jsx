@@ -4,7 +4,10 @@ import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { bookingContext } from "@/context/BookingContext";
-import { globalContext, notifyType } from "@/context/GlobalContext";
+import {
+  globalContext,
+  notifyType,
+} from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
@@ -20,7 +23,6 @@ import {
   formatTimeAndFind,
 } from "@/utils/other";
 import { Select, SelectItem } from "@nextui-org/select";
-import { set } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, {
   useContext,
@@ -28,6 +30,7 @@ import React, {
   useState,
 } from "react";
 import Calendar from "../../../../components/Calendar";
+import { set } from "date-fns";
 const HoSoBacSi = () => {
   const param = useParams();
   const { id } = param;
@@ -40,7 +43,6 @@ const HoSoBacSi = () => {
   const { userData } = useContext(userContext);
   const router = useRouter();
   const [healthLogBooks, setHealthLogBooks] = useState([]);
-  const { globalHandler } = useContext(globalContext)
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -176,12 +178,6 @@ const HoSoBacSi = () => {
               <div>
                 <button
                   onClick={() => {
-                    if(userData.user){
-                      if (userData.user?.email === "") {
-                        globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
-                        return;
-                      }
-                    }
                     appointmentHandler.setPriceList(priceList);
                     appointmentHandler.showFormBooking('Tư Vấn Trực Tuyến')
                   }
@@ -211,20 +207,7 @@ const HoSoBacSi = () => {
                 </div>
                 <div>
                   <button
-                      onClick={() => 
-                      {
-                        if(userData.user){
-                          if (userData.user?.email === "") {
-                            globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
-                            return;
-                          }
-                        } else {
-                          globalHandler.notify(notifyType.WARNING, "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!")
-                          return;
-                        }
-                        appointmentHandler.showFormSignUpHealth(doctorRecord)
-                      }
-                      }
+                    onClick={() => appointmentHandler.showFormSignUpHealth(doctorRecord)}
                     style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
                     className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
                   >

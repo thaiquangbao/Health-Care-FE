@@ -1,9 +1,8 @@
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef, useState, useContext } from "react";
-import { userContext } from "@/context/UserContext";
-import { authContext } from "@/context/AuthContext";
+import React, { useEffect, useRef, useState } from "react";
+
 export default function HeartRate({ logBook, setLogBook }) {
   const chartRef = useRef(null);
   const [times, setTimes] = useState([])
@@ -13,8 +12,7 @@ export default function HeartRate({ logBook, setLogBook }) {
   const [symptom, setSymptom] = useState('')
   const [dsTrieuChung, setDsTrieuChung] = useState([])
   const [dsNote, setDsNote] = useState([])
-  const { authHandler } = useContext(authContext)
-   const { userData } = useContext(userContext)
+
   const resetForm = () => {
     setValue('')
     // setNote('')
@@ -55,7 +53,7 @@ export default function HeartRate({ logBook, setLogBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 40,
+              min: 60,
               max: 150,
               title: {
                 display: true,
@@ -86,32 +84,18 @@ export default function HeartRate({ logBook, setLogBook }) {
   }, [logBook]);
 
   const handleSubmit = () => {
-    
-    const dataAI = {
-      patient: {
-        sex: userData.user?.sex,
-        dateOfBirth: userData.user?.dateOfBirth
-      },
-      heartRate: value
+    const body = {
+      _id: logBook._id,
+      disMonItem: {
+        symptom,
+        vitalSign: {
+          heartRate: value
+        },
+        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        note
+      }
     }
-    api({ sendToken: false, type: TypeHTTP.POST, path: '/chats/heartRate-warning', body: dataAI })
-      .then(resAI => {
-        authHandler.showHealthResponse({ message: `Nhịp tim ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}` })
-        const body = {
-          _id: logBook._id,
-          disMonItem: {
-            vitalSign: {
-              heartRate: value
-            },
-            date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-            
-          },
-            status_heartRate: {
-              status_type: resAI.status,
-              message: resAI.comment,
-            }
-        }
-      api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-health-rate', body })
+    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-health-rate', body })
       .then(res => {
         setLogBook(res)
         api({
@@ -146,8 +130,6 @@ export default function HeartRate({ logBook, setLogBook }) {
               })
           })
       })
-    })
-   
   }
 
   return (
