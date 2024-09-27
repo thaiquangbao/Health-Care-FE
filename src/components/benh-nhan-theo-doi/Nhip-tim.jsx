@@ -35,7 +35,7 @@ export default function NhipTim({ logBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 60,
+              min: 40,
               max: 150,
               title: {
                 display: true,

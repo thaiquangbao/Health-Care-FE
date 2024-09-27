@@ -61,6 +61,9 @@ const HoSo = () => {
   }, [choose]);
 
   const handleUpdateUser = () => {
+   
+    
+    
     globalHandler.notify(
       notifyType.LOADING,
       "Đang Cập Nhật Thông Tin"
@@ -73,6 +76,7 @@ const HoSo = () => {
       sendToken: true,
     })
       .then((res) => {
+        
         userHandler.setUser(res);
         globalHandler.notify(
           notifyType.SUCCESS,
@@ -80,6 +84,8 @@ const HoSo = () => {
         );
       })
       .catch((error) => {
+        console.log(error.message);
+        
         globalHandler.notify(
           notifyType.FAIL,
           error.message

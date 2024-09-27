@@ -100,13 +100,7 @@ const FormDetailLogBook = ({ data, onClose }) => {
                 className="font-medium text-[14px]"
               >
                 {logBook?.status?.status_type === "ACCEPTED"
-                  ? calculateDetailedTimeDifference(
-                    convertDateToDayMonthYearTimeObject(
-                      new Date().toISOString()
-                    ),
-                    logBook?.date
-                  )
-                  : logBook?.status?.status_message}
+                  ? "Bác sĩ đã đồng ý" : logBook?.status?.message}
               </span>
               <div className="relative flex h-4 w-4">
                 <span
@@ -140,9 +134,9 @@ const FormDetailLogBook = ({ data, onClose }) => {
           <span style={{ color: logBook?.status?.status_type !== 'STOPPED' ? 'black' : 'red' }} className="font-semibold text-[18px]">
             Thông tin bệnh nhân  ({logBook?.status?.status_type !== 'STOPPED' ? 'Đang theo dõi sức khỏe' : "Đã dừng theo dõi sức khỏe"})
           </span>
-          <div className="flex flex-row gap-2 w-full">
-            <div className="flex flex-col w-[30%]">
-              <div className="flex flex-col py-4 gap-3">
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-col w-full">
+              <div className="grid grid-cols-3 py-4 gap-3">
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">
                     Họ và tên:
@@ -215,17 +209,17 @@ const FormDetailLogBook = ({ data, onClose }) => {
 
             </div>
             {logBook && (
-              <div className="flex flex-col gap-1 w-[75%]">
+              <div className="flex flex-col gap-1 w-full">
                 {logBook?.status?.status_type !== 'STOPPED' ? (
                   <>
-                    <div className="flex flex-row flex-wrap gap-4 p-2 h-[50%]">
-                      <div className="w-[60%]">
+                    <div className="flex flex-row gap-4 p-2 w-full">
+                      <div className="w-[50%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Nhiệt độ cơ thể</span>
                         </div>
                         <NhietDo logBook={logBook} />
                       </div>
-                      <div className="w-[60%]">
+                      <div className="w-[50%]">
                         <div className="flex justify-center">
                           <span className="font-bold">Huyết áp</span>
                         </div>

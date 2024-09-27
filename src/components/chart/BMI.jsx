@@ -1,7 +1,9 @@
 import { api, baseURL, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { Chart } from "chart.js/auto";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { userContext } from "@/context/UserContext";
+import { authContext } from "@/context/AuthContext";
 import { io } from 'socket.io-client'
 const socket = io.connect(baseURL)
 
@@ -13,7 +15,8 @@ export default function BMI({ logBook, setLogBook }) {
   const [bmis, setBmis] = useState([])
   const [heights, setHeights] = useState([])
   const [weights, setWeights] = useState([])
-
+    const { authHandler } = useContext(authContext)
+   const { userData } = useContext(userContext)
   const resetForm = () => {
     setHeight('')
     setWeight('')
@@ -83,16 +86,31 @@ export default function BMI({ logBook, setLogBook }) {
   }, [logBook]);
 
   const handleSubmit = () => {
-    const body = {
-      _id: logBook._id,
-      disMonItem: {
-        vitalSign: {
-          height, weight
-        },
-        date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-      }
+    const dataAI = {
+      patient: {
+        sex: userData.user?.sex,
+        dateOfBirth: userData.user?.dateOfBirth
+      },
+      bmi: (weight / ((height / 100) * (height / 100))).toFixed(1)
     }
-    api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-bmi', body })
+    
+    api({ sendToken: false, type: TypeHTTP.POST, path: '/chats/bmi-warning', body: dataAI })
+      .then(resAI => {
+        authHandler.showHealthResponse({ message: `Chỉ số BMI ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}` })
+        const body = {
+          _id: logBook._id,
+          disMonItem: {
+            vitalSign: {
+              height, weight
+            },
+            date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+          },
+           status_bmi: {
+              status_type: resAI.status,
+              message: resAI.comment,
+            }
+        }
+       api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-bmi', body })
       .then(res => {
         setLogBook(res)
         api({
@@ -125,7 +143,8 @@ export default function BMI({ logBook, setLogBook }) {
                 api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
               })
           })
-      })
+      }) 
+    })
   }
 
   return (
