@@ -30,7 +30,13 @@ const CongDong = () => {
   const clickItem = (id) => {
     router.push(`/chi-tiet-cau-hoi/${id}`);
   };
-
+  useEffect(() => {
+    if (userData.user?.role === "USER") {
+      setVisibleFormCreate(true);
+    } else {
+      setVisibleFormCreate(false);
+    }
+  }, [userData.user]);
   const handleTurnOnFormCreate = () => {
     if (userData.user) {
       authHandler.showFormCreateBaiViet();
@@ -48,16 +54,18 @@ const CongDong = () => {
             <span className="font-bold">
               Hỏi đáp miễn phí với Bác sĩ
             </span>
-            <button
-              style={{
-                background:
-                  "linear-gradient(to right, #11998e, #38ef7d)",
-              }}
-              onClick={() => handleTurnOnFormCreate()}
-              className="bg-blue-500 text-white p-2 rounded mt-2 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[15%]"
-            >
-              Đặt câu hỏi
-            </button>
+            {visibleFormCreate && (
+              <button
+                style={{
+                  background:
+                    "linear-gradient(to right, #11998e, #38ef7d)",
+                }}
+                onClick={() => handleTurnOnFormCreate()}
+                className="bg-blue-500 text-white p-2 rounded mt-2 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676] w-[15%]"
+              >
+                Đặt câu hỏi
+              </button>
+            )}
           </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {qas.map((qa, index) => {

@@ -4,7 +4,10 @@ import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { bookingContext } from "@/context/BookingContext";
-import { globalContext, notifyType } from "@/context/GlobalContext";
+import {
+  globalContext,
+  notifyType,
+} from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
@@ -40,33 +43,35 @@ const HoSoBacSi = () => {
   const { userData } = useContext(userContext);
   const router = useRouter();
   const [healthLogBooks, setHealthLogBooks] = useState([]);
-  const { globalHandler } = useContext(globalContext)
+  const { globalHandler } = useContext(globalContext);
   useEffect(() => {
     if (userData.user) {
       api({
         type: TypeHTTP.GET,
         path: `/doctorRecords/getById/${id}`,
         sendToken: false,
-      }).then((res) => {
-        appointmentHandler.setDoctorRecord(res);
-        setDoctorRecord(res);
-
       })
-        .catch(error => {
-          router.push('/bac-si-noi-bat')
+        .then((res) => {
+          appointmentHandler.setDoctorRecord(res);
+          setDoctorRecord(res);
         })
+        .catch((error) => {
+          router.push("/bac-si-noi-bat");
+        });
     }
   }, [id]);
   // check tồn tại health log book
 
   useEffect(() => {
     if (userData.user) {
-      api({ type: TypeHTTP.GET, path: `/healthLogBooks/findByPatient/${userData.user?._id}`, sendToken: true })
-        .then(res => {
-          setHealthLogBooks(res)
-        })
+      api({
+        type: TypeHTTP.GET,
+        path: `/healthLogBooks/findByPatient/${userData.user?._id}`,
+        sendToken: true,
+      }).then((res) => {
+        setHealthLogBooks(res);
+      });
     }
-
   }, [userData.user]);
   useEffect(() => {
     api({
@@ -123,10 +128,11 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${star <= rating
-              ? "text-yellow-500"
-              : "text-gray-300"
-              }`}
+            className={`w-6 h-6 ${
+              star <= rating
+                ? "text-yellow-500"
+                : "text-gray-300"
+            }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +171,6 @@ const HoSoBacSi = () => {
               {doctorRecord?.description}
             </p>
 
-
             <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
               <div className="flex flex-col text-[#333333]">
                 <span className="text-[14px]">
@@ -180,14 +185,20 @@ const HoSoBacSi = () => {
                   onClick={() => {
                     if (userData.user) {
                       if (userData.user?.email === "") {
-                        globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
+                        globalHandler.notify(
+                          notifyType.WARNING,
+                          "Vui lòng cập nhật email để đặt khám !!!"
+                        );
                         return;
                       }
                     }
-                    appointmentHandler.setPriceList(priceList);
-                    appointmentHandler.showFormBooking('Tư Vấn Trực Tuyến')
-                  }
-                  }
+                    appointmentHandler.setPriceList(
+                      priceList
+                    );
+                    appointmentHandler.showFormBooking(
+                      "Tư Vấn Trực Tuyến"
+                    );
+                  }}
                   style={{
                     background:
                       "linear-gradient(to right, #11998e, #38ef7d)",
@@ -201,7 +212,12 @@ const HoSoBacSi = () => {
 
             {/* chổ này */}
 
-            {!healthLogBooks.filter(log => (log.status.status_type === 'ACCEPTED' || log.status.status_type === 'QUEUE' || log.status.status_type === 'TRANSFER')).length > 0 && (
+            {!healthLogBooks.filter(
+              (log) =>
+                log.status.status_type === "ACCEPTED" ||
+                log.status.status_type === "QUEUE" ||
+                log.status.status_type === "TRANSFER"
+            ).length > 0 && (
               <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                 <div className="flex flex-col text-[#333333]">
                   <span className="text-[14px]">
@@ -216,17 +232,27 @@ const HoSoBacSi = () => {
                     onClick={() => {
                       if (userData.user) {
                         if (userData.user?.email === "") {
-                          globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
+                          globalHandler.notify(
+                            notifyType.WARNING,
+                            "Vui lòng cập nhật email để đặt khám !!!"
+                          );
                           return;
                         }
                       } else {
-                        globalHandler.notify(notifyType.WARNING, "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!")
+                        globalHandler.notify(
+                          notifyType.WARNING,
+                          "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!"
+                        );
                         return;
                       }
-                      appointmentHandler.showFormSignUpHealth(doctorRecord)
-                    }
-                    }
-                    style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
+                      appointmentHandler.showFormSignUpHealth(
+                        doctorRecord
+                      );
+                    }}
+                    style={{
+                      background:
+                        "linear-gradient(to right, #6cd2c5, #2089e5)",
+                    }}
                     className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
                   >
                     Đăng Ký Theo Dõi Sức Khỏe
@@ -234,8 +260,6 @@ const HoSoBacSi = () => {
                 </div>
               </div>
             )}
-
-
           </div>
         </div>
         <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">
@@ -432,7 +456,7 @@ const HoSoBacSi = () => {
             })}
           </div>
         </div>
-      </div >
+      </div>
       <Footer />
     </>
   );
