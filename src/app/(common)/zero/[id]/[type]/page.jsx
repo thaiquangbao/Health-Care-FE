@@ -8,7 +8,7 @@ import {
   notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
-import { api, TypeHTTP } from "@/utils/api";
+import { api, deploy, TypeHTTP } from "@/utils/api";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import {
   useParams,
@@ -84,24 +84,18 @@ const Zero = () => {
       authHandler.showAssessment();
       zc.hangUp();
     } else {
-
-      // them api gmail o day
-     
-      
-
-      globalThis.window.location.href = "/cuoc-hen";
-        const res = await api({
-          path: `/medicalRecords/check-appointment`,
-          type: TypeHTTP.POST,
-          body: { appointment: id },
-          sendToken: false,
-        });
-        await api({
-          path: `/medicalRecords/send-mail/${res._id}`,
-          type: TypeHTTP.POST,
-          sendToken: false,
-        });
-      
+      const res = await api({
+        path: `/medicalRecords/check-appointment`,
+        type: TypeHTTP.POST,
+        body: { appointment: id },
+        sendToken: false,
+      });
+      await api({
+        path: `/medicalRecords/send-mail/${res._id}`,
+        type: TypeHTTP.POST,
+        sendToken: false,
+      });
+      globalThis.window.location.href = deploy;
       zc.hangUp();
     }
 

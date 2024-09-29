@@ -42,7 +42,7 @@ const AppointmentProvider = ({ children }) => {
     const [doctorRecordBooking, setDoctorRecordBooking] = useState()
 
     useEffect(() => {
-        if (userData.user) {
+        if (userData.user && userData.user?.role === 'DOCTOR') {
             api({ path: `/doctorRecords/getById/${userData.user._id}`, type: TypeHTTP.GET, sendToken: false })
                 .then(record => {
                     setDoctorRecord(record)

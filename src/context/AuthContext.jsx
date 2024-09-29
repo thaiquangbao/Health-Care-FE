@@ -13,6 +13,7 @@ import React, {
 import { userContext } from "./UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import HealthResponseForm from "@/components/benh-nhan-theo-doi/HealthResponseForm";
+import QRDownload from "@/components/QRDownload";
 
 export const authContext = createContext();
 
@@ -31,6 +32,7 @@ const AuthContext = ({ children }) => {
   const [detailMedicalRecord, setDetailMedicalRecord] = useState()
   const [currentRoom, setCurrentRoom] = useState()
   const [rooms, setRooms] = useState([])
+  const [visibleQR, setVisibleQR] = useState(false)
 
   useEffect(() => {
     if (userData.user && userData.user?.role === 'USER') {
@@ -146,6 +148,16 @@ const AuthContext = ({ children }) => {
     setHealthResponse()
   }
 
+  const showQR = () => {
+    showWrapper();
+    setVisibleQR(true)
+  };
+
+  const hiddenQR = () => {
+    hiddenWrapper();
+    setVisibleQR(false)
+  };
+
   const hidden = () => {
     hiddenWrapper();
     hiddenSignUp();
@@ -156,6 +168,7 @@ const AuthContext = ({ children }) => {
     hiddenAssessment();
     hiddenDetailMedicalRecord();
     setCurrentRoom()
+    setVisibleQR(false)
   };
 
   const data = {
@@ -188,7 +201,9 @@ const AuthContext = ({ children }) => {
     setCurrentRoom,
     setRooms,
     showHealthResponse,
-    hiddenHealthResponse
+    hiddenHealthResponse,
+    showQR,
+    hiddenQR
   };
 
   return (
@@ -206,6 +221,7 @@ const AuthContext = ({ children }) => {
           hidden={hiddenSignIn}
         />
         <HealthResponseForm healthResponse={healthResponse} setHealthResponse={setHealthResponse} />
+        <QRDownload visible={visibleQR} hidden={hidden} />
         {children}
       </div>
       {loading && <Loading />}

@@ -42,18 +42,20 @@ const HoSoBacSi = () => {
   const [healthLogBooks, setHealthLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext)
   useEffect(() => {
-    api({
-      type: TypeHTTP.GET,
-      path: `/doctorRecords/getById/${id}`,
-      sendToken: false,
-    }).then((res) => {
-      appointmentHandler.setDoctorRecord(res);
-      setDoctorRecord(res);
+    if (userData.user) {
+      api({
+        type: TypeHTTP.GET,
+        path: `/doctorRecords/getById/${id}`,
+        sendToken: false,
+      }).then((res) => {
+        appointmentHandler.setDoctorRecord(res);
+        setDoctorRecord(res);
 
-    })
-      .catch(error => {
-        router.push('/bac-si-noi-bat')
       })
+        .catch(error => {
+          router.push('/bac-si-noi-bat')
+        })
+    }
   }, [id]);
   // check tồn tại health log book
 
@@ -176,7 +178,7 @@ const HoSoBacSi = () => {
               <div>
                 <button
                   onClick={() => {
-                    if(userData.user){
+                    if (userData.user) {
                       if (userData.user?.email === "") {
                         globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
                         return;
@@ -211,20 +213,19 @@ const HoSoBacSi = () => {
                 </div>
                 <div>
                   <button
-                      onClick={() => 
-                      {
-                        if(userData.user){
-                          if (userData.user?.email === "") {
-                            globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
-                            return;
-                          }
-                        } else {
-                          globalHandler.notify(notifyType.WARNING, "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!")
+                    onClick={() => {
+                      if (userData.user) {
+                        if (userData.user?.email === "") {
+                          globalHandler.notify(notifyType.WARNING, "Vui lòng cập nhật email để đặt khám !!!")
                           return;
                         }
-                        appointmentHandler.showFormSignUpHealth(doctorRecord)
+                      } else {
+                        globalHandler.notify(notifyType.WARNING, "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!")
+                        return;
                       }
-                      }
+                      appointmentHandler.showFormSignUpHealth(doctorRecord)
+                    }
+                    }
                     style={{ background: "linear-gradient(to right, #6cd2c5, #2089e5)" }}
                     className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
                   >

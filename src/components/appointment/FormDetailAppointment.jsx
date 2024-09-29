@@ -1,5 +1,5 @@
 import { userContext } from "@/context/UserContext";
-import { api, TypeHTTP } from "@/utils/api";
+import { api, deploy, TypeHTTP } from "@/utils/api";
 import {
   calculateDetailedTimeDifference,
   convertDateToDayMonthYearTimeObject,
@@ -23,7 +23,7 @@ const FormDetailAppointment = ({
   const [medicalRecords, setMedicalRecords] = useState([]);
   useEffect(() => {
     if (data) {
-      
+
       api({
         type: TypeHTTP.GET,
         sendToken: false,
@@ -152,13 +152,11 @@ const FormDetailAppointment = ({
             <button
               onClick={() => {
                 hidden();
-                router.push(
-                  `https://health-care-fe-two.vercel.app/zero/${data?._id
+                globalThis.window.location.href = `${deploy}/zero/${data?._id
                   }/${userData.user?.role === "USER"
                     ? "patient"
                     : "doctor"
-                  }`
-                );
+                  }`;
               }}
               className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
             >
@@ -169,11 +167,11 @@ const FormDetailAppointment = ({
         <div className="flex px-4 text-[14px] gap-[2rem]">
           <span className="font-semibold">Thông Số: </span>
           <div className="flex items-center gap-5 text-[13px]">
-            <span>Cân Nặng: {data?.weight === 0 ? "Không": data?.weight }</span>
-            <span>Chiều cao: {data?.height === 0 ? "Không": data?.weight }</span>
-            <span>Nhịp Tim: {data?.healthRate === 0 ? "Không": data?.healthRate}</span>
-            <span>Huyết Áp: {data?.bloodPressure === "" ? "Không": data?.bloodPressure}</span>
-            <span>Nhiệt độ: {data?.temperature === 0? "Không": data?.temperature}</span>
+            <span>Cân Nặng: {data?.weight === 0 ? "Không" : data?.weight}</span>
+            <span>Chiều cao: {data?.height === 0 ? "Không" : data?.weight}</span>
+            <span>Nhịp Tim: {data?.healthRate === 0 ? "Không" : data?.healthRate}</span>
+            <span>Huyết Áp: {data?.bloodPressure === "" ? "Không" : data?.bloodPressure}</span>
+            <span>Nhiệt độ: {data?.temperature === 0 ? "Không" : data?.temperature}</span>
           </div>
         </div>
         <div className="flex px-4 text-[14px] gap-[2rem]">
@@ -290,7 +288,7 @@ const FormDetailAppointment = ({
                                             <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
                                         )}
                                         {(displayConnect === appointment._id) && (
-                                            <Link href={`https://health-care-fe-two.vercel.app/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
+                                            <Link href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
                                                 <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
                                             </Link>
                                         )}

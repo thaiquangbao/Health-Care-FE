@@ -125,11 +125,9 @@ const Navbar = () => {
               Đặt Lịch Khám
             </button>
           </Link>
-          <Link href={"/bac-si-noi-bat"}>
-            <button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-              Tải Ứng Dụng Ngay
-            </button>
-          </Link>
+          <button onClick={() => authHandler.showQR()} className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+            Tải Ứng Dụng Ngay
+          </button>
           <button
             onClick={() =>
               authHandler.setVisibleMore(

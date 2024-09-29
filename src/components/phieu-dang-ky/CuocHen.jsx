@@ -570,7 +570,7 @@ const CuocHen = ({ type, setType }) => {
                                         {displayConnect ===
                                             appointment._id && (
                                                 <Link
-                                                    href={`https://health-care-fe-two.vercel.app/zero/${appointment._id
+                                                    href={`http://127.0.0.1:3000/zero/${appointment._id
                                                         }/${userData.user?.role === "USER"
                                                             ? "patient"
                                                             : "doctor"
