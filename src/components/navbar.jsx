@@ -26,9 +26,10 @@ const Navbar = () => {
     useState(false);
   const { authData, authHandler } = useContext(authContext);
   const { userData, userHandler } = useContext(userContext);
-  const [visibleHealth, setVisibleHealth] = useState(false)
+  const [visibleHealth, setVisibleHealth] = useState(false);
   const [user, setUser] = useState();
-  const [visibleHealthDoctor, setVisibleHealthDoctor] = useState(false)
+  const [visibleHealthDoctor, setVisibleHealthDoctor] =
+    useState(false);
   const { appointmentHandler } = useContext(
     appointmentContext
   );
@@ -99,9 +100,10 @@ const Navbar = () => {
       >
         <Logo />
         <div className="flex gap-2 text-[14px] items-center">
-          {(userData.user && userData.user?.processSignup === 3) && (
-            <NotificationApp />
-          )}
+          {userData.user &&
+            userData.user?.processSignup === 3 && (
+              <NotificationApp />
+            )}
 
           {/* {(userData.user && userData.user?.processSignup === 3) ?
             <div className='flex items-center gap-3 relative'>
@@ -125,7 +127,10 @@ const Navbar = () => {
               Đặt Lịch Khám
             </button>
           </Link>
-          <button onClick={() => authHandler.showQR()} className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+          <button
+            onClick={() => authHandler.showQR()}
+            className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all"
+          >
             Tải Ứng Dụng Ngay
           </button>
           <button
@@ -188,6 +193,7 @@ const Navbar = () => {
                   Trang Chủ
                 </span>
               </li>
+
               <li
                 onClick={() => {
                   router.push("/cac-dich-vu");
@@ -218,7 +224,7 @@ const Navbar = () => {
                 <>
                   <li
                     onClick={() => {
-                      setVisibleHealth(!visibleHealth)
+                      setVisibleHealth(!visibleHealth);
                     }}
                     className="flex justify-between cursor-pointer mt-5"
                   >
@@ -229,7 +235,13 @@ const Navbar = () => {
                       </span>
                     </div>
                   </li>
-                  <div style={{ height: visibleHealth ? '180px' : '0', transition: '0.5s' }} className="flex flex-col gap-5 pl-[1.5rem] overflow-hidden">
+                  <div
+                    style={{
+                      height: visibleHealth ? "180px" : "0",
+                      transition: "0.5s",
+                    }}
+                    className="flex flex-col gap-5 pl-[1.5rem] overflow-hidden"
+                  >
                     <li
                       onClick={() => {
                         router.push("/ho-so-suc-khoe");
@@ -344,6 +356,19 @@ const Navbar = () => {
                 <i className="bx text-[#567fea] bxs-home text-[23px]"></i>
                 <span className="text-[16px] font-medium">
                   Trang Chủ
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/doanh-thu-cua-toi");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="bx text-[#e6e635] bxs-bar-chart-alt-2 text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Doanh thu của tôi
                 </span>
               </li>
               <li

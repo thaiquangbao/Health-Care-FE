@@ -1,6 +1,7 @@
 "use client";
 import ChatBot from "@/components/chatbot/ChatBot";
 import Notification from "@/components/notification";
+import MessageIcon from "@/components/shortcut/MessageIcon";
 import { api, TypeHTTP } from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -12,7 +13,6 @@ import {
 } from "react";
 import { appointmentContext } from "./AppointmentContext";
 import { userContext } from "./UserContext";
-import MessageIcon from "@/components/shortcut/MessageIcon";
 export const globalContext = createContext();
 
 export const notifyType = {
@@ -20,7 +20,7 @@ export const notifyType = {
   FAIL: "fail",
   WARNING: "warning",
   LOADING: "loading",
-  HEALTH: 'health',
+  HEALTH: "health",
   NONE: "none",
 };
 
@@ -88,13 +88,14 @@ const GlobalProvider = ({ children }) => {
       "zero",
       "cong-dong",
       "chi-tiet-cau-hoi",
-      "cuoc-tro-chuyen"
+      "cuoc-tro-chuyen",
     ];
     const doctorPathname = [
       "/phieu-dang-ky",
       "/ho-so-ca-nhan-bac-si",
       "/them-cam-nang",
       "/benh-nhan-cua-toi",
+      "/doanh-thu-cua-toi",
     ];
     if (pathname !== "/") {
       if (userData.user) {
