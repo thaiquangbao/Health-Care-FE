@@ -247,14 +247,6 @@ const FormBenhNhanDetail = ({
                           : "Báo động"}
                       </span>
                     </div>
-                    <div className="flex items-center">
-                      <label className="text-[#5e5e5e] text-[15px]">
-                        Ngày tái khám:
-                      </label>
-                      <span className="px-2 py-1">
-                        (10:30) 10-04-2002
-                      </span>
-                    </div>
                   </div>
                   <div className="flex flex-col py-2 gap-1 w-[100%]">
                     {logBook.status.status_type !==

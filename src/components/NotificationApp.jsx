@@ -47,14 +47,19 @@ const NotificationApp = () => {
     };
   }, [lengthNotice, notifications, userData.user?._id]);
   const clickNotice = (item) => {
-    if (item.category === "APPOINTMENT" && userData.user?.role === "USER") {
+    if (
+      item.category === "APPOINTMENT" &&
+      userData.user?.role === "USER"
+    ) {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
         sendToken: false,
         path: "/notices/update",
       }).then((res) => {
-        if (item.title.toLowerCase().trim() === "lịch hẹn") {
+        if (
+          item.title.toLowerCase().trim() === "lịch hẹn"
+        ) {
           api({
             sendToken: false,
             path: `/appointments/get-one/${item.attached}`,
@@ -69,7 +74,10 @@ const NotificationApp = () => {
           router.push("/cuoc-hen-cua-ban");
         }
       });
-    } else if (item.category === "HEARTLOGBOOK" && userData.user?.role === "USER") {
+    } else if (
+      item.category === "HEARTLOGBOOK" &&
+      userData.user?.role === "USER"
+    ) {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
@@ -78,7 +86,11 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/theo-doi-suc-khoe");
       });
-    } else if (item.title.toLowerCase().trim() ==="cảnh báo sức khỏe" && userData.user?.role === "DOCTOR") {
+    } else if (
+      item.title.toLowerCase().trim() ===
+        "cảnh báo sức khỏe" &&
+      userData.user?.role === "DOCTOR"
+    ) {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
@@ -87,15 +99,18 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/benh-nhan-cua-toi");
       });
-    } else if (item.category === "SCHEDULE" && userData.user?.role === "DOCTOR") {
-        api({
-          type: TypeHTTP.POST,
-          body: { _id: item._id, seen: true },
-          sendToken: false,
-          path: "/notices/update",
-        }).then((res) => {
-          router.push("/ho-so-ca-nhan-bac-si");
-        });
+    } else if (
+      item.category === "SCHEDULE" &&
+      userData.user?.role === "DOCTOR"
+    ) {
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/ho-so-ca-nhan-bac-si");
+      });
     } else {
       api({
         type: TypeHTTP.POST,
@@ -104,7 +119,8 @@ const NotificationApp = () => {
         path: "/notices/update",
       }).then((res) => {
         if (
-          item.title.toLowerCase().trim() === "lịch hẹn") {
+          item.title.toLowerCase().trim() === "lịch hẹn"
+        ) {
           api({
             sendToken: false,
             path: `/appointments/get-one/${item.attached}`,
@@ -159,34 +175,42 @@ const NotificationApp = () => {
 
           {/* Thông báo */}
           <div className="max-h-64 overflow-y-auto">
-            {notifications
-              .slice()
-              .reverse()
-              .slice(0, visibleCount)
-              .map((item, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-2 relative border-b flex items-start cursor-pointer hover:bg-gray-200"
-                  onClick={() => clickNotice(item)}
-                >
-                  <div>
-                    <span className="font-bold text-blue-600">
-                      {item.title}
-                    </span>{" "}
-                    <br />
-                    <span className="text-sm text-gray-500">
-                      {item.content}
-                    </span>
-                    <div className="text-[13px] text-gray-500">
-                      Ngày: {item.date.day}/
-                      {item.date.month}/{item.date.year}
+            {notifications.length > 0 ? (
+              notifications
+                .slice()
+                .reverse()
+                .slice(0, visibleCount)
+                .map((item, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 relative border-b flex items-start cursor-pointer hover:bg-gray-200"
+                    onClick={() => clickNotice(item)}
+                  >
+                    <div>
+                      <span className="font-bold text-blue-600">
+                        {item.title}
+                      </span>{" "}
+                      <br />
+                      <span className="text-sm text-gray-500">
+                        {item.content}
+                      </span>
+                      <div className="text-[13px] text-gray-500">
+                        Ngày: {item.date.day}/
+                        {item.date.month}/{item.date.year}
+                      </div>
                     </div>
+                    {item.seen === false && (
+                      <span className=" absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full mt-1 transform"></span>
+                    )}
                   </div>
-                  {item.seen === false && (
-                    <span className=" absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full mt-1 transform"></span>
-                  )}
-                </div>
-              ))}
+                ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full">
+                <span className="font-bold text-blue-600">
+                  Bạn chưa có thông báo nào!!!
+                </span>
+              </div>
+            )}
           </div>
           {/* Xem tất cả */}
           {visibleCount < notifications.length && (
