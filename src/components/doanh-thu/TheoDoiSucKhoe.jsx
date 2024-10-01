@@ -24,6 +24,11 @@ const TheoDoiSucKhoe = ({ type, setType }) => {
   const { globalHandler } = useContext(globalContext);
   const [loading, setLoading] = useState(false);
   const chartRef = useRef(null);
+  const [sumLogBook, setSumLogBook] = useState([]);
+  const [sumLogBookWeek, setSumLogBookWeek] = useState([]);
+  const [sumLogBookMonth, setSumLogBookMonth] = useState(
+    []
+  );
   const typeTime = {
     1: "tổng",
     2: "tuần này",
@@ -75,34 +80,53 @@ const TheoDoiSucKhoe = ({ type, setType }) => {
                   return 2800000 * item.count;
                 }
               }),
-              backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-                "rgba(255, 205, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(201, 203, 207, 0.2)",
-              ],
-              borderColor: [
-                "rgb(255, 99, 132)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 205, 86)",
-                "rgb(75, 192, 192)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)",
-                "rgb(201, 203, 207)",
-              ],
-              borderWidth: 1,
+              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+              borderColor: ["rgba(255, 99, 132, 0.2)"],
+              borderWidth: 2,
+            },
+            {
+              type: "line",
+              label: "Line Dataset",
+              data: data.map((item) => {
+                if (item.totalPrice === 1350000) {
+                  return 945000 * item.count;
+                } else if (item.totalPrice === 2300000) {
+                  return 1610000 * item.count;
+                } else {
+                  return 2800000 * item.count;
+                }
+              }),
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgb(255, 99, 132)",
+              borderWidth: 2,
             },
           ],
         },
         options: {
           scales: {
             y: {
-              beginAtZero: true,
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: "Doanh thu (VNĐ)",
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Thời gian",
+              },
             },
           },
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                usePointStyle: true,
+              },
+            },
+          },
+          maintainAspectRatio: false,
         },
       });
 
@@ -150,10 +174,152 @@ const TheoDoiSucKhoe = ({ type, setType }) => {
       }
     }
   }, [type, userData.user]);
-
+  const calculator = (logBooks) => {
+    let logBookPrice = 0;
+    logBooks.forEach((logBook) => {
+      if (logBook.priceList?.price === 1350000) {
+        logBookPrice += 945000;
+      } else if (logBook.priceList?.price === 2300000) {
+        logBookPrice += 1610000;
+      } else {
+        logBookPrice += 2800000;
+      }
+    });
+    return logBookPrice;
+  };
+  useEffect(() => {
+    api({
+      path: "/healthLogBooks/get-all",
+      type: TypeHTTP.GET,
+      sendToken: true,
+    }).then((logBooks) => {
+      setSumLogBook(
+        logBooks.filter(
+          (item) =>
+            item.doctor?._id === userData.user._id &&
+            item.status.status_type === "COMPLETED"
+        )
+      );
+    });
+    api({
+      path: "/healthLogBooks/findByWeek",
+      type: TypeHTTP.POST,
+      body: {
+        doctor: userData.user._id,
+      },
+      sendToken: true,
+    }).then((logBooks) => {
+      setSumLogBookWeek(
+        logBooks.filter(
+          (item) =>
+            item.doctor?._id === userData.user._id &&
+            item.status.status_type === "COMPLETED"
+        )
+      );
+    });
+    api({
+      path: "/healthLogBooks/findByMonth",
+      type: TypeHTTP.POST,
+      body: {
+        doctor: userData.user._id,
+      },
+      sendToken: true,
+    }).then((logBooks) => {
+      setSumLogBookMonth(
+        logBooks.filter(
+          (item) =>
+            item.doctor?._id === userData.user._id &&
+            item.status.status_type === "COMPLETED"
+        )
+      );
+    });
+  }, [userData.user]);
   return (
     <>
-      <div className="mt-4 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
+      <div className="grid grid-cols-4 gap-4 mt-2">
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/EndlessRiver.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-calendar-check"></i>
+            <span className="text-[25px] font-semibold">
+              {returnNumber(sumLogBook.length)}
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Tất cả cuộc hẹn đã hoàn tất
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/Flare.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-dollar-circle"></i>
+            <span className="text-[25px] font-semibold">
+              {sumLogBook.length === 0
+                ? 0
+                : formatMoney(calculator(sumLogBook))}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Tổng doanh thu
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/Quepal.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
+            <span className="text-[25px] font-semibold">
+              {sumLogBookWeek.length === 0
+                ? 0
+                : formatMoney(
+                    calculator(sumLogBookWeek)
+                  )}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Doanh thu theo tuần
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/SinCityRed.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-line-chart"></i>
+            <span className="text-[25px] font-semibold">
+              {sumLogBookMonth.length === 0
+                ? 0
+                : formatMoney(
+                    calculator(sumLogBookMonth)
+                  )}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Doanh thu theo tháng
+          </span>
+        </div>
+      </div>
+      <div className="mt-8 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
         <div>
           <span className="text-[20px] font-bold">
             Doanh thu {typeTime[type]}

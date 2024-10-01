@@ -16,7 +16,7 @@ import {
   isALargerWithin60Minutes,
   sortByAppointmentDate,
 } from "@/utils/date";
-import { returnNumber } from "@/utils/other";
+import { formatMoney, returnNumber } from "@/utils/other";
 import { Chart } from "chart.js/auto";
 import { set } from "date-fns";
 import Link from "next/link";
@@ -41,7 +41,11 @@ const HenKham = ({ type, setType }) => {
     useState(false);
   const intervalRef = useRef();
   const chartRef = useRef(null);
-
+  const [sumAppointment, setSumAppointment] = useState(0);
+  const [sumAppointmentWeek, setSumAppointmentWeek] =
+    useState(0);
+  const [sumAppointmentMonth, setSumAppointmentMonth] =
+    useState(0);
   const typeTime = {
     1: "tổng",
     2: "tuần này",
@@ -88,42 +92,94 @@ const HenKham = ({ type, setType }) => {
           labels: labels,
           datasets: [
             {
-              label: "My First Dataset",
+              label: "Bar Dataset",
               data: data,
-              backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-                "rgba(255, 205, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(201, 203, 207, 0.2)",
-              ],
-              borderColor: [
-                "rgb(255, 99, 132)",
-                "rgb(255, 159, 64)",
-                "rgb(255, 205, 86)",
-                "rgb(75, 192, 192)",
-                "rgb(54, 162, 235)",
-                "rgb(153, 102, 255)",
-                "rgb(201, 203, 207)",
-              ],
-              borderWidth: 1,
+              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+              borderColor: ["rgba(255, 99, 132, 0.2)"],
+              borderWidth: 2,
+            },
+            {
+              type: "line",
+              label: "Line Dataset",
+              data: data,
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgb(255, 99, 132)",
+              borderWidth: 2,
             },
           ],
         },
         options: {
           scales: {
             y: {
-              beginAtZero: true,
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: "Doanh thu (VNĐ)",
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Thời gian",
+              },
             },
           },
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                usePointStyle: true,
+              },
+            },
+          },
+          maintainAspectRatio: false,
         },
       });
 
       chartRef.current.chart = newChart;
     }
   }, [appointments]);
+  useEffect(() => {
+    const body = {
+      doctor_record_id: appointmentData.doctorRecord?._id,
+      status: "COMPLETED",
+    };
+    api({
+      type: TypeHTTP.POST,
+      path: "/appointments/findByStatus",
+      body,
+      sendToken: false,
+    }).then((res) => {
+      setSumAppointment(res.length);
+    });
+    const bodyWeek = {
+      doctor_record_id: appointmentData.doctorRecord?._id,
+    };
+    api({
+      type: TypeHTTP.POST,
+      path: "/appointments/findByWeek",
+      body: bodyWeek,
+      sendToken: false,
+    }).then((res) => {
+      const app = res.filter(
+        (item) => item.status === "COMPLETED"
+      );
+
+      setSumAppointmentWeek(app.length);
+    });
+    api({
+      type: TypeHTTP.POST,
+      path: "/appointments/findByMonth",
+      body,
+      sendToken: false,
+    }).then((res) => {
+      const app = res.filter(
+        (item) => item.status === "COMPLETED"
+      );
+
+      setSumAppointmentMonth(app.length);
+    });
+  }, [appointmentData.doctorRecord?._id]);
   useEffect(() => {
     if (appointments.length > 0) {
       const theFirstAppointment = sortByAppointmentDate(
@@ -224,7 +280,94 @@ const HenKham = ({ type, setType }) => {
 
   return (
     <>
-      <div className="mt-4 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
+      <div className="grid grid-cols-4 gap-4 mt-2">
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/EndlessRiver.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-calendar-check"></i>
+            <span className="text-[25px] font-semibold">
+              {returnNumber(sumAppointment)}
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Tất cả cuộc hẹn đã hoàn tất
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/Flare.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-dollar-circle"></i>
+            <span className="text-[25px] font-semibold">
+              {sumAppointment === 0
+                ? 0
+                : formatMoney(
+                    returnNumber(sumAppointment) * 140000
+                  )}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Tổng doanh thu
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/Quepal.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
+            <span className="text-[25px] font-semibold">
+              {sumAppointmentWeek === 0
+                ? 0
+                : formatMoney(
+                    returnNumber(sumAppointmentWeek) *
+                      140000
+                  )}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Doanh thu theo tuần
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/SinCityRed.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-line-chart"></i>
+            <span className="text-[25px] font-semibold">
+              {sumAppointmentMonth === 0
+                ? 0
+                : formatMoney(
+                    returnNumber(sumAppointmentMonth) *
+                      140000
+                  )}{" "}
+              đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Doanh thu theo tháng
+          </span>
+        </div>
+      </div>
+      <div className="mt-8 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
         <div>
           <span className="text-[20px] font-bold">
             Doanh thu {typeTime[type]}
