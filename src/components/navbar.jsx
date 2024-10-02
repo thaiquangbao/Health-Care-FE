@@ -270,6 +270,21 @@ const Navbar = () => {
                     </li>
                     <li
                       onClick={() => {
+                        router.push(
+                          "/kham-suc-khoe-tai-nha"
+                        );
+                        authHandler.hiddenWrapper();
+                        authHandler.setVisibleMore(false);
+                      }}
+                      className="flex gap-3 cursor-pointer"
+                    >
+                      <i className="text-[#007bff] fa-solid fa-house-medical text-[23px]"></i>
+                      <span className="text-[16px] font-medium">
+                        Khám sức khỏe tại nhà
+                      </span>
+                    </li>
+                    <li
+                      onClick={() => {
                         router.push("/cuoc-hen-cua-ban");
                         authHandler.hiddenWrapper();
                         authHandler.setVisibleMore(false);

@@ -1,6 +1,7 @@
 "use client";
 import Navbar from "@/components/navbar";
 import CuocHen from "@/components/phieu-dang-ky/CuocHen";
+import KhamTaiNha from "@/components/phieu-dang-ky/KhamTaiNha";
 import PhieuTheoDoi from "@/components/phieu-dang-ky/PhieuTheoDoi";
 import { userContext } from "@/context/UserContext";
 import { useContext, useState } from "react";
@@ -37,6 +38,7 @@ const Appointment = () => {
             >
               <option value={1}>Phiếu Đăng Ký Hẹn Khám</option>
               <option value={2}>Phiếu Theo Dõi Sức Khỏe</option>
+              <option value={3}>Phiếu Hẹn Khám Tại Nhà</option>
             </select>
             <select
               onChange={(e) => setType(e.target.value)}
@@ -52,8 +54,10 @@ const Appointment = () => {
         </div>
         {ticketType === '1' ? (
           <CuocHen type={type} setType={setType} />
-        ) : (
+        ) : ticketType === '2' ?  (
           <PhieuTheoDoi type={type} setType={setType} />
+        ) : (
+          <KhamTaiNha type={type} setType={setType} />
         )}
       </div>
     </div>

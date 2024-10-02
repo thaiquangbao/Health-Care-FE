@@ -1,20 +1,19 @@
 'use client'
+import FormBooking from '@/components/appointment/FormBooking'
+import FormDetailAppointment from '@/components/appointment/FormDetailAppointment'
+import FormRecordPatient from '@/components/appointment/FormRecordPatient'
 import FormSignUpAppointment from '@/components/appointment/FormSignUpAppoiment'
+import FormDetailAppointmentHome from '@/components/appointmentHome/FormDetailAppointmentHome'
 import FormSignIn from '@/components/auth/FormSignIn'
 import FormSignUp from '@/components/auth/FormSignUp'
 import FormDetailTime from '@/components/ho-so-ca-nhan-bac-si/FormDetailTime'
 import FormDetailTimeForHaveSchedule from '@/components/ho-so-ca-nhan-bac-si/FormDetailTimeForHaveSchedule'
 import FormSchedule from '@/components/ho-so-ca-nhan-bac-si/FormSchedule'
+import FormSignUpHealth from '@/components/ho-so-ca-nhan-bac-si/FormSignUpHealth'
 import Wrapper from '@/components/wrapper'
-import { set } from 'date-fns'
+import { api, TypeHTTP } from '@/utils/api'
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { userContext } from './UserContext'
-import { api, TypeHTTP } from '@/utils/api'
-import FormBooking from '@/components/appointment/FormBooking'
-import FormRecordPatient from '@/components/appointment/FormRecordPatient'
-import FormDetailAppointment from '@/components/appointment/FormDetailAppointment'
-import FormSignUpHealth from '@/components/ho-so-ca-nhan-bac-si/FormSignUpHealth'
-
 export const appointmentContext = createContext()
 
 const AppointmentProvider = ({ children }) => {
@@ -40,7 +39,8 @@ const AppointmentProvider = ({ children }) => {
     const [displayConnect, setDisplayConnect] = useState(false)
     const wrapperRef = useRef()
     const [doctorRecordBooking, setDoctorRecordBooking] = useState()
-
+    // appointmentHome
+    const [dataFormDetailAppointmentHome, setDataFormDetailAppointmentHome] = useState()
     useEffect(() => {
         if (userData.user && userData.user?.role === 'DOCTOR') {
             api({ path: `/doctorRecords/getById/${userData.user._id}`, type: TypeHTTP.GET, sendToken: false })
@@ -76,6 +76,7 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormRecordPatient()
         hiddenFormDetailAppointment()
         hiddenFormSignUpHealth()
+        hiddenFormDetailAppointmentHome()
     }
 
     const showFormBooking = (sick) => {
@@ -162,7 +163,16 @@ const AppointmentProvider = ({ children }) => {
         setDisplayConnect(false)
         setDataFormDetailAppointment()
     }
-
+    const hiddenFormDetailAppointmentHome = () => {
+      hiddenWrapper()
+      setDisplayConnect(false)
+      setDataFormDetailAppointmentHome()
+    }
+    const showFormDetailAppointmentHome = (appointmentHome, display) => {
+      showWrapper()
+      setDisplayConnect(display)
+      setDataFormDetailAppointmentHome(appointmentHome)
+  }
     const data = {
         detailTime,
         doctorRecord,
@@ -195,7 +205,9 @@ const AppointmentProvider = ({ children }) => {
         showFormDetailAppointment,
         hiddenFormDetailAppointment,
         setMedicalRecord,
-        showFormSignUpHealth
+        showFormSignUpHealth,
+        showFormDetailAppointmentHome,
+        hiddenFormDetailAppointmentHome,
     }
 
     return (
@@ -208,6 +220,7 @@ const AppointmentProvider = ({ children }) => {
             <FormBooking hidden={hidden} visible={visibleFormBooking} sick={sick} />
             <FormDetailAppointment display={displayConnect} hidden={hidden} data={dataFormDetailAppointment} />
             <FormSignUpHealth doctorRecord={doctorRecordBooking} hidden={hidden} />
+            <FormDetailAppointmentHome display={displayConnect} hidden={hidden} data={dataFormDetailAppointmentHome} />
             {/* <FormRecordPatient hidden={hidden} visible={visibleFormRecordPatient} /> */}
             {children}
         </appointmentContext.Provider>
