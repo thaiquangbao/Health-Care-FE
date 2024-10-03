@@ -1,5 +1,7 @@
 "use client";
+import DanhSachDanhGia from "@/components/danh-gia-cua-benh-nhan/DanhSachDanhGia";
 import HenKham from "@/components/doanh-thu/HenKham";
+import HenKhamTaiNha from "@/components/doanh-thu/HenKhamTaiNha";
 import TheoDoiSucKhoe from "@/components/doanh-thu/TheoDoiSucKhoe";
 import Navbar from "@/components/navbar";
 import { userContext } from "@/context/UserContext";
@@ -8,6 +10,11 @@ const DoanhThuCuaToi = () => {
   const { userData } = useContext(userContext);
   const [type, setType] = useState("1");
   const [ticketType, setTicketType] = useState("1");
+  const [visibleForm, setVisibleForm] = useState(false);
+  const hiddenTransfer = () => {
+    setVisibleForm(false);
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col pt-[60px] px-[5%] background-public">
       <Navbar />
@@ -29,6 +36,16 @@ const DoanhThuCuaToi = () => {
             </span>
           </div>
           <div className="flex gap-3">
+          <div
+            className="px-4 py-2 text-[15px] shadow-lg text-center focus:outline-0 rounded-md font-medium cursor-pointer transition-transform transform hover:scale-105"
+            style={{
+              background: "#28f677",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
+            }}
+            onClick={() => setVisibleForm(true)}  
+          >
+            <span>Đánh giá của bệnh nhân</span>
+          </div>
             <select
               onChange={(e) =>
                 setTicketType(e.target.value)
@@ -40,6 +57,9 @@ const DoanhThuCuaToi = () => {
               </option>
               <option value={2}>
                 Doanh Thu Theo Dõi Sức Khỏe
+              </option>
+              <option value={3}>
+                Doanh Thu Hẹn Khám Tại Nhà
               </option>
             </select>
             <select
@@ -54,10 +74,18 @@ const DoanhThuCuaToi = () => {
         </div>
         {ticketType === "1" ? (
           <HenKham type={type} setType={setType} />
-        ) : (
+        ) : ticketType === "2" ? (
           <TheoDoiSucKhoe type={type} setType={setType} />
+        ) : (
+          <HenKhamTaiNha type={type} setType={setType} />
         )}
       </div>
+      {visibleForm && (
+        <DanhSachDanhGia
+          hidden={hiddenTransfer}
+        />
+      )}
+      
     </div>
   );
 };

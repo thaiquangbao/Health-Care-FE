@@ -1,12 +1,13 @@
 import { appointmentContext } from '@/context/AppointmentContext'
 import { bookingContext } from '@/context/BookingContext'
+import { notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { api, TypeHTTP } from '@/utils/api'
 import { compare2Date, compareDate1GetterThanDate2, convertDateToDayMonthYearObject, convertDateToDayMonthYearVietNam2, sortDates, sortTimes } from '@/utils/date'
 import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-const FormBooking = ({ visible, hidden, sick }) => {
+const FormBooking = ({ visible, hidden, sick, notify }) => {
     const router = useRouter()
     const [currentStep, setCurrentStep] = useState(1)
     const [display, setDisplay] = useState(0)
@@ -80,20 +81,28 @@ const FormBooking = ({ visible, hidden, sick }) => {
     }), [display, visible])
 
     const handleCreateAppointment = () => {
-        const body = {
-            doctor_record_id: appointmentData.doctorRecord._id,
-            patient: userData.user ? userData.user._id : null,
-            appointment_date: appointmentDate,
-            status: "QUEUE",
-            note: "",
-            status_message: 'Đang chờ bác sĩ xác nhận',
-            priceList: priceList,
-            sick
-        }
-        bookingHandler.setBooking(body)
-        bookingHandler.setDoctorRecord(appointmentData.doctorRecord)
-        hidden()
-        router.push('/ho-so-dang-ky')
+        api({ type: TypeHTTP.GET, path: '/appointments/getAll', sendToken: false })
+            .then(res => {
+                const result = res.filter(item => item.patient._id === userData.user._id).filter(item => item.appointment_date.day === appointmentDate.day && item.appointment_date.month === appointmentDate.month && item.appointment_date.year === appointmentDate.year && item.appointment_date.time === appointmentDate.time)[0]
+                if (result) {
+                    notify(notifyType.WARNING, 'Bạn không thể đăng ký giờ hẹn này, do đã trùng với lịch hẹn khác')
+                } else {
+                    const body = {
+                        doctor_record_id: appointmentData.doctorRecord._id,
+                        patient: userData.user ? userData.user._id : null,
+                        appointment_date: appointmentDate,
+                        status: "QUEUE",
+                        note: "",
+                        status_message: 'Đang chờ bác sĩ xác nhận',
+                        priceList: priceList,
+                        sick
+                    }
+                    bookingHandler.setBooking(body)
+                    bookingHandler.setDoctorRecord(appointmentData.doctorRecord)
+                    hidden()
+                    router.push('/ho-so-dang-ky')
+                }
+            })
     }
 
 

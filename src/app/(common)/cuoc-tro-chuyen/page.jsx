@@ -6,6 +6,7 @@ import { healthContext } from '@/context/HealthContext'
 import { userContext } from '@/context/UserContext'
 import { api, baseURL, TypeHTTP } from '@/utils/api'
 import { convertDateToDayMonthYearTimeObject } from '@/utils/date'
+import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
 const socket = io.connect(baseURL)
@@ -21,6 +22,12 @@ const CuocTroChuyen = () => {
     const messageRef = useRef()
     const wrapperRef = useRef()
     const imageRef = useRef()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!userData.user)
+            router.push('/')
+    }, [userData.user])
 
     useEffect(() => {
         if (userData.user && userData.user?.role === 'USER') {

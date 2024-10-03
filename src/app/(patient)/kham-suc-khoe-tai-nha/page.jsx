@@ -1,10 +1,12 @@
 "use client";
-
 import FormDetailLogBook from "@/components/ho-so-dang-ky-theo-doi/FormDetailLogBook";
 import Navbar from "@/components/navbar";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { authContext } from "@/context/AuthContext";
-import { globalContext } from "@/context/GlobalContext";
+import {
+  globalContext,
+  notifyType,
+} from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearVietNam } from "@/utils/date";
@@ -18,9 +20,8 @@ const KhamSucKhoeTaiNha = () => {
   const { authHandler } = useContext(authContext);
   const [loading, setLoading] = useState(false);
   const { userData } = useContext(userContext);
-  const [appointmentHomes, setAppointmentHomes] = useState(
-    []
-  );
+  const [appointmentHomes, setAppointmentHomes] = useState([]);
+  const { globalHandler } = useContext(globalContext);
   const { appointmentData, appointmentHandler } = useContext(appointmentContext);
   const [doctorRecords, setDoctorRecords] = useState([]);
   const [displayConnect, setDisplayConnect] = useState(false);
@@ -44,7 +45,36 @@ const KhamSucKhoeTaiNha = () => {
       });
     }
   }, [userData.user]);
-
+  const handleCancelAppointmentHome = (appointment) => {
+    const body = {
+        _id: appointment._id,
+       
+        status: {
+          status_type: "CANCELED",
+          message: "Bệnh nhân đã hủy cuộc hẹn",
+        },
+        note: ''
+    }
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
+    api({ sendToken: true, path: '/appointmentHomes/doctor-cancel', type: TypeHTTP.POST, body: body })
+        .then(res => {
+            // let record = JSON.parse(JSON.stringify(doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]))
+            // let schedule = record.schedules.filter(item => item.date.day === appointment.appointment_date.day && item.date.month === appointment.appointment_date.month && item.date.year === appointment.appointment_date.year)[0]
+            // let time = schedule.times.filter(item => item.time === appointment.appointment_date.time)[0]
+            // time.status = ''
+            // api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
+            //     .then(res1 => {
+                    setAppointmentHomes(prev => prev.map(item => {
+                        if (item._id === res._id) {
+                            return res
+                        }
+                        return item
+                    }))
+                    globalHandler.notify(notifyType.SUCCESS, 'Đã hủy cuộc hẹn')
+                    globalHandler.reload()
+                // })
+        })
+}
   
   return (
     <div className="w-full min-h-screen pb-4 flex flex-col pt-[60px] px-[5%]">
@@ -111,7 +141,14 @@ const KhamSucKhoeTaiNha = () => {
                       >
                         {index + 1}
                       </td>
-                      <td className="py-4 text-[15px]">
+                      <td onClick={() =>
+                          appointmentHandler.showFormDetailAppointmentHome(
+                              appointmentHome,
+                              displayConnect === appointmentHome._id
+                                  ? true
+                                  : false
+                          )
+                      } className="py-4 text-[15px]">
                         BS.{" "}
                         {
                           doctorRecords.filter(
@@ -122,6 +159,14 @@ const KhamSucKhoeTaiNha = () => {
                         }
                       </td>
                       <td
+                      onClick={() =>
+                        appointmentHandler.showFormDetailAppointmentHome(
+                            appointmentHome,
+                            displayConnect === appointmentHome._id
+                                ? true
+                                : false
+                        )
+                    }
                         style={{
                           color:
                             appointmentHome.status
@@ -141,12 +186,27 @@ const KhamSucKhoeTaiNha = () => {
                       >
                         {appointmentHome.status?.message}
                       </td>
-                      <td className="py-4">
+                      <td className="py-4" onClick={() =>
+                          appointmentHandler.showFormDetailAppointmentHome(
+                              appointmentHome,
+                              displayConnect === appointmentHome._id
+                                  ? true
+                                  : false
+                          )
+                      }
+                      >
                         {`${convertDateToDayMonthYearVietNam(
                           appointmentHome.appointment_date
                         )}`}
                       </td>
-                      <td className="py-4">
+                      <td className="py-4" onClick={() =>
+                          appointmentHandler.showFormDetailAppointmentHome(
+                              appointmentHome,
+                              displayConnect === appointmentHome._id
+                                  ? true
+                                  : false
+                          )
+                      }>
                         {appointmentHome.note}
                       </td>
                       <td className="py-4 flex gap-2 items-center justify-center">
@@ -160,11 +220,11 @@ const KhamSucKhoeTaiNha = () => {
                             ?.status_type
                         ) && (
                           <button
-                            // onClick={() =>
-                            //   handleCancelAppointment(
-                            //     appointment
-                            //   )
-                            // }
+                            onClick={() =>
+                              handleCancelAppointmentHome(
+                                appointmentHome
+                              )
+                            }
                             className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                           >
                             Hủy Cuộc Hẹn

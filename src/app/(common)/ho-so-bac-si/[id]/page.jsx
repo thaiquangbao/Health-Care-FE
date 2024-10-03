@@ -45,20 +45,18 @@ const HoSoBacSi = () => {
   const [healthLogBooks, setHealthLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext);
   useEffect(() => {
-    if (userData.user) {
-      api({
-        type: TypeHTTP.GET,
-        path: `/doctorRecords/getById/${id}`,
-        sendToken: false,
+    api({
+      type: TypeHTTP.GET,
+      path: `/doctorRecords/getById/${id}`,
+      sendToken: false,
+    })
+      .then((res) => {
+        appointmentHandler.setDoctorRecord(res);
+        setDoctorRecord(res);
       })
-        .then((res) => {
-          appointmentHandler.setDoctorRecord(res);
-          setDoctorRecord(res);
-        })
-        .catch((error) => {
-          router.push("/bac-si-noi-bat");
-        });
-    }
+      .catch((error) => {
+        router.push("/bac-si-noi-bat");
+      });
   }, [id]);
   // check tồn tại health log book
 
@@ -128,11 +126,10 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${
-              star <= rating
+            className={`w-6 h-6 ${star <= rating
                 ? "text-yellow-500"
                 : "text-gray-300"
-            }`}
+              }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -218,48 +215,48 @@ const HoSoBacSi = () => {
                 log.status.status_type === "QUEUE" ||
                 log.status.status_type === "TRANSFER"
             ).length > 0 && (
-              <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
-                <div className="flex flex-col text-[#333333]">
-                  <span className="text-[14px]">
-                    SỐ ĐIỆN THOẠI
-                  </span>
-                  <span className="text-[17px]">
-                    {doctorRecord?.doctor?.phone}
-                  </span>
-                </div>
-                <div>
-                  <button
-                    onClick={() => {
-                      if (userData.user) {
-                        if (userData.user?.email === "") {
+                <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+                  <div className="flex flex-col text-[#333333]">
+                    <span className="text-[14px]">
+                      SỐ ĐIỆN THOẠI
+                    </span>
+                    <span className="text-[17px]">
+                      {doctorRecord?.doctor?.phone}
+                    </span>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => {
+                        if (userData.user) {
+                          if (userData.user?.email === "") {
+                            globalHandler.notify(
+                              notifyType.WARNING,
+                              "Vui lòng cập nhật email để đặt khám !!!"
+                            );
+                            return;
+                          }
+                        } else {
                           globalHandler.notify(
                             notifyType.WARNING,
-                            "Vui lòng cập nhật email để đặt khám !!!"
+                            "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!"
                           );
                           return;
                         }
-                      } else {
-                        globalHandler.notify(
-                          notifyType.WARNING,
-                          "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!"
+                        appointmentHandler.showFormSignUpHealth(
+                          doctorRecord
                         );
-                        return;
-                      }
-                      appointmentHandler.showFormSignUpHealth(
-                        doctorRecord
-                      );
-                    }}
-                    style={{
-                      background:
-                        "linear-gradient(to right, #6cd2c5, #2089e5)",
-                    }}
-                    className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
-                  >
-                    Đăng Ký Theo Dõi Sức Khỏe
-                  </button>
+                      }}
+                      style={{
+                        background:
+                          "linear-gradient(to right, #6cd2c5, #2089e5)",
+                      }}
+                      className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
+                    >
+                      Đăng Ký Theo Dõi Sức Khỏe
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
         <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">

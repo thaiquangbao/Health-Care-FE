@@ -8,6 +8,7 @@ import {
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
+import { useRouter } from "next/navigation";
 import React, {
   useContext,
   useEffect,
@@ -23,6 +24,12 @@ const HoSo = () => {
   const [user, setUser] = useState();
   const imgRef = useRef();
   const [visibleUpdate, setVisibleUpdate] = useState(false);
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!userData.user)
+      router.push('/')
+  }, [userData.user])
 
   useEffect(() => {
     setUser(userData.user);
@@ -81,8 +88,6 @@ const HoSo = () => {
         );
       })
       .catch((error) => {
-        console.log(error.message);
-
         globalHandler.notify(
           notifyType.FAIL,
           error.message

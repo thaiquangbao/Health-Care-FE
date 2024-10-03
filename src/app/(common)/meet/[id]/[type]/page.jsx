@@ -20,7 +20,6 @@ const Meet = () => {
 
     return (
         <div className='h-screen w-screen'>
-            sdjnfdsjfidsjfi
         </div>
     )
 }

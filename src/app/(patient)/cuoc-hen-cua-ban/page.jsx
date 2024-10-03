@@ -29,6 +29,11 @@ const CuocHenCuaBan = () => {
     }, [])
 
     useEffect(() => {
+        if (!userData.user)
+            router.push('/')
+    }, [userData.user])
+
+    useEffect(() => {
         if (appointments.length > 0) {
             const theFirstAppointment = sortByAppointmentDate(appointments.filter(item => item.status === 'ACCEPTED')).filter(item => compareTimeDate1GreaterThanDate2(item.appointment_date, convertDateToDayMonthYearTimeObject(new Date().toISOString())))[0]
             if (theFirstAppointment) {

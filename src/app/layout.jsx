@@ -7,6 +7,7 @@ import AppointmentProvider from "@/context/AppointmentContext";
 import BookingProvider from "@/context/BookingContext";
 import BookingServiceProvider from "@/context/BookingServiceContext";
 import HealthProvider from "@/context/HealthContext";
+import UtilsProvider from '@/context/UtilsContext'
 
 export const metadata = {
   title: "HealthHaven",
@@ -31,21 +32,23 @@ export default function RootLayout({ children }) {
         <meta name="google-site-verification" content="qPr_3m_jtgVoFmOL2IRmvbU2OdtNkvMzWNbAkpMcueU" />
       </head>
       <body className="font-space">
-        <UserProvider>
-          <BookingProvider>
-            <BookingServiceProvider>
-              <AppointmentProvider>
-                <GlobalProvider>
-                  <AuthContext>
-                    <HealthProvider>
-                      {children}
-                    </HealthProvider>
-                  </AuthContext>
-                </GlobalProvider>
-              </AppointmentProvider>
-            </BookingServiceProvider>
-          </BookingProvider>
-        </UserProvider>
+        <UtilsProvider>
+          <UserProvider>
+            <BookingProvider>
+              <BookingServiceProvider>
+                <AppointmentProvider>
+                  <GlobalProvider>
+                    <AuthContext>
+                      <HealthProvider>
+                        {children}
+                      </HealthProvider>
+                    </AuthContext>
+                  </GlobalProvider>
+                </AppointmentProvider>
+              </BookingServiceProvider>
+            </BookingProvider>
+          </UserProvider>
+        </UtilsProvider>
       </body>
     </html>
   );

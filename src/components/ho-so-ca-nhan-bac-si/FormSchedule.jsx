@@ -211,7 +211,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                 setCurrentIndex(index)
                                             }
                                         }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
-                                        <div style={{ transition: '0.5s', width: currentIndex === index ? '195px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                        <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
                                             {visibleList === false ? (
                                                 <>
                                                     <button onClick={() => {
@@ -222,6 +222,12 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                     </button>
                                                     <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                         Theo Dõi
+                                                    </button>
+                                                    <button onClick={() => {
+                                                        setCurrentIndex(-1)
+                                                        handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[#a25f24] text-[white] text-[14px]'>
+                                                        Khám tại nhà
                                                     </button>
                                                 </>
                                             ) : (
@@ -246,7 +252,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                             setCurrentIndex(index)
                                         }
                                     }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
-                                    <div style={{ transition: '0.5s', width: currentIndex === index ? '195px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                    <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
                                         {visibleList === false ? (
                                             <>
                                                 <button onClick={() => {
@@ -258,6 +264,12 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                 <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                     Theo Dõi
                                                 </button>
+                                                <button onClick={() => {
+                                                        setCurrentIndex(-1)
+                                                        handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[#a25f24] text-[white] text-[14px]'>
+                                                        Khám tại nhà
+                                                    </button>
                                             </>
                                         ) : (
                                             <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>

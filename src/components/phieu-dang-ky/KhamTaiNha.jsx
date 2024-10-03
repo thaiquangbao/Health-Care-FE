@@ -164,171 +164,178 @@ const KhamTaiNha = ({ type, setType }) => {
         }
     }, [type, appointmentData.doctorRecord]);
 
-    // const handleAcceptAppointment = (appointment) => {
-    //     const body = {
-    //         _id: appointment._id,
-    //         status: "ACCEPTED",
-    //         status_message: "Đã chấp nhận",
-    //     };
-    //     globalHandler.notify(
-    //         notifyType.LOADING,
-    //         "Đang thực hiện thao tác"
-    //     );
-    //     api({
-    //         sendToken: true,
-    //         path: "/appointments/doctor-accept",
-    //         type: TypeHTTP.POST,
-    //         body: body,
-    //     }).then((res) => {
-    //         let record = JSON.parse(
-    //             JSON.stringify(appointmentData.doctorRecord)
-    //         );
-    //         let schedule = record.schedules.filter(
-    //             (item) =>
-    //                 item.date.day ===
-    //                 appointment.appointment_date.day &&
-    //                 item.date.month ===
-    //                 appointment.appointment_date.month &&
-    //                 item.date.year ===
-    //                 appointment.appointment_date.year
-    //         )[0];
-    //         let time = schedule.times.filter(
-    //             (item) =>
-    //                 item.time === appointment.appointment_date.time
-    //         )[0];
-    //         time.status = "Booked";
-    //         api({
-    //             type: TypeHTTP.POST,
-    //             path: "/doctorRecords/update",
-    //             sendToken: false,
-    //             body: record,
-    //         }).then((res1) => {
-    //             setAppointments((prev) =>
-    //                 prev.map((item) => {
-    //                     if (item._id === res._id) {
-    //                         return res;
-    //                     }
-    //                     return item;
-    //                 })
-    //             );
-    //             globalHandler.notify(
-    //                 notifyType.SUCCESS,
-    //                 "Đã chấp nhận cuộc hẹn"
-    //             );
-    //         });
-    //     });
-    // };
+    const handleAcceptAppointmentHome = (appointment) => {
+        const body = {
+            _id: appointment._id,
+            status: {
+              status_type: "ACCEPTED",
+              message: "Bác sĩ đồng ý",
+            }
+        };
+        globalHandler.notify(
+            notifyType.LOADING,
+            "Đang thực hiện thao tác"
+        );
+        api({
+            sendToken: true,
+            path: "/appointmentHomes/doctor-accept",
+            type: TypeHTTP.POST,
+            body: body,
+        }).then((res) => {
+            // let record = JSON.parse(
+            //     JSON.stringify(appointmentData.doctorRecord)
+            // );
+            // let schedule = record.schedules.filter(
+            //     (item) =>
+            //         item.date.day ===
+            //         appointment.appointment_date.day &&
+            //         item.date.month ===
+            //         appointment.appointment_date.month &&
+            //         item.date.year ===
+            //         appointment.appointment_date.year
+            // )[0];
+            // let time = schedule.times.filter(
+            //     (item) =>
+            //         item.time === appointment.appointment_date.time
+            // )[0];
+            // time.status = "Booked";
+            // api({
+            //     type: TypeHTTP.POST,
+            //     path: "/doctorRecords/update",
+            //     sendToken: false,
+            //     body: record,
+            // }).then((res1) => {
+                setAppointmentHomes((prev) =>
+                    prev.map((item) => {
+                        if (item._id === res._id) {
+                            return res;
+                        }
+                        return item;
+                    })
+                );
+                globalHandler.notify(
+                    notifyType.SUCCESS,
+                    "Đã chấp nhận cuộc hẹn"
+                );
+            // });
+        });
+    };
 
-    // const handleCancelAppointment = (appointment) => {
-    //     const body = {
-    //         _id: appointment._id,
-    //         status: "CANCELED",
-    //         status_message: "Bác sĩ đã hủy cuộc hẹn",
-    //         note: ""
-    //     };
-    //     globalHandler.notify(
-    //         notifyType.LOADING,
-    //         "Đang thực hiện thao tác"
-    //     );
-    //     api({
-    //         sendToken: true,
-    //         path: "/appointments/doctor-cancel",
-    //         type: TypeHTTP.POST,
-    //         body: body,
-    //     }).then((res) => {
-    //         let record = JSON.parse(
-    //             JSON.stringify(appointmentData.doctorRecord)
-    //         );
-    //         let schedule = record.schedules.filter(
-    //             (item) =>
-    //                 item.date.day ===
-    //                 appointment.appointment_date.day &&
-    //                 item.date.month ===
-    //                 appointment.appointment_date.month &&
-    //                 item.date.year ===
-    //                 appointment.appointment_date.year
-    //         )[0];
-    //         let time = schedule.times.filter(
-    //             (item) =>
-    //                 item.time === appointment.appointment_date.time
-    //         )[0];
-    //         time.status = "";
-    //         api({
-    //             type: TypeHTTP.POST,
-    //             path: "/doctorRecords/update",
-    //             sendToken: false,
-    //             body: record,
-    //         }).then((res1) => {
-    //             setAppointments((prev) =>
-    //                 prev.map((item) => {
-    //                     if (item._id === res._id) {
-    //                         return res;
-    //                     }
-    //                     return item;
-    //                 })
-    //             );
-    //             globalHandler.notify(
-    //                 notifyType.SUCCESS,
-    //                 "Đã hủy cuộc hẹn"
-    //             );
-    //         });
-    //     });
-    // };
+    const handleCancelAppointmentHomes = (appointment) => {
+        const body = {
+            _id: appointment._id,
+            status: {
+              status_type: "CANCELED",
+              message: "Bác sĩ đã hủy cuộc hẹn",
+            },
+            note: ""
+        };
+        globalHandler.notify(
+            notifyType.LOADING,
+            "Đang thực hiện thao tác"
+        );
+        api({
+            sendToken: true,
+            path: "/appointmentHomes/doctor-cancel",
+            type: TypeHTTP.POST,
+            body: body,
+        }).then((res) => {
+            // let record = JSON.parse(
+            //     JSON.stringify(appointmentData.doctorRecord)
+            // );
+            // let schedule = record.schedules.filter(
+            //     (item) =>
+            //         item.date.day ===
+            //         appointment.appointment_date.day &&
+            //         item.date.month ===
+            //         appointment.appointment_date.month &&
+            //         item.date.year ===
+            //         appointment.appointment_date.year
+            // )[0];
+            // let time = schedule.times.filter(
+            //     (item) =>
+            //         item.time === appointment.appointment_date.time
+            // )[0];
+            // time.status = "";
+            // api({
+            //     type: TypeHTTP.POST,
+            //     path: "/doctorRecords/update",
+            //     sendToken: false,
+            //     body: record,
+            // }).then((res1) => {
+              
+                setAppointmentHomes((prev) =>
+                    prev.map((item) => {
+                        if (item._id === res._id) {
+                            return res;
+                        }
+                        return item;
+                    })
+                );
+                globalHandler.notify(
+                    notifyType.SUCCESS,
+                    "Đã hủy cuộc hẹn"
+                );
+            // });
+        });
+    };
 
-    // const handleRejectAppointment = (appointment) => {
-    //     const body = {
-    //         _id: appointment._id,
-    //         status: "REJECTED",
-    //         status_message: "Đã từ chối",
-    //     };
-    //     globalHandler.notify(
-    //         notifyType.LOADING,
-    //         "Đang thực hiện thao tác"
-    //     );
-    //     api({
-    //         sendToken: true,
-    //         path: "/appointments/doctor-reject",
-    //         type: TypeHTTP.POST,
-    //         body: body,
-    //     }).then((res) => {
-    //         let record = JSON.parse(
-    //             JSON.stringify(appointmentData.doctorRecord)
-    //         );
-    //         let schedule = record.schedules.filter(
-    //             (item) =>
-    //                 item.date.day ===
-    //                 appointment.appointment_date.day &&
-    //                 item.date.month ===
-    //                 appointment.appointment_date.month &&
-    //                 item.date.year ===
-    //                 appointment.appointment_date.year
-    //         )[0];
-    //         let time = schedule.times.filter(
-    //             (item) =>
-    //                 item.time === appointment.appointment_date.time
-    //         )[0];
-    //         time.status = "";
-    //         api({
-    //             type: TypeHTTP.POST,
-    //             path: "/doctorRecords/update",
-    //             sendToken: false,
-    //             body: record,
-    //         }).then((res1) => {
-    //             setAppointments((prev) =>
-    //                 prev.map((item) => {
-    //                     if (item._id === res._id) {
-    //                         return res;
-    //                     }
-    //                     return item;
-    //                 })
-    //             );
-    //             globalHandler.notify(
-    //                 notifyType.SUCCESS,
-    //                 "Đã từ chối cuộc hẹn"
-    //             );
-    //         });
-    //     });
-    // };
+    const handleRejectAppointmentHome = (appointment) => {
+        const body = {
+            _id: appointment._id,
+            status: {
+              status_type: "REJECTED",
+              message: "Bác sĩ đã từ chối",
+            }
+        };
+        globalHandler.notify(
+            notifyType.LOADING,
+            "Đang thực hiện thao tác"
+        );
+        api({
+            sendToken: true,
+            path: "/appointmentHomes/doctor-reject",
+            type: TypeHTTP.POST,
+            body: body,
+        }).then((res) => {
+            // let record = JSON.parse(
+            //     JSON.stringify(appointmentData.doctorRecord)
+            // );
+            // let schedule = record.schedules.filter(
+            //     (item) =>
+            //         item.date.day ===
+            //         appointment.appointment_date.day &&
+            //         item.date.month ===
+            //         appointment.appointment_date.month &&
+            //         item.date.year ===
+            //         appointment.appointment_date.year
+            // )[0];
+            // let time = schedule.times.filter(
+            //     (item) =>
+            //         item.time === appointment.appointment_date.time
+            // )[0];
+            // time.status = "";
+            // api({
+            //     type: TypeHTTP.POST,
+            //     path: "/doctorRecords/update",
+            //     sendToken: false,
+            //     body: record,
+            // }).then((res1) => {
+                setAppointmentHomes((prev) =>
+                    prev.map((item) => {
+                        if (item._id === res._id) {
+                            return res;
+                        }
+                        return item;
+                    })
+                );
+                globalHandler.notify(
+                    notifyType.SUCCESS,
+                    "Đã từ chối cuộc hẹn"
+                );
+            // });
+        });
+    };
 
     return (
         <>
@@ -449,7 +456,7 @@ const KhamTaiNha = ({ type, setType }) => {
                             appointmentHomes.map((appointmentHome, index) => (
                                 <tr
                                     key={index}
-                                    className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                                    className="odd:bg-white cursor-pointer odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                                 >
                                     <td
                                         onClick={() =>
@@ -466,27 +473,27 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {index + 1}
                                     </td>
                                     <td
-                                        // onClick={() =>
-                                        //     appointmentHandler.showFormDetailAppointment(
-                                        //         appointment,
-                                        //         displayConnect === appointment._id
-                                        //             ? true
-                                        //             : false
-                                        //     )
-                                        // }
+                                         onClick={() =>
+                                          appointmentHandler.showFormDetailAppointmentHome(
+                                              appointmentHome,
+                                              displayConnect === appointmentHome._id
+                                                  ? true
+                                                  : false
+                                          )
+                                      }
                                         className="py-4 text-[15px]"
                                     >
                                         {appointmentHome.patient?.fullName}
                                     </td>
                                     <td
-                                        // onClick={() =>
-                                        //     appointmentHandler.showFormDetailAppointment(
-                                        //         appointment,
-                                        //         displayConnect === appointment._id
-                                        //             ? true
-                                        //             : false
-                                        //     )
-                                        // }
+                                         onClick={() =>
+                                          appointmentHandler.showFormDetailAppointmentHome(
+                                              appointmentHome,
+                                              displayConnect === appointmentHome._id
+                                                  ? true
+                                                  : false
+                                          )
+                                      }
                                         style={{
                                             color:
                                                 appointmentHome.status?.status_type === "QUEUE"
@@ -501,14 +508,14 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {appointmentHome.status?.message}
                                     </td>
                                     <td
-                                        // onClick={() =>
-                                        //     appointmentHandler.showFormDetailAppointment(
-                                        //         appointment,
-                                        //         displayConnect === appointment._id
-                                        //             ? true
-                                        //             : false
-                                        //     )
-                                        // }
+                                         onClick={() =>
+                                          appointmentHandler.showFormDetailAppointmentHome(
+                                              appointmentHome,
+                                              displayConnect === appointmentHome._id
+                                                  ? true
+                                                  : false
+                                          )
+                                      }
                                         className="py-4"
                                     >
                                         {`${convertDateToDayMonthYearVietNam(
@@ -516,14 +523,14 @@ const KhamTaiNha = ({ type, setType }) => {
                                         )}`}
                                     </td>
                                     <td
-                                        // onClick={() =>
-                                        //     appointmentHandler.showFormDetailAppointment(
-                                        //         appointment,
-                                        //         displayConnect === appointment._id
-                                        //             ? true
-                                        //             : false
-                                        //     )
-                                        // }
+                                         onClick={() =>
+                                          appointmentHandler.showFormDetailAppointmentHome(
+                                              appointmentHome,
+                                              displayConnect === appointmentHome._id
+                                                  ? true
+                                                  : false
+                                          )
+                                      }
                                         className="py-4"
                                     >
                                         {appointmentHome.note}
@@ -532,21 +539,21 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {appointmentHome.status?.status_type === "QUEUE" ? (
                                             <>
                                                 <button
-                                                    // onClick={() =>
-                                                    //     handleAcceptAppointment(
-                                                    //         appointment
-                                                    //     )
-                                                    // }
+                                                    onClick={() =>
+                                                        handleAcceptAppointmentHome(
+                                                          appointmentHome
+                                                        )
+                                                    }
                                                     className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                 >
                                                     Chấp Nhận
                                                 </button>
                                                 <button
-                                                    // onClick={() =>
-                                                    //     handleRejectAppointment(
-                                                    //         appointment
-                                                    //     )
-                                                    // }
+                                                    onClick={() =>
+                                                        handleRejectAppointmentHome(
+                                                            appointmentHome
+                                                        )
+                                                    }
                                                     className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                 >
                                                     Từ Chối
@@ -556,11 +563,11 @@ const KhamTaiNha = ({ type, setType }) => {
                                           appointmentHome.status?.status_type ===
                                             "ACCEPTED" && (
                                                 <button
-                                                    // onClick={() =>
-                                                    //     handleCancelAppointment(
-                                                    //         appointment
-                                                    //     )
-                                                    // }
+                                                    onClick={() =>
+                                                        handleCancelAppointmentHomes(
+                                                          appointmentHome
+                                                        )
+                                                    }
                                                     className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                 >
                                                     Hủy
