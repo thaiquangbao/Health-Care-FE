@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 const Schedule = ({ day, setCurrentStep, data, hidden }) => {
 
-    const { appointmentData } = useContext(appointmentContext)
+    const { appointmentData, appointmentHandler } = useContext(appointmentContext)
     let times = generateTimes('08:00', '20:00', 60);
     const [timeTarget, setTimeTarget] = useState()
     const [doctorRecord, setDoctorRecord] = useState()
@@ -23,7 +23,10 @@ const Schedule = ({ day, setCurrentStep, data, hidden }) => {
                     const timeItem = scheduleItem.times[j]
                     if (timeItem.time === time) {
                         if (timeItem.status !== '') {
-                            if (timeItem.status === 'health') {
+                            if (timeItem.status === 'home') {
+                                return 4
+                            }
+                            else if (timeItem.status === 'health') {
                                 return 3
                             } else {
                                 return 2
@@ -39,17 +42,17 @@ const Schedule = ({ day, setCurrentStep, data, hidden }) => {
 
     const handleSubmit = () => {
         if (timeTarget) {
-          // set Time limit
-          const currentDate = new Date();
-          const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
-          const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
-          const vietnamTime = new Date(currentDate.getTime() + (vietnamTimeOffset + localTimeOffset) * 60000);
-           const timeLimit = {
-              day: vietnamTime.getDate(),
-              month: vietnamTime.getMonth() + 1,
-              year: vietnamTime.getFullYear(),
-              time: `${vietnamTime.getHours() + 2}:${vietnamTime.getMinutes()}`
-           }    
+            // set Time limit
+            const currentDate = new Date();
+            const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
+            const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+            const vietnamTime = new Date(currentDate.getTime() + (vietnamTimeOffset + localTimeOffset) * 60000);
+            const timeLimit = {
+                day: vietnamTime.getDate(),
+                month: vietnamTime.getMonth() + 1,
+                year: vietnamTime.getFullYear(),
+                time: `${vietnamTime.getHours() + 2}:${vietnamTime.getMinutes()}`
+            }
             // data là AppointmentHome á nha
             const body = {
                 ...data,
@@ -62,21 +65,69 @@ const Schedule = ({ day, setCurrentStep, data, hidden }) => {
                 timeLimit: timeLimit,
                 processAppointment: 1,
                 status: {
-                  status_type: "ACCEPTED",
-                  message: "Chờ bệnh nhân thanh toán"
+                    status_type: "ACCEPTED",
+                    message: "Chờ bệnh nhân thanh toán"
                 }
             }
-            // api
-            // console.log(body);
-            
-            
-            api({path: '/appointmentHomes/doctor-accept', body, sendToken: true, type: TypeHTTP.POST})
-            .then((res=> {
-              console.log(res);
-              hidden()
-              
-            }))
-            
+            api({ path: '/appointmentHomes/doctor-accept', body, sendToken: true, type: TypeHTTP.POST })
+                .then((res => {
+                    appointmentHandler.setAppointmentHomes(prev => prev.map(item => {
+                        if (item._id === res._id) {
+                            return res
+                        }
+                        return item
+                    }))
+
+                    // handleTime Of DoctorRecord
+                    let currentDay = {
+                        day: day.day,
+                        month: day.month,
+                        year: day.year,
+                        time: timeTarget
+                    }
+                    let record = JSON.parse(JSON.stringify(doctorRecord))
+                    let bodyUpdate = {}
+                    const schedule = record.schedules.filter(item => (item.date.month === currentDay.month && item.date.day === currentDay.day && item.date.year === currentDay.year))[0]
+                    if (schedule) {
+                        bodyUpdate = {
+                            ...record, schedules: record.schedules.map(item => {
+                                if (item.date.month === currentDay.month && item.date.day === currentDay.day && item.date.year === currentDay.year) {
+                                    item.times.push({
+                                        time: timeTarget,
+                                        status: 'home',
+                                        price: 0
+                                    })
+                                }
+                                return item
+                            })
+                        }
+                    } else {
+                        bodyUpdate = {
+                            ...record, schedules: [
+                                ...record.schedules,
+                                {
+                                    date: currentDay,
+                                    times: [
+                                        {
+                                            time: timeTarget,
+                                            status: 'health',
+                                            price: 0
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                    api({
+                        type: TypeHTTP.POST, path: '/doctorRecords/update', body: bodyUpdate, sendToken: false
+                    })
+                        .then(res => {
+                            appointmentHandler.setDoctorRecord(res)
+                            setDoctorRecord(res)
+                            hidden()
+                        })
+                }))
+
             // khi then() xong thì nhớ hidden() nha (có hàm sẳn rồi)
 
         }

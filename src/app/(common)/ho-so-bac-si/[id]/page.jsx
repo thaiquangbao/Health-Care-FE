@@ -45,6 +45,7 @@ const HoSoBacSi = () => {
   const [healthLogBooks, setHealthLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext);
   const [priceListHome, setPriceListHome] = useState(0);
+  const [appointmentHomes, setAppointmentHomes] = useState([])
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -70,6 +71,11 @@ const HoSoBacSi = () => {
       }).then((res) => {
         setHealthLogBooks(res);
       });
+
+      api({ type: TypeHTTP.GET, path: `/appointmentHomes/findByPatient/${userData.user?._id}`, sendToken: true })
+        .then(res => {
+          setAppointmentHomes(res)
+        })
     }
   }, [userData.user]);
   useEffect(() => {
@@ -261,44 +267,45 @@ const HoSoBacSi = () => {
                   </div>
                 </div>
               )}
-
-            <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
-              <div className="flex flex-col text-[#333333]">
-                <span className="text-[14px]">
-                  GIÁ TƯ VẤN TẠI NHÀ
-                </span>
-                <span className="text-[17px]">
-                  {formatMoney(priceListHome?.price)} đ
-                </span>
-              </div>
-              <div>
-                <button
-                  onClick={() => {
-                    if (userData.user) {
-                      if (userData.user?.email === "") {
-                        globalHandler.notify(
-                          notifyType.WARNING,
-                          "Vui lòng cập nhật email để đặt khám !!!"
-                        );
-                        return;
+            {!appointmentHomes.filter(item => ['CANCELED', 'REJECTED', 'COMPLETED'].includes(item.status.status_type)).map(item => item.doctor_record_id).includes(doctorRecord?._id) && (
+              <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+                <div className="flex flex-col text-[#333333]">
+                  <span className="text-[14px]">
+                    GIÁ TƯ VẤN TẠI NHÀ
+                  </span>
+                  <span className="text-[17px]">
+                    {formatMoney(priceListHome?.price)} đ
+                  </span>
+                </div>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (userData.user) {
+                        if (userData.user?.email === "") {
+                          globalHandler.notify(
+                            notifyType.WARNING,
+                            "Vui lòng cập nhật email để đặt khám !!!"
+                          );
+                          return;
+                        }
                       }
-                    }
-                    appointmentHandler.setPriceList(
-                      priceListHome
-                    );
-                    appointmentHandler.showFormBookingHome(doctorRecord);
+                      appointmentHandler.setPriceList(
+                        priceListHome
+                      );
+                      appointmentHandler.showFormBookingHome(doctorRecord);
 
-                  }}
-                  style={{
-                    background:
-                      "linear-gradient(to right, #11998e, #38ef7d)",
-                  }}
-                  className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
-                >
-                  Đặt Khám Ngay
-                </button>
+                    }}
+                    style={{
+                      background:
+                        "linear-gradient(to right, #11998e, #38ef7d)",
+                    }}
+                    className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
+                  >
+                    Đặt Khám Ngay
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">

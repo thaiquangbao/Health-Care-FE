@@ -8,6 +8,7 @@ import BookingProvider from "@/context/BookingContext";
 import BookingServiceProvider from "@/context/BookingServiceContext";
 import HealthProvider from "@/context/HealthContext";
 import UtilsProvider from '@/context/UtilsContext'
+import BookingHomeProvider from "@/context/BookingHomeContext";
 
 export const metadata = {
   title: "HealthHaven",
@@ -34,19 +35,21 @@ export default function RootLayout({ children }) {
       <body className="font-space">
         <UtilsProvider>
           <UserProvider>
-            <BookingProvider>
-              <BookingServiceProvider>
-                <AppointmentProvider>
-                  <GlobalProvider>
-                    <AuthContext>
-                      <HealthProvider>
-                        {children}
-                      </HealthProvider>
-                    </AuthContext>
-                  </GlobalProvider>
-                </AppointmentProvider>
-              </BookingServiceProvider>
-            </BookingProvider>
+            <BookingHomeProvider>
+              <BookingProvider>
+                <BookingServiceProvider>
+                  <AppointmentProvider>
+                    <GlobalProvider>
+                      <AuthContext>
+                        <HealthProvider>
+                          {children}
+                        </HealthProvider>
+                      </AuthContext>
+                    </GlobalProvider>
+                  </AppointmentProvider>
+                </BookingServiceProvider>
+              </BookingProvider>
+            </BookingHomeProvider>
           </UserProvider>
         </UtilsProvider>
       </body>

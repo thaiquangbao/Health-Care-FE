@@ -58,7 +58,10 @@ const FormSchedule = ({ visible, hidden, day }) => {
                     const timeItem = scheduleItem.times[j]
                     if (timeItem.time === time) {
                         if (timeItem.status !== '') {
-                            if (timeItem.status === 'health') {
+                            if (timeItem.status === 'home') {
+                                return 4
+                            }
+                            else if (timeItem.status === 'health') {
                                 return 3
                             } else {
                                 return 2
@@ -137,9 +140,23 @@ const FormSchedule = ({ visible, hidden, day }) => {
         }
         api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/create-appointment-logbook', body })
             .then(res => {
-
-                api({
-                    type: TypeHTTP.POST, path: '/doctorRecords/update', body: {
+                let bodyUpdate = {}
+                const schedule = record.schedules.filter(item => (item.date.month === currentDay.month && item.date.day === currentDay.day && item.date.year === currentDay.year))[0]
+                if (schedule) {
+                    bodyUpdate = {
+                        ...record, schedules: record.schedules.map(item => {
+                            if (item.date.month === currentDay.month && item.date.day === currentDay.day && item.date.year === currentDay.year) {
+                                item.times.push({
+                                    time: time,
+                                    status: 'health',
+                                    price: 0
+                                })
+                            }
+                            return item
+                        })
+                    }
+                } else {
+                    bodyUpdate = {
                         ...record, schedules: [
                             ...record.schedules,
                             {
@@ -153,25 +170,14 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                 ]
                             }
                         ]
-                    }, sendToken: false
+                    }
+                }
+                api({
+                    type: TypeHTTP.POST, path: '/doctorRecords/update', body: bodyUpdate, sendToken: false
                 })
                     .then(res => {
-                        appointmentHandler.setDoctorRecord({ ...res, doctor: appointmentData.doctorRecord.doctor })
-                        setDoctorRecord({
-                            ...record, schedules: [
-                                ...record.schedules,
-                                {
-                                    date: currentDay,
-                                    times: [
-                                        {
-                                            time: time,
-                                            status: 'health',
-                                            price: 0
-                                        }
-                                    ]
-                                }
-                            ]
-                        })
+                        appointmentHandler.setDoctorRecord(res)
+                        setDoctorRecord(res)
                         setVisibleList(false)
                         setCurrentIndex(-1)
                     })
@@ -195,6 +201,24 @@ const FormSchedule = ({ visible, hidden, day }) => {
                 <div style={{ transition: '0.5s', marginLeft: `-${(currentStep - 1) * 100}%` }} className='w-[100%] flex px-8 py-4 flex-col'>
                     <button onClick={() => hidden()}><i className='bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]'></i></button>
                     <span className='text-[17px] font-medium text-[#1c1c1c]'>{formatVietnameseDate(day)}</span>
+                    <div className='flex items-center gap-4 mt-2'>
+                        <div className='flex items-center gap-1'>
+                            <div className='bg-[#eaeded] rounded-md p-3' />
+                            <span className='font-space text-[15px]'>Lịch trống</span>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                            <div className='bg-[#abebc6] rounded-md p-3' />
+                            <span className='font-space text-[15px]'>Lịch khám theo dõi sức khỏe</span>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                            <div className='bg-[#ffc1b4] rounded-md p-3' />
+                            <span className='font-space text-[15px]'>Lịch khám tại nhà</span>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                            <div className='bg-[#fafac7] rounded-md p-3' />
+                            <span className='font-space text-[15px]'>Lịch khám trực tuyến</span>
+                        </div>
+                    </div>
                     <span className='text-[15px] mt-4 font-medium'>Giờ Hẹn</span>
                     <div className='grid grid-cols-8 gap-2 mt-2'>
                         {times.map((time, index) => {
@@ -202,7 +226,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                 if (new Date().getHours() + 2 >= Number(time.split(':')[0])) {
                                     // return <div key={index} className={`px-4 flex item-center justify-center py-2 transition-all border-[1px] border-[#999] text-[13px] font-medium bg-[#b7b7b7] rounded-md`}>{time}</div>
                                 } else {
-                                    return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
+                                    return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 4 ? '#ffc1b4' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#fafac7' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
                                         <button onClick={() => {
                                             if (checkSchedule(time) === 1) {
                                                 handleTime(time, checkSchedule(time) === 2 ? true : false)
@@ -211,6 +235,46 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                 setCurrentIndex(index)
                                             }
                                         }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
+                                        {(checkSchedule(time) === 0 || checkSchedule(time) === 1) && (
+                                            <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                                {visibleList === false ? (
+                                                    <>
+                                                        <button onClick={() => {
+                                                            setCurrentIndex(-1)
+                                                            handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                                        }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
+                                                            Thường
+                                                        </button>
+                                                        <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
+                                                            Theo Dõi
+                                                        </button>
+
+                                                    </>
+                                                ) : (
+                                                    <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
+                                                        {logBooks.map((item, index) => {
+                                                            if (item.status.status_type === 'ACCEPTED') {
+                                                                return <button onClick={() => handleCreateLichTheoDoi(time, item.patient._id)} className='w-full bg-[green] text-[white] text-[14px] py-2 ' key={index}>{item.patient.fullName}</button>
+                                                            }
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                    </div>
+                                }
+                            } else {
+                                return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 4 ? '#ffc1b4' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#fafac7' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
+                                    <button onClick={() => {
+                                        if (checkSchedule(time) === 1) {
+                                            handleTime(time, checkSchedule(time) === 2 ? true : false)
+                                        } else {
+                                            setVisibleList(false)
+                                            setCurrentIndex(index)
+                                        }
+                                    }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
+                                    {(checkSchedule(time) === 0 || checkSchedule(time) === 1) && (
                                         <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
                                             {visibleList === false ? (
                                                 <>
@@ -223,7 +287,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                     <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                         Theo Dõi
                                                     </button>
-                                                   
+
                                                 </>
                                             ) : (
                                                 <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
@@ -235,42 +299,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
-                                }
-                            } else {
-                                return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#ffffee' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
-                                    <button onClick={() => {
-                                        if (checkSchedule(time) === 1) {
-                                            handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                        } else {
-                                            setVisibleList(false)
-                                            setCurrentIndex(index)
-                                        }
-                                    }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
-                                    <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
-                                        {visibleList === false ? (
-                                            <>
-                                                <button onClick={() => {
-                                                    setCurrentIndex(-1)
-                                                    handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                                }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
-                                                    Thường
-                                                </button>
-                                                <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
-                                                    Theo Dõi
-                                                </button>
-                                                
-                                            </>
-                                        ) : (
-                                            <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
-                                                {logBooks.map((item, index) => {
-                                                    if (item.status.status_type === 'ACCEPTED') {
-                                                        return <button onClick={() => handleCreateLichTheoDoi(time, item.patient._id)} className='w-full bg-[green] text-[white] text-[14px] py-2 ' key={index}>{item.patient.fullName}</button>
-                                                    }
-                                                })}
-                                            </div>
-                                        )}
-                                    </div>
+                                    )}
                                 </div>
                             }
                         })}

@@ -38,19 +38,19 @@ const FormBookingHome = ({ visible, hidden }) => {
     }
 
     return (
-        <div style={visible ? { maxHeight: '90%', height: 'auto', width: '85%', transition: '0.3s', backgroundSize: 'cover', overflow: 'hidden' } : { height: 0, width: 0, transition: '0.3s', overflow: 'hidden' }} className='z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+        <div style={visible ? { maxHeight: '90%', height: 'auto', width: '800px', transition: '0.3s', backgroundSize: 'cover', overflow: 'hidden' } : { height: 0, width: 0, transition: '0.3s', overflow: 'hidden' }} className='z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
             {visible && (
                 <div style={{ transition: '0.5s', marginLeft: `-${(currentStep - 1) * 100}%` }} className='w-[100%] flex overflow-auto h-[100%]'>
                     <div className='min-w-[100%] items-end gap-4 px-[2.5rem] py-[1rem] flex justify-center flex-col'>
                         <span className="w-full text-[20px] font-space font-bold">Đặt Khám Tại Nhà</span>
-                        <div className='flex flex-col bg-[#33007d] w-[1000px] relative rounded-2xl px-3 overflow-hidden'>
+                        <div className='flex flex-col bg-[#33007d] w-full relative rounded-2xl px-3 overflow-hidden'>
                             <div className='h-[50px] w-full bg-[#33007d] flex items-center gap-1 px-3 text-[white] rounded-xl'>
                                 <i className='bx bx-check text-[22px]'></i>
                                 <span className='text-[14px] font-semibold'>Bạn đã có nhiệt kế tại nhà?</span>
                             </div>
                             <div className='h-[50px] w-full bg-[#533094] flex items-center gap-1 px-3 text-[white] rounded-xl'>
                                 <i className='bx bx-check text-[22px]'></i>
-                                <span className='text-[14px] font-semibold'>Bạn đã có may đo nhịp tim tại nhà?</span>
+                                <span className='text-[14px] font-semibold'>Bạn đã có máy đo nhịp tim tại nhà?</span>
                             </div>
                             <div className='h-[50px] w-full bg-[#33007d] flex items-center gap-1 px-3 text-[white] rounded-xl'>
                                 <i className='bx bx-check text-[22px]'></i>

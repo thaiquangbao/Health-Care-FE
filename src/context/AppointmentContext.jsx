@@ -18,11 +18,12 @@ import { set } from 'date-fns'
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { userContext } from './UserContext'
 import { utilsContext } from './UtilsContext'
+import PaymentNotification from '@/components/appointmentHome/PaymentNotification'
 
 export const appointmentContext = createContext()
 
 const AppointmentProvider = ({ children }) => {
-
+    const [visiblePayment, setVisiblePayment] = useState(false)
     const [visibleWrapper, setVisibleWrapper] = useState(false)
     const [visibleFormSchedule, setVisibleFormSchedule] = useState(false)
     const [visibleFormDetailTimeForHaveSchedule, setVisibleFormDetailTimeForHaveSchedule] = useState(false)
@@ -49,6 +50,32 @@ const AppointmentProvider = ({ children }) => {
     const { utilsHandler } = useContext(utilsContext)
     const [dataFormDetailAppointmentHome, setDataFormDetailAppointmentHome] = useState()
     const [appoinmentHomeCalendar, setAppointmentHomeCalendar] = useState()
+    const [appointmentHomes, setAppointmentHomes] = useState([]);
+
+    // nhắc nhở thanh toán khi bác sĩ chấp nhận cuộc hẹn tại nhà
+    const [dataPaymentBookingHome, setDataPaymentBookingHome] = useState([])
+
+    useEffect(() => {
+        if (userData.user && visiblePayment === false) {
+            api({ sendToken: true, type: TypeHTTP.GET, path: `/appointmentHomes/findByPatient/${userData.user._id}` })
+                .then(res => {
+                    const results = res.filter(item => {
+                        if (item.status.status_type === 'ACCEPTED' && item.processAppointment === 1) {
+                            return item
+                        }
+                    })
+                    if (results.length > 0) {
+                        setVisiblePayment(true)
+                        showFormNotificationPayment(results)
+                    } else {
+                        setVisiblePayment(true)
+                        setDataPaymentBookingHome([])
+                    }
+                })
+        }
+    }, [userData.user])
+
+    // console.log(dataPaymentBookingHome)
 
     useEffect(() => {
         if (userData.user && userData.user?.role === 'DOCTOR') {
@@ -87,6 +114,7 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormSignUpHealth()
         hiddenFormBookingHome()
         hiddenFormDetailAppointmentHome()
+        setDataPaymentBookingHome([])
     }
 
     const showFormBookingHome = (dr) => {
@@ -205,6 +233,18 @@ const AppointmentProvider = ({ children }) => {
         setAppointmentHomeCalendar(ac)
     }
 
+
+    const hiddenFormNotificationPayment = () => {
+        hiddenWrapper()
+        setDataPaymentBookingHome([])
+    }
+    const showFormNotificationPayment = (data) => {
+        setTimeout(() => {
+            showWrapper()
+            setDataPaymentBookingHome(data)
+        }, 3000);
+    }
+
     const data = {
         detailTime,
         doctorRecord,
@@ -213,7 +253,8 @@ const AppointmentProvider = ({ children }) => {
         currentDay,
         currentAppointment,
         medicalRecord,
-        doctorRecordBookingHome
+        doctorRecordBookingHome,
+        appointmentHomes
     }
 
     const handler = {
@@ -245,7 +286,8 @@ const AppointmentProvider = ({ children }) => {
         showFormDetailAppointmentHome,
         hiddenFormDetailAppointmentHome,
         hiddenFormAppointmentHomeCalendar,
-        showFormAppointmentHomeCalendar
+        showFormAppointmentHomeCalendar,
+        setAppointmentHomes
     }
 
     return (
@@ -261,6 +303,7 @@ const AppointmentProvider = ({ children }) => {
             <FormBookingHome hidden={hidden} visible={visibleFormBookingHome} />
             <FormDetailAppointmentHome display={displayConnect} hidden={hidden} data={dataFormDetailAppointmentHome} />
             <Calendar data={appoinmentHomeCalendar} hidden={hiddenFormAppointmentHomeCalendar} />
+            <PaymentNotification data={dataPaymentBookingHome} hidden={hiddenFormNotificationPayment} />
             {/* <FormRecordPatient hidden={hidden} visible={visibleFormRecordPatient} /> */}
             {children}
         </appointmentContext.Provider>

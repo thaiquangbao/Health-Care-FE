@@ -111,8 +111,8 @@ const HoSoBacSi = () => {
                                 {(day + '') !== '' && (
                                     <>
                                         {compareDate1GetterThanDate2(convertDateToDayMonthYearObject(day + ''), convertDateToDayMonthYearObject(new Date().toISOString())) ? (
-                                            <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => {userData.user?.email === null ? globalHandler.notify(notifyType.WARNING, "Bác sĩ hãy cập nhật địa chỉ email trước khi đăng k1y lịch khám !!!") : appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + ''))}} 
-                                            className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
+                                            <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => { userData.user?.email === null ? globalHandler.notify(notifyType.WARNING, "Bác sĩ hãy cập nhật địa chỉ email trước khi đăng k1y lịch khám !!!") : appointmentHandler.showFormSchedule(convertDateToDayMonthYearObject(day + '')) }}
+                                                className='hover:bg-[#e5e5e5] transition-all h-[90px] w-full py-4 items-center gap-1 flex flex-col'>
                                                 <span>{convertDateToDayMonth(day + '')}</span>
                                                 {compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) !== 0 && (
                                                     <span>{`(${compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules)}) Cuộc Hẹn`}</span>

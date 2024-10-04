@@ -38,38 +38,15 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
     useEffect(() => {
         setSchedules([])
         if (appointmentData.doctorRecord?.schedules) {
-            api({
-                type: TypeHTTP.POST, path: '/appointments/findByRecords', body: {
-                    doctor_record_id: appointmentData?.doctorRecord?._id
-                }, sendToken: false
-            })
-                .then(res => {
-                    setSchedules(() => {
-                        let schedules = JSON.parse(JSON.stringify(appointmentData.doctorRecord.schedules)).filter(item => compareDate1GetterThanDate2(item.date, today) === true)
-                        // là những cuộc hẹn có ngày sau ngày hôm nay trở đi
-                        schedules = schedules.map(item => {
-                            res = res.filter(item1 => item1.status !== 'CANCELED' && item1.status !== 'REJECTED')
-                            // lọc những cuộc hẹn đã bị hủy hoặc bị từ chối
-                            const filters = res.filter(item1 => compare2Date(item.date, item1.appointment_date))
-                            // filters là cuộc hẹn có ngày hẹn bằng với item.date (ngày, tháng, năm)
-                            item.times = item.times.map(i => {
-                                if (!filters.map(filter => filter.appointment_date.time).includes(i.time)) {
-                                    if (compare2Date(convertDateToDayMonthYearObject(new Date().toISOString()), item.date)) {
-                                        if (new Date().getHours() + 2 >= Number(i.time.split(':')[0])) {
-
-                                        } else {
-                                            return i
-                                        }
-                                    } else {
-                                        return i
-                                    }
-                                }
-                            }).filter(j => j !== undefined)
-                            return { ...item, times: item.times }
-                        })
-                        return schedules
-                    })
+            setSchedules(() => {
+                let schedules = JSON.parse(JSON.stringify(appointmentData.doctorRecord.schedules)).filter(item => compareDate1GetterThanDate2(item.date, today) === true)
+                // là những cuộc hẹn có ngày sau ngày hôm nay trở đi
+                schedules = schedules.map(item => {
+                    item.times = item.times.filter(item1 => item1.status === '')
+                    return { ...item, times: item.times }
                 })
+                return schedules
+            })
         }
     }, [appointmentData?.doctorRecord?.schedules])
 

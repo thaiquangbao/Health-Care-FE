@@ -1,49 +1,46 @@
 
 import { appointmentContext } from "@/context/AppointmentContext";
 import {
-  globalContext,
-  notifyType,
+    globalContext,
+    notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
-  compare2Date,
-  compareTimeDate1GreaterThanDate2,
-  convertDateToDayMonthYearObject,
-  convertDateToDayMonthYearTimeObject,
-  convertDateToDayMonthYearVietNam,
-  isALargerThanBPlus60Minutes,
-  isALargerWithin10Minutes,
-  isALargerWithin60Minutes,
-  sortByAppointmentDate,
+    compare2Date,
+    compareTimeDate1GreaterThanDate2,
+    convertDateToDayMonthYearObject,
+    convertDateToDayMonthYearTimeObject,
+    convertDateToDayMonthYearVietNam,
+    isALargerThanBPlus60Minutes,
+    isALargerWithin10Minutes,
+    isALargerWithin60Minutes,
+    sortByAppointmentDate,
 } from "@/utils/date";
 import { returnNumber } from "@/utils/other";
 import Link from "next/link";
 import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 const KhamTaiNha = ({ type, setType }) => {
 
     const { userData } = useContext(userContext);
-    const [appointmentHomes, setAppointmentHomes] = useState([]);
     const { appointmentData, appointmentHandler } = useContext(appointmentContext);
     const { globalHandler } = useContext(globalContext);
     const [loading, setLoading] = useState(false);
-    const [time, setTime] = useState(
-        new Date().getHours() + ":" + new Date().getMinutes()
-    );
+    const [time, setTime] = useState(new Date().getHours() + ":" + new Date().getMinutes());
     const [displayConnect, setDisplayConnect] = useState(false);
     const intervalRef = useRef();
     const typeTime = {
-      1: "Tất cả",
-      2: "Hôm Nay",
-      3: "Ngày Mai",
-      4: "Tuần Này",
-      5: "Tháng Này",
-      6: "Tháng Sau",
+        1: "Tất cả",
+        2: "Hôm Nay",
+        3: "Ngày Mai",
+        4: "Tuần Này",
+        5: "Tháng Này",
+        6: "Tháng Sau",
     };
     useEffect(() => {
         intervalRef.current = setInterval(() => {
@@ -56,9 +53,9 @@ const KhamTaiNha = ({ type, setType }) => {
     }, []);
 
     useEffect(() => {
-        if (appointmentHomes.length > 0) {
+        if (appointmentData.appointmentHomes.length > 0) {
             const theFirstAppointment = sortByAppointmentDate(
-                appointmentHomes.filter(
+                appointmentData.appointmentHomes.filter(
                     (item) => item.status === "ACCEPTED"
                 )
             ).filter((item) =>
@@ -93,90 +90,91 @@ const KhamTaiNha = ({ type, setType }) => {
                 }
             }
         }
-    }, [appointmentHomes, time]);
+    }, [appointmentData.appointmentHomes, time]);
 
     useEffect(() => {
-      if (appointmentData.doctorRecord) {
-        if (type === "1") {
-          setLoading(true);
-         
-          api({
-            type: TypeHTTP.GET,
-            path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
-            sendToken: true,
-        }).then((res) => {
-            setAppointmentHomes(res);
-            setLoading(false);
-        });
-      } else if (type === "2" || type === "3") {
-              
-              let date = new Date();
-              date.setDate(date.getDate() + (Number(type) - 1));
-              console.log(date);
-              
-              const body = {
-                  doctor_record_id:
-                      appointmentData.doctorRecord._id,
-                  time: {
-                      ...convertDateToDayMonthYearObject(
-                          date.toISOString()
-                      ),
-                  },
-              };
-              api({
-                  type: TypeHTTP.POST,
-                  path: "/appointmentHomes/findByDate",
-                  body,
-                  sendToken: false,
-              }).then((res) => {
-                  setAppointmentHomes(res);
-                  setLoading(false);
-              });
-          } else if (type === "4") {
-              const body = {
-                  doctor_record_id:
-                      appointmentData.doctorRecord._id,
-              };
-              api({
-                  type: TypeHTTP.POST,
-                  path: "/appointmentHomes/findByWeek",
-                  body,
-                  sendToken: false,
-              }).then((res) => {
-                  setAppointmentHomes(res);
-                  setLoading(false);
-              });
-          } else if (type === "5") {
-              const body = {
-                  doctor_record_id:
-                      appointmentData.doctorRecord._id,
-              };
-              api({
-                  type: TypeHTTP.POST,
-                  path: "/appointmentHomes/findByMonth",
-                  body,
-                  sendToken: false,
-              }).then((res) => {
-                  setAppointmentHomes(res);
-                  setLoading(false);
-              });
-          } else if (type === "6") {
-              const body = {
-                  doctor_record_id:
-                      appointmentData.doctorRecord._id,
-              };
-              api({
-                  type: TypeHTTP.POST,
-                  path: "/appointmentHomes/findByNextMonth",
-                  body,
-                  sendToken: false,
-              }).then((res) => {
-                  setAppointmentHomes(res);
-                  setLoading(false);
-              });
-          }
-      }
-  }, [type, appointmentData.doctorRecord]);
+        if (appointmentData.doctorRecord) {
+            if (type === "1") {
+                setLoading(true);
+
+                api({
+                    type: TypeHTTP.GET,
+                    path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
+                    sendToken: true,
+                }).then((res) => {
+                    appointmentHandler.setAppointmentHomes(res);
+                    setLoading(false);
+                });
+            } else if (type === "2" || type === "3") {
+
+                let date = new Date();
+                date.setDate(date.getDate() + (Number(type) - 1));
+                console.log(date);
+
+                const body = {
+                    doctor_record_id:
+                        appointmentData.doctorRecord._id,
+                    time: {
+                        ...convertDateToDayMonthYearObject(
+                            date.toISOString()
+                        ),
+                    },
+                };
+                api({
+                    type: TypeHTTP.POST,
+                    path: "/appointmentHomes/findByDate",
+                    body,
+                    sendToken: false,
+                }).then((res) => {
+                    appointmentHandler.setAppointmentHomes(res);
+                    setLoading(false);
+                });
+            } else if (type === "4") {
+                const body = {
+                    doctor_record_id:
+                        appointmentData.doctorRecord._id,
+                };
+                api({
+                    type: TypeHTTP.POST,
+                    path: "/appointmentHomes/findByWeek",
+                    body,
+                    sendToken: false,
+                }).then((res) => {
+                    appointmentHandler.setAppointmentHomes(res);
+                    setLoading(false);
+                });
+            } else if (type === "5") {
+                const body = {
+                    doctor_record_id:
+                        appointmentData.doctorRecord._id,
+                };
+                api({
+                    type: TypeHTTP.POST,
+                    path: "/appointmentHomes/findByMonth",
+                    body,
+                    sendToken: false,
+                }).then((res) => {
+                    appointmentHandler.setAppointmentHomes(res);
+                    setLoading(false);
+                });
+            } else if (type === "6") {
+                const body = {
+                    doctor_record_id:
+                        appointmentData.doctorRecord._id,
+                };
+                api({
+                    type: TypeHTTP.POST,
+                    path: "/appointmentHomes/findByNextMonth",
+                    body,
+                    sendToken: false,
+                }).then((res) => {
+                    appointmentHandler.setAppointmentHomes(res);
+                    setLoading(false);
+                });
+            }
+        }
+    }, [type, appointmentData.doctorRecord]);
+
     const handleAcceptAppointmentHome = (appointment) => {
         const body = {
             _id: appointment._id,
@@ -218,7 +216,7 @@ const KhamTaiNha = ({ type, setType }) => {
             //     sendToken: false,
             //     body: record,
             // }).then((res1) => {
-            setAppointmentHomes((prev) =>
+            appointmentHandler.setAppointmentHomes((prev) =>
                 prev.map((item) => {
                     if (item._id === res._id) {
                         return res;
@@ -277,7 +275,7 @@ const KhamTaiNha = ({ type, setType }) => {
             //     body: record,
             // }).then((res1) => {
 
-            setAppointmentHomes((prev) =>
+            appointmentHandler.setAppointmentHomes((prev) =>
                 prev.map((item) => {
                     if (item._id === res._id) {
                         return res;
@@ -334,7 +332,7 @@ const KhamTaiNha = ({ type, setType }) => {
             //     sendToken: false,
             //     body: record,
             // }).then((res1) => {
-            setAppointmentHomes((prev) =>
+            appointmentHandler.setAppointmentHomes((prev) =>
                 prev.map((item) => {
                     if (item._id === res._id) {
                         return res;
@@ -363,7 +361,7 @@ const KhamTaiNha = ({ type, setType }) => {
                     <div className="flex items-end gap-2">
                         <i className="text-[40px] bx bx-calendar-check"></i>
                         <span className="text-[25px] font-semibold">
-                            {returnNumber(appointmentHomes.length)}
+                            {returnNumber(appointmentData.appointmentHomes.length)}
                         </span>
                     </div>
                     <span className="font-medium text-[15px]">
@@ -381,7 +379,7 @@ const KhamTaiNha = ({ type, setType }) => {
                         <i className="text-[40px] bx bx-calendar-check"></i>
                         <span className="text-[25px] font-semibold">
                             {returnNumber(
-                                appointmentHomes.filter(
+                                appointmentData.appointmentHomes.filter(
                                     (item) => item.status.status_type === "ACCEPTED"
                                 ).length
                             )}
@@ -402,7 +400,7 @@ const KhamTaiNha = ({ type, setType }) => {
                         <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
                         <span className="text-[25px] font-semibold">
                             {returnNumber(
-                                appointmentHomes.filter(
+                                appointmentData.appointmentHomes.filter(
                                     (item) => item.status.status_type === "QUEUE"
                                 ).length
                             )}
@@ -423,7 +421,7 @@ const KhamTaiNha = ({ type, setType }) => {
                         <i className="text-[40px] bx bx-error"></i>
                         <span className="text-[25px] font-semibold">
                             {returnNumber(
-                                appointmentHomes.filter(
+                                appointmentData.appointmentHomes.filter(
                                     (item) => item.status.status_type === "REJECTED"
                                 ).length
                             )}
@@ -466,7 +464,7 @@ const KhamTaiNha = ({ type, setType }) => {
                     </thead>
                     <tbody className=" w-[full] bg-black font-medium">
                         {!loading &&
-                            appointmentHomes.map((appointmentHome, index) => (
+                            appointmentData.appointmentHomes.map((appointmentHome, index) => (
                                 <tr
                                     key={index}
                                     className="odd:bg-white cursor-pointer odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
@@ -574,8 +572,7 @@ const KhamTaiNha = ({ type, setType }) => {
                                                 </button>
                                             </>
                                         ) : (
-                                            appointmentHome.status?.status_type ===
-                                            "ACCEPTED" && (
+                                            (appointmentHome.status?.status_type === "ACCEPTED" && appointmentHome.processAppointment !== 2) && (
                                                 <button
                                                     onClick={() =>
                                                         handleCancelAppointmentHomes(
@@ -607,7 +604,7 @@ const KhamTaiNha = ({ type, setType }) => {
                             ))}
                     </tbody>
                 </table>
-                {!loading && appointmentHomes.length === 0 && (
+                {!loading && appointmentData.appointmentHomes.length === 0 && (
                     <div className="w-full flex items-center justify-center my-10 text-[18px] font-medium">
                         Không có cuộc hẹn khám tại nhà trong {typeTime[type]}
                     </div>
