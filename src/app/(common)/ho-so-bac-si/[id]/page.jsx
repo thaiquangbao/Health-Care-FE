@@ -219,7 +219,7 @@ const HoSoBacSi = () => {
 
             {/* chổ này */}
 
-            {!healthLogBooks.filter(
+            {healthLogBooks.filter(
               (log) =>
                 log.status.status_type === "ACCEPTED" ||
                 log.status.status_type === "QUEUE" ||
@@ -267,7 +267,7 @@ const HoSoBacSi = () => {
                   </div>
                 </div>
               )}
-            {!appointmentHomes.filter(item => ['CANCELED', 'REJECTED', 'COMPLETED'].includes(item.status.status_type)).map(item => item.doctor_record_id).includes(doctorRecord?._id) && (
+            {appointmentHomes.filter(item => ['CANCELED', 'REJECTED', 'COMPLETED'].includes(item.status.status_type)).map(item => item.doctor_record_id).includes(doctorRecord?._id) && (
               <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                 <div className="flex flex-col text-[#333333]">
                   <span className="text-[14px]">
