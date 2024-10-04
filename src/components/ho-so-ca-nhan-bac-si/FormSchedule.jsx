@@ -223,12 +223,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                     <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                         Theo Dõi
                                                     </button>
-                                                    <button onClick={() => {
-                                                        setCurrentIndex(-1)
-                                                        handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[#a25f24] text-[white] text-[14px]'>
-                                                        Khám tại nhà
-                                                    </button>
+                                                   
                                                 </>
                                             ) : (
                                                 <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>
@@ -264,12 +259,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                                 <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                     Theo Dõi
                                                 </button>
-                                                <button onClick={() => {
-                                                        setCurrentIndex(-1)
-                                                        handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[#a25f24] text-[white] text-[14px]'>
-                                                        Khám tại nhà
-                                                    </button>
+                                                
                                             </>
                                         ) : (
                                             <div className='w-[100%] h-[100%] flex flex-col overflow-auto gap-1'>

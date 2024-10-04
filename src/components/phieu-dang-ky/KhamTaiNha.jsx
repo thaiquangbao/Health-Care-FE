@@ -38,11 +38,12 @@ const KhamTaiNha = ({ type, setType }) => {
     const [displayConnect, setDisplayConnect] = useState(false);
     const intervalRef = useRef();
     const typeTime = {
-        1: "Hôm Nay",
-        2: "Ngày Mai",
-        3: "Tuần Này",
-        4: "Tháng Này",
-        5: "Tháng Sau",
+      1: "Tất cả",
+      2: "Hôm Nay",
+      3: "Ngày Mai",
+      4: "Tuần Này",
+      5: "Tháng Này",
+      6: "Tháng Sau",
     };
     useEffect(() => {
         intervalRef.current = setInterval(() => {
@@ -95,81 +96,93 @@ const KhamTaiNha = ({ type, setType }) => {
     }, [appointmentHomes, time]);
 
     useEffect(() => {
-        if (appointmentData.doctorRecord) {
-            if (type === "1" || type === "2") {
-                setLoading(true);
-                let date = new Date();
-                date.setDate(date.getDate() + (Number(type) - 1));
-                const body = {
-                    doctor_record_id:
-                        appointmentData.doctorRecord._id,
-                    time: {
-                        ...convertDateToDayMonthYearObject(
-                            date.toISOString()
-                        ),
-                    },
-                };
-                api({
-                    type: TypeHTTP.POST,
-                    path: "/appointmentHomes/findByDate",
-                    body,
-                    sendToken: false,
-                }).then((res) => {
-                    setAppointmentHomes(res);
-                    setLoading(false);
-                });
-            } else if (type === "3") {
-                const body = {
-                    doctor_record_id:
-                        appointmentData.doctorRecord._id,
-                };
-                api({
-                    type: TypeHTTP.POST,
-                    path: "/appointmentHomes/findByWeek",
-                    body,
-                    sendToken: false,
-                }).then((res) => {
-                    setAppointmentHomes(res);
-                    setLoading(false);
-                });
-            } else if (type === "4") {
-                const body = {
-                    doctor_record_id:
-                        appointmentData.doctorRecord._id,
-                };
-                api({
-                    type: TypeHTTP.POST,
-                    path: "/appointmentHomes/findByMonth",
-                    body,
-                    sendToken: false,
-                }).then((res) => {
-                    setAppointmentHomes(res);
-                    setLoading(false);
-                });
-            } else if (type === "5") {
-                const body = {
-                    doctor_record_id:
-                        appointmentData.doctorRecord._id,
-                };
-                api({
-                    type: TypeHTTP.POST,
-                    path: "/appointmentHomes/findByNextMonth",
-                    body,
-                    sendToken: false,
-                }).then((res) => {
-                    setAppointmentHomes(res);
-                    setLoading(false);
-                });
-            }
-        }
-    }, [type, appointmentData.doctorRecord]);
-
+      if (appointmentData.doctorRecord) {
+        if (type === "1") {
+          setLoading(true);
+         
+          api({
+            type: TypeHTTP.GET,
+            path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
+            sendToken: true,
+        }).then((res) => {
+            setAppointmentHomes(res);
+            setLoading(false);
+        });
+      } else if (type === "2" || type === "3") {
+              
+              let date = new Date();
+              date.setDate(date.getDate() + (Number(type) - 1));
+              console.log(date);
+              
+              const body = {
+                  doctor_record_id:
+                      appointmentData.doctorRecord._id,
+                  time: {
+                      ...convertDateToDayMonthYearObject(
+                          date.toISOString()
+                      ),
+                  },
+              };
+              api({
+                  type: TypeHTTP.POST,
+                  path: "/appointmentHomes/findByDate",
+                  body,
+                  sendToken: false,
+              }).then((res) => {
+                  setAppointmentHomes(res);
+                  setLoading(false);
+              });
+          } else if (type === "4") {
+              const body = {
+                  doctor_record_id:
+                      appointmentData.doctorRecord._id,
+              };
+              api({
+                  type: TypeHTTP.POST,
+                  path: "/appointmentHomes/findByWeek",
+                  body,
+                  sendToken: false,
+              }).then((res) => {
+                  setAppointmentHomes(res);
+                  setLoading(false);
+              });
+          } else if (type === "5") {
+              const body = {
+                  doctor_record_id:
+                      appointmentData.doctorRecord._id,
+              };
+              api({
+                  type: TypeHTTP.POST,
+                  path: "/appointmentHomes/findByMonth",
+                  body,
+                  sendToken: false,
+              }).then((res) => {
+                  setAppointmentHomes(res);
+                  setLoading(false);
+              });
+          } else if (type === "6") {
+              const body = {
+                  doctor_record_id:
+                      appointmentData.doctorRecord._id,
+              };
+              api({
+                  type: TypeHTTP.POST,
+                  path: "/appointmentHomes/findByNextMonth",
+                  body,
+                  sendToken: false,
+              }).then((res) => {
+                  setAppointmentHomes(res);
+                  setLoading(false);
+              });
+          }
+      }
+  }, [type, appointmentData.doctorRecord]);
     const handleAcceptAppointmentHome = (appointment) => {
         const body = {
             _id: appointment._id,
             status: {
-              status_type: "ACCEPTED",
-              message: "Bác sĩ đồng ý",
+                status_type: "ACCEPTED",
+                message: "Bác sĩ đồng ý",
             }
         };
         globalHandler.notify(
@@ -205,18 +218,18 @@ const KhamTaiNha = ({ type, setType }) => {
             //     sendToken: false,
             //     body: record,
             // }).then((res1) => {
-                setAppointmentHomes((prev) =>
-                    prev.map((item) => {
-                        if (item._id === res._id) {
-                            return res;
-                        }
-                        return item;
-                    })
-                );
-                globalHandler.notify(
-                    notifyType.SUCCESS,
-                    "Đã chấp nhận cuộc hẹn"
-                );
+            setAppointmentHomes((prev) =>
+                prev.map((item) => {
+                    if (item._id === res._id) {
+                        return res;
+                    }
+                    return item;
+                })
+            );
+            globalHandler.notify(
+                notifyType.SUCCESS,
+                "Đã chấp nhận cuộc hẹn"
+            );
             // });
         });
     };
@@ -225,8 +238,8 @@ const KhamTaiNha = ({ type, setType }) => {
         const body = {
             _id: appointment._id,
             status: {
-              status_type: "CANCELED",
-              message: "Bác sĩ đã hủy cuộc hẹn",
+                status_type: "CANCELED",
+                message: "Bác sĩ đã hủy cuộc hẹn",
             },
             note: ""
         };
@@ -263,19 +276,19 @@ const KhamTaiNha = ({ type, setType }) => {
             //     sendToken: false,
             //     body: record,
             // }).then((res1) => {
-              
-                setAppointmentHomes((prev) =>
-                    prev.map((item) => {
-                        if (item._id === res._id) {
-                            return res;
-                        }
-                        return item;
-                    })
-                );
-                globalHandler.notify(
-                    notifyType.SUCCESS,
-                    "Đã hủy cuộc hẹn"
-                );
+
+            setAppointmentHomes((prev) =>
+                prev.map((item) => {
+                    if (item._id === res._id) {
+                        return res;
+                    }
+                    return item;
+                })
+            );
+            globalHandler.notify(
+                notifyType.SUCCESS,
+                "Đã hủy cuộc hẹn"
+            );
             // });
         });
     };
@@ -284,8 +297,8 @@ const KhamTaiNha = ({ type, setType }) => {
         const body = {
             _id: appointment._id,
             status: {
-              status_type: "REJECTED",
-              message: "Bác sĩ đã từ chối",
+                status_type: "REJECTED",
+                message: "Bác sĩ đã từ chối",
             }
         };
         globalHandler.notify(
@@ -321,18 +334,18 @@ const KhamTaiNha = ({ type, setType }) => {
             //     sendToken: false,
             //     body: record,
             // }).then((res1) => {
-                setAppointmentHomes((prev) =>
-                    prev.map((item) => {
-                        if (item._id === res._id) {
-                            return res;
-                        }
-                        return item;
-                    })
-                );
-                globalHandler.notify(
-                    notifyType.SUCCESS,
-                    "Đã từ chối cuộc hẹn"
-                );
+            setAppointmentHomes((prev) =>
+                prev.map((item) => {
+                    if (item._id === res._id) {
+                        return res;
+                    }
+                    return item;
+                })
+            );
+            globalHandler.notify(
+                notifyType.SUCCESS,
+                "Đã từ chối cuộc hẹn"
+            );
             // });
         });
     };
@@ -473,27 +486,27 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {index + 1}
                                     </td>
                                     <td
-                                         onClick={() =>
-                                          appointmentHandler.showFormDetailAppointmentHome(
-                                              appointmentHome,
-                                              displayConnect === appointmentHome._id
-                                                  ? true
-                                                  : false
-                                          )
-                                      }
+                                        onClick={() =>
+                                            appointmentHandler.showFormDetailAppointmentHome(
+                                                appointmentHome,
+                                                displayConnect === appointmentHome._id
+                                                    ? true
+                                                    : false
+                                            )
+                                        }
                                         className="py-4 text-[15px]"
                                     >
                                         {appointmentHome.patient?.fullName}
                                     </td>
                                     <td
-                                         onClick={() =>
-                                          appointmentHandler.showFormDetailAppointmentHome(
-                                              appointmentHome,
-                                              displayConnect === appointmentHome._id
-                                                  ? true
-                                                  : false
-                                          )
-                                      }
+                                        onClick={() =>
+                                            appointmentHandler.showFormDetailAppointmentHome(
+                                                appointmentHome,
+                                                displayConnect === appointmentHome._id
+                                                    ? true
+                                                    : false
+                                            )
+                                        }
                                         style={{
                                             color:
                                                 appointmentHome.status?.status_type === "QUEUE"
@@ -508,29 +521,29 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {appointmentHome.status?.message}
                                     </td>
                                     <td
-                                         onClick={() =>
-                                          appointmentHandler.showFormDetailAppointmentHome(
-                                              appointmentHome,
-                                              displayConnect === appointmentHome._id
-                                                  ? true
-                                                  : false
-                                          )
-                                      }
+                                        onClick={() =>
+                                            appointmentHandler.showFormDetailAppointmentHome(
+                                                appointmentHome,
+                                                displayConnect === appointmentHome._id
+                                                    ? true
+                                                    : false
+                                            )
+                                        }
                                         className="py-4"
                                     >
-                                        {`${convertDateToDayMonthYearVietNam(
+                                        {appointmentHome.status?.status_type === "ACCEPTED" ? `${convertDateToDayMonthYearVietNam(
                                             appointmentHome.appointment_date
-                                        )}`}
+                                        )}` : 'Chưa rõ thời gian'}
                                     </td>
                                     <td
-                                         onClick={() =>
-                                          appointmentHandler.showFormDetailAppointmentHome(
-                                              appointmentHome,
-                                              displayConnect === appointmentHome._id
-                                                  ? true
-                                                  : false
-                                          )
-                                      }
+                                        onClick={() =>
+                                            appointmentHandler.showFormDetailAppointmentHome(
+                                                appointmentHome,
+                                                displayConnect === appointmentHome._id
+                                                    ? true
+                                                    : false
+                                            )
+                                        }
                                         className="py-4"
                                     >
                                         {appointmentHome.note}
@@ -540,9 +553,10 @@ const KhamTaiNha = ({ type, setType }) => {
                                             <>
                                                 <button
                                                     onClick={() =>
-                                                        handleAcceptAppointmentHome(
-                                                          appointmentHome
-                                                        )
+                                                        // handleAcceptAppointmentHome(
+                                                        //     appointmentHome
+                                                        // )
+                                                        appointmentHandler.showFormAppointmentHomeCalendar(appointmentHome)
                                                     }
                                                     className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                                                 >
@@ -560,12 +574,12 @@ const KhamTaiNha = ({ type, setType }) => {
                                                 </button>
                                             </>
                                         ) : (
-                                          appointmentHome.status?.status_type ===
+                                            appointmentHome.status?.status_type ===
                                             "ACCEPTED" && (
                                                 <button
                                                     onClick={() =>
                                                         handleCancelAppointmentHomes(
-                                                          appointmentHome
+                                                            appointmentHome
                                                         )
                                                     }
                                                     className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"

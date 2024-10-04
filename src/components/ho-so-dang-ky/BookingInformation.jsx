@@ -1,14 +1,24 @@
 import { bookingContext } from '@/context/BookingContext'
+import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
 import React, { useContext, useRef, useState } from 'react'
 
 const BookingInformation = () => {
-
+    const { globalHandler } = useContext(globalContext)
     const { bookingData, bookingHandler } = useContext(bookingContext)
     const { userData } = useContext(userContext)
     const inputRef = useRef()
+
+    function checkIntegerString(value) {
+        const parsedValue = Number(value);
+        if (!isNaN(parsedValue) && Number.isInteger(parsedValue)) {
+            return true
+        } else {
+            return false
+        }
+    }
 
     const handleChangeImage = (e) => {
         const files = Array.from(e.target.files);
@@ -23,6 +33,29 @@ const BookingInformation = () => {
         bookingHandler.setImages([...bookingData.images, ...filesFormat])
     }
 
+    const handleNextStep = () => {
+        if (!checkIntegerString(bookingData.booking?.weight)) {
+            globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho cân nặng')
+            return
+        }
+        if (!checkIntegerString(bookingData.booking?.height)) {
+            globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho chiều cao')
+            return
+        }
+        if (!checkIntegerString(bookingData.booking?.healthRate)) {
+            globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho nhịp tim')
+            return
+        }
+        if (!checkIntegerString(bookingData.booking?.temperature)) {
+            globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho nhiệt độ')
+            return
+        }
+        if (!checkIntegerString(bookingData.booking?.bloodPressure.split('/')[0]) || !checkIntegerString(bookingData.booking?.bloodPressure.split('/')[1])) {
+            globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số (tâm thu/tâm trương) cho huyết áp')
+            return
+        }
+        bookingHandler.setCurrentStep(2)
+    }
 
     return (
         <>
@@ -115,10 +148,10 @@ const BookingInformation = () => {
                 </div>
             </div>
             <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex items-center'>
-                <button onClick={() => bookingHandler.setCurrentStep(2)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
+                <button onClick={() => handleNextStep()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
             </div>
         </>
     )
 }
 
-export default BookingInformation
+export default BookingInformations

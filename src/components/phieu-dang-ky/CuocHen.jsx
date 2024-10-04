@@ -38,11 +38,13 @@ const CuocHen = ({ type, setType }) => {
     const [displayConnect, setDisplayConnect] = useState(false);
     const intervalRef = useRef();
     const typeTime = {
-        1: "Hôm Nay",
-        2: "Ngày Mai",
-        3: "Tuần Này",
-        4: "Tháng Này",
-        5: "Tháng Sau",
+        1: "Tất cả",
+        2: "Hôm Nay",
+        3: "Ngày Mai",
+        4: "Tuần Này",
+        5: "Tháng Này",
+        6: "Tháng Sau",
+        
     };
     useEffect(() => {
         intervalRef.current = setInterval(() => {
@@ -96,8 +98,25 @@ const CuocHen = ({ type, setType }) => {
 
     useEffect(() => {
         if (appointmentData.doctorRecord) {
-            if (type === "1" || type === "2") {
-                setLoading(true);
+            if (type === "1"){
+              setLoading(true);
+              const body = {
+                doctor_record_id:
+                    appointmentData.doctorRecord._id,
+              };
+                api({
+                  type: TypeHTTP.POST,
+                  path: "/appointments/findByRecords",
+                  body,
+                  sendToken: false,
+              }).then((res) => {
+                
+                  setAppointments(res);
+                  setLoading(false);
+              });
+            }
+            else if (type === "2" || type === "3") {
+                
                 let date = new Date();
                 date.setDate(date.getDate() + (Number(type) - 1));
                 const body = {
@@ -118,7 +137,7 @@ const CuocHen = ({ type, setType }) => {
                     setAppointments(res);
                     setLoading(false);
                 });
-            } else if (type === "3") {
+            } else if (type === "4") {
                 const body = {
                     doctor_record_id:
                         appointmentData.doctorRecord._id,
@@ -132,7 +151,7 @@ const CuocHen = ({ type, setType }) => {
                     setAppointments(res);
                     setLoading(false);
                 });
-            } else if (type === "4") {
+            } else if (type === "5") {
                 const body = {
                     doctor_record_id:
                         appointmentData.doctorRecord._id,
@@ -146,7 +165,7 @@ const CuocHen = ({ type, setType }) => {
                     setAppointments(res);
                     setLoading(false);
                 });
-            } else if (type === "5") {
+            } else if (type === "6") {
                 const body = {
                     doctor_record_id:
                         appointmentData.doctorRecord._id,
@@ -160,7 +179,7 @@ const CuocHen = ({ type, setType }) => {
                     setAppointments(res);
                     setLoading(false);
                 });
-            }
+            } 
         }
     }, [type, appointmentData.doctorRecord]);
 

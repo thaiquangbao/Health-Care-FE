@@ -75,7 +75,31 @@ const KhamSucKhoeTaiNha = () => {
                 // })
         })
 }
-  
+// thanh toán
+  const payment = (data) => {
+    // Thiếu giao diện tahnh toán
+    const body = {
+        _id: data._id,
+        processAppointment: 2,
+        status: {
+          status_type: "ACCEPTED",
+          message: "Bệnh nhân đã thanh toán",
+        },
+    }
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
+    api({path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST})
+    .then((res=> {
+      setAppointmentHomes(prev => prev.map(item => {
+        if (item._id === res._id) {
+            return res
+        }
+        return item
+    }))
+      globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
+      globalHandler.reload()
+    }))
+    
+  };
   return (
     <div className="w-full min-h-screen pb-4 flex flex-col pt-[60px] px-[5%]">
       <Navbar />
@@ -210,15 +234,20 @@ const KhamSucKhoeTaiNha = () => {
                         {appointmentHome.note}
                       </td>
                       <td className="py-4 flex gap-2 items-center justify-center">
-                        {![
+                      {(appointmentHome.processAppointment === 1 && appointmentHome.status?.status_type === "ACCEPTED") && (
+                        
+                          <button onClick={() => payment(appointmentHome)} className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1" >
+                          Thanh toán
+                          </button>
+                        )}
+                        {(![
                           "CANCELED",
-                          "ACCEPTED",
                           "REJECTED",
                           "COMPLETED",
                         ].includes(
                           appointmentHome.status
                             ?.status_type
-                        ) && (
+                        ) && appointmentHome.processAppointment !== 2 ) && (
                           <button
                             onClick={() =>
                               handleCancelAppointmentHome(
@@ -229,6 +258,7 @@ const KhamSucKhoeTaiNha = () => {
                           >
                             Hủy Cuộc Hẹn
                           </button>
+
                         )}
                       </td>
                     </tr>

@@ -1,22 +1,22 @@
 
 import { appointmentContext } from "@/context/AppointmentContext";
 import {
-    globalContext,
-    notifyType,
+  globalContext,
+  notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
-    convertDateToDayMonthYearTimeObject,
-    convertDateToDayMonthYearVietNam,
+  convertDateToDayMonthYearTimeObject,
+  convertDateToDayMonthYearVietNam,
 } from "@/utils/date";
 import { formatMoney, returnNumber } from "@/utils/other";
 import Link from "next/link";
 import React, {
-    useContext,
-    useEffect,
-    useRef,
-    useState,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 const PhieuTheoDoi = ({ type, setType }) => {
 
@@ -25,17 +25,27 @@ const PhieuTheoDoi = ({ type, setType }) => {
     const { globalHandler } = useContext(globalContext);
     const [loading, setLoading] = useState(false);
     const typeTime = {
-        1: "Hôm Nay",
-        2: "Ngày Mai",
-        3: "Tuần Này",
-        4: "Tháng Này",
-        5: "Tháng Sau",
+      1: "Tất cả",
+      2: "Hôm Nay",
+      3: "Ngày Mai",
+      4: "Tuần Này",
+      5: "Tháng Này",
+      6: "Tháng Sau",
     };
 
     useEffect(() => {
         if (userData.user) {
             setLoading(true);
             if (type === '1') {
+             
+              api({
+                  path: `/healthLogBooks/findByDoctor/${userData.user?._id}`, type: TypeHTTP.GET, sendToken: true, 
+              })
+                  .then(logBooks => {
+                      setLogBooks(logBooks)
+                      setLoading(false)
+                  })
+          } else if (type === '2') {
                 const date = convertDateToDayMonthYearTimeObject(new Date().toISOString())
                 api({
                     path: '/healthLogBooks/findByDay', type: TypeHTTP.POST, sendToken: true, body: {
@@ -44,12 +54,12 @@ const PhieuTheoDoi = ({ type, setType }) => {
                     }
                 })
                     .then(logBooks => {
-                        console.log(logBooks);
+                        
                         
                         setLogBooks(logBooks)
                         setLoading(false)
                     })
-            } else if (type === '2') {
+            } else if (type === '3') {
                 const date = convertDateToDayMonthYearTimeObject(new Date(new Date().setDate(new Date().getDate() + 1)).toISOString())
                 api({
                     path: '/healthLogBooks/findByNextDay', type: TypeHTTP.POST, sendToken: true, body: {
@@ -64,7 +74,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
             }
             else {
                 api({
-                    path: `/healthLogBooks/findBy${type === "3" ? 'Week' : type === "4" ? 'Month' : 'NextMonth'}`, type: TypeHTTP.POST, sendToken: true, body: {
+                    path: `/healthLogBooks/findBy${type === "4" ? 'Week' : type === "5" ? 'Month' : 'NextMonth'}`, type: TypeHTTP.POST, sendToken: true, body: {
                         doctor: userData.user._id,
                     }
                 })

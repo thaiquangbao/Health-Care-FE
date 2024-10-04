@@ -44,11 +44,12 @@ const Appointment = () => {
               onChange={(e) => setType(e.target.value)}
               className="px-4 py-2 text-[15px] shadow-lg focus:outline-0 rounded-md font-medium"
             >
-              <option value={1}>Hôm Nay</option>
-              <option value={2}>Ngày Mai</option>
-              <option value={3}>Tuần Này</option>
-              <option value={4}>Tháng Này</option>
-              <option value={5}>Tháng Sau</option>
+              <option value={1}>Tất cả</option>
+              <option value={2}>Hôm Nay</option>
+              <option value={3}>Ngày Mai</option>
+              <option value={4}>Tuần Này</option>
+              <option value={5}>Tháng Này</option>
+              <option value={6}>Tháng Sau</option>
             </select>
           </div>
         </div>
