@@ -23,7 +23,6 @@ const FormDetailAppointmentHome = ({
   const [medicalRecords, setMedicalRecords] = useState([]);
   useEffect(() => {
     if (data) {
-
       api({
         type: TypeHTTP.GET,
         sendToken: false,
@@ -42,34 +41,37 @@ const FormDetailAppointmentHome = ({
       style={
         data
           ? {
-            height: "90%",
-            width: "80%",
-            transition: "0.3s",
-            backgroundSize: "cover",
-            overflow: "hidden",
-            backgroundImage: "url(/bg.png)",
-          }
+              height: "90%",
+              width: "80%",
+              transition: "0.3s",
+              backgroundSize: "cover",
+              overflow: "hidden",
+              backgroundImage: "url(/bg.png)",
+            }
           : {
-            height: 0,
-            width: 0,
-            transition: "0.3s",
-            overflow: "hidden",
-          }
+              height: 0,
+              width: 0,
+              transition: "0.3s",
+              overflow: "hidden",
+            }
       }
       className="z-[41] w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
       <div className="px-[2rem] py-[1.5rem] w-full flex flex-col gap-2">
-        <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${data?.sick !== "" ? data?.sick: "Khám tại nhà"})`}</span>
+        <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${
+          data?.sick !== "" ? data?.sick : "Khám tại nhà"
+        })`}</span>
         <div className="flex justify-between items-center px-4 mt-4">
           <div className="flex items-center gap-4">
             <div
               className="w-[60px] aspect-square shadow-xl rounded-full"
               style={{
                 backgroundSize: "cover",
-                backgroundImage: `url(${userData.user?.role !== "DOCTOR"
-                  ? doctorRecord?.doctor?.image
-                  : data?.patient?.image
-                  })`,
+                backgroundImage: `url(${
+                  userData.user?.role !== "DOCTOR"
+                    ? doctorRecord?.doctor?.image
+                    : data?.patient?.image
+                })`,
               }}
             ></div>
             <div className="flex flex-col">
@@ -100,40 +102,53 @@ const FormDetailAppointmentHome = ({
                     data?.status.status_type === "ACCEPTED"
                       ? "green"
                       : data?.status.status_type === "QUEUE"
-                        ? "#999"
-                        : data?.status.status_type === "COMPLETED" ? 'blue' : "red",
+                      ? "#999"
+                      : data?.status.status_type ===
+                        "COMPLETED"
+                      ? "blue"
+                      : "red",
                 }}
                 className="font-medium text-[14px]"
               >
                 {data?.status.status_type === "ACCEPTED"
                   ? calculateDetailedTimeDifference(
-                    convertDateToDayMonthYearTimeObject(
-                      new Date().toISOString()
-                    ),
-                    data?.appointment_date
-                  )
+                      convertDateToDayMonthYearTimeObject(
+                        new Date().toISOString()
+                      ),
+                      data?.appointment_date
+                    )
                   : data?.status?.message}
               </span>
               <div className="relative flex h-4 w-4">
                 <span
                   style={{
                     backgroundColor:
-                      data?.status?.status_type === "ACCEPTED"
+                      data?.status?.status_type ===
+                      "ACCEPTED"
                         ? "green"
-                        : data?.status?.status_type === "QUEUE"
-                          ? "#999"
-                          : data?.status?.status_type === "COMPLETED" ? 'blue' : "red",
+                        : data?.status?.status_type ===
+                          "QUEUE"
+                        ? "#999"
+                        : data?.status?.status_type ===
+                          "COMPLETED"
+                        ? "blue"
+                        : "red",
                   }}
                   className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
                 <span
                   style={{
                     backgroundColor:
-                      data?.status?.status_type === "ACCEPTED"
+                      data?.status?.status_type ===
+                      "ACCEPTED"
                         ? "green"
-                        : data?.status?.status_type === "QUEUE"
-                          ? "#999"
-                          : data?.status?.status_type === "COMPLETED" ? 'blue' : "red",
+                        : data?.status?.status_type ===
+                          "QUEUE"
+                        ? "#999"
+                        : data?.status?.status_type ===
+                          "COMPLETED"
+                        ? "blue"
+                        : "red",
                   }}
                   className="relative inline-flex h-4 w-4 rounded-full"
                 ></span>
@@ -148,26 +163,60 @@ const FormDetailAppointmentHome = ({
             </span>{" "}
             {data?.note}
           </span>
-          {!display && (
-            <button
-              onClick={() => {
-                hidden();
-                
-              }}
-              className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-            >
-              Xem vị trí của bệnh nhân
-            </button>
-          )}
+          <div className="flex flex-col gap-1">
+            {!display && (
+              <>
+                <button
+                  onClick={() => {
+                    hidden();
+                  }}
+                  className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                >
+                  Hồ sơ bệnh nhân
+                </button>
+                <button
+                  onClick={() => {
+                    hidden();
+                  }}
+                  className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                >
+                  Xem vị trí của bệnh nhân
+                </button>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex px-4 text-[14px] gap-[2rem]">
-          <span className="font-semibold">Thiết bị có sẵn: </span>
+          <span className="font-semibold">
+            Thiết bị có sẵn:{" "}
+          </span>
           <div className="flex items-center gap-5 text-[13px]">
-            <span>Nhiệt kế: {data?.equipment?.thermometer === false ? "Không" : "Có"}</span>
-            <span>Thiết bị huyết áp: {data?.equipment?.bloodPressureMonitor === false ? "Không" : "Có"}</span>
-            <span>Thiết bị nhịp tim: {data?.equipment?.heartRateMonitor === false ? "Không" : "Có"}</span>
-            <span>Thiết bị đo đường huyết: {data?.equipment?.bloodGlucoseMonitor === false ? "Không" : "Có"}</span>
-            
+            <span>
+              Nhiệt kế:{" "}
+              {data?.equipment?.thermometer === false
+                ? "Không"
+                : "Có"}
+            </span>
+            <span>
+              Thiết bị huyết áp:{" "}
+              {data?.equipment?.bloodPressureMonitor ===
+              false
+                ? "Không"
+                : "Có"}
+            </span>
+            <span>
+              Thiết bị nhịp tim:{" "}
+              {data?.equipment?.heartRateMonitor === false
+                ? "Không"
+                : "Có"}
+            </span>
+            <span>
+              Thiết bị đo đường huyết:{" "}
+              {data?.equipment?.bloodGlucoseMonitor ===
+              false
+                ? "Không"
+                : "Có"}
+            </span>
           </div>
         </div>
         {/* <div className="flex px-4 text-[14px] gap-[2rem]">

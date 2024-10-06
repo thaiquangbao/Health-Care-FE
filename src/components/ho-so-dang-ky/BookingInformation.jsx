@@ -34,27 +34,27 @@ const BookingInformation = () => {
     }
 
     const handleNextStep = () => {
-        if (bookingData.booking?.weight !== '')
+        if (bookingData.booking?.weight !== '' && bookingData.booking.weight)
             if (!checkIntegerString(bookingData.booking?.weight)) {
                 globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho cân nặng')
                 return
             }
-        if (bookingData.booking?.height !== '')
+        if (bookingData.booking?.height !== '' && bookingData.booking?.height)
             if (!checkIntegerString(bookingData.booking?.height)) {
                 globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho chiều cao')
                 return
             }
-        if (bookingData.booking?.healthRate !== '')
+        if (bookingData.booking?.healthRate !== '' && bookingData.booking?.healthRate)
             if (!checkIntegerString(bookingData.booking?.healthRate)) {
                 globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho nhịp tim')
                 return
             }
-        if (bookingData.booking?.temperature !== '')
+        if (bookingData.booking?.temperature !== '' && bookingData.booking?.temperature)
             if (!checkIntegerString(bookingData.booking?.temperature)) {
                 globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số cho nhiệt độ')
                 return
             }
-        if (bookingData.booking?.bloodPressure !== '')
+        if (bookingData.booking?.bloodPressure !== '' && bookingData.booking?.bloodPressure)
             if (!checkIntegerString(bookingData.booking?.bloodPressure.split('/')[0]) || !checkIntegerString(bookingData.booking?.bloodPressure.split('/')[1])) {
                 globalHandler.notify(notifyType.WARNING, 'Chỉ được nhập dữ liệu số (tâm thu/tâm trương) cho huyết áp')
                 return
