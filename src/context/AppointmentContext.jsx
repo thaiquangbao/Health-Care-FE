@@ -34,6 +34,7 @@ const AppointmentProvider = ({ children }) => {
     const [visibleFormRecordPatient, setVisibleFormRecordPatient] = useState(false)
     const [dataFormDetailAppointment, setDataFormDetailAppointment] = useState()
     const [currentAppointment, setCurrentAppointment] = useState()
+    const [currentAppointmentHome, setCurrentAppointmentHome] = useState()
     const [medicalRecord, setMedicalRecord] = useState();
     const [currentDay, setCurrentDay] = useState()
     const [detailTime, setDetailTime] = useState()
@@ -254,7 +255,8 @@ const AppointmentProvider = ({ children }) => {
         currentAppointment,
         medicalRecord,
         doctorRecordBookingHome,
-        appointmentHomes
+        appointmentHomes,
+        currentAppointmentHome
     }
 
     const handler = {
@@ -287,7 +289,8 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormDetailAppointmentHome,
         hiddenFormAppointmentHomeCalendar,
         showFormAppointmentHomeCalendar,
-        setAppointmentHomes
+        setAppointmentHomes,
+        setCurrentAppointmentHome
     }
 
     return (
