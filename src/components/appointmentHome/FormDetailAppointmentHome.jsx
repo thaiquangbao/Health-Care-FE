@@ -17,6 +17,7 @@ import React, {
   useState
 } from "react";
 import FormRecordPatientHome from "./FormRecordPatientHome";
+import AssessmentDoctor from "./AssessmentDoctor";
 
 const FormDetailAppointmentHome = ({
   hidden,
@@ -35,9 +36,8 @@ const FormDetailAppointmentHome = ({
   // const { globalHandler } = useContext(globalContext);
   useEffect(() => {
     if (wrapperRef.current && formRef.current) {
-      wrapperRef.current.style.marginLeft = `-${
-        formRef.current.offsetWidth * type
-      }px`;
+      wrapperRef.current.style.marginLeft = `-${formRef.current.offsetWidth * type
+        }px`;
     }
   }, [type]);
 
@@ -62,7 +62,7 @@ const FormDetailAppointmentHome = ({
         sendToken: false,
       }).then((res) => {
         if (res !== 0) {
-          
+
           setFinish(true);
         } else {
           setFinish(false);
@@ -74,14 +74,10 @@ const FormDetailAppointmentHome = ({
   useEffect(() => {
     console.log(temporary);
   }, [temporary]);
+
   const changeFormRecord = () => {
-    if (finish === true) {
-      // hiện form detail medical record
-      console.log("Đã hoàn thành");
-    } else {
-      setType(1);
-    }
-    
+    setType(1);
+
   };
   const finishAppointmentHome = () => {
     const body = {
@@ -97,7 +93,7 @@ const FormDetailAppointmentHome = ({
       path: `/appointmentHomes/complete`,
       body
     }).then((res) => {
-      console.log(res);
+      globalThis.window.location.reload()
       hidden()
     });
   }
@@ -110,19 +106,19 @@ const FormDetailAppointmentHome = ({
       style={
         data && temporary === false
           ? {
-              height: "95%",
-              width: "80%",
-              transition: "0.3s",
-              backgroundSize: "cover",
-              overflow: "hidden",
-              backgroundImage: "url(/bg.png)",
-            }
+            height: "95%",
+            width: "80%",
+            transition: "0.3s",
+            backgroundSize: "cover",
+            overflow: "hidden",
+            backgroundImage: "url(/bg.png)",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="flex items-center z-[41] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -132,20 +128,18 @@ const FormDetailAppointmentHome = ({
         className="flex w-full h-full"
       >
         <div className="px-[2rem] min-w-[100%] h-full py-[1.5rem] flex flex-col gap-2">
-          <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${
-            data?.sick !== "" ? data?.sick : "Khám tại nhà"
-          })`}</span>
+          <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${data?.sick !== "" ? data?.sick : "Khám tại nhà"
+            })`}</span>
           <div className="flex justify-between items-center px-4 mt-4">
             <div className="flex items-center gap-4">
               <div
                 className="w-[60px] aspect-square shadow-xl rounded-full"
                 style={{
                   backgroundSize: "cover",
-                  backgroundImage: `url(${
-                    userData.user?.role !== "DOCTOR"
-                      ? doctorRecord?.doctor?.image
-                      : data?.patient?.image
-                  })`,
+                  backgroundImage: `url(${userData.user?.role !== "DOCTOR"
+                    ? doctorRecord?.doctor?.image
+                    : data?.patient?.image
+                    })`,
                 }}
               ></div>
               <div className="flex flex-col">
@@ -175,25 +169,25 @@ const FormDetailAppointmentHome = ({
                   style={{
                     color:
                       data?.status.status_type ===
-                      "ACCEPTED"
+                        "ACCEPTED"
                         ? "green"
                         : data?.status.status_type ===
                           "QUEUE"
-                        ? "#999"
-                        : data?.status.status_type ===
-                          "COMPLETED"
-                        ? "blue"
-                        : "red",
+                          ? "#999"
+                          : data?.status.status_type ===
+                            "COMPLETED"
+                            ? "blue"
+                            : "red",
                   }}
                   className="font-medium text-[14px]"
                 >
                   {data?.status.status_type === "ACCEPTED"
                     ? calculateDetailedTimeDifference(
-                        convertDateToDayMonthYearTimeObject(
-                          new Date().toISOString()
-                        ),
-                        data?.appointment_date
-                      )
+                      convertDateToDayMonthYearTimeObject(
+                        new Date().toISOString()
+                      ),
+                      data?.appointment_date
+                    )
                     : data?.status?.message}
                 </span>
                 <div className="relative flex h-4 w-4">
@@ -201,15 +195,15 @@ const FormDetailAppointmentHome = ({
                     style={{
                       backgroundColor:
                         data?.status?.status_type ===
-                        "ACCEPTED"
+                          "ACCEPTED"
                           ? "green"
                           : data?.status?.status_type ===
                             "QUEUE"
-                          ? "#999"
-                          : data?.status?.status_type ===
-                            "COMPLETED"
-                          ? "blue"
-                          : "red",
+                            ? "#999"
+                            : data?.status?.status_type ===
+                              "COMPLETED"
+                              ? "blue"
+                              : "red",
                     }}
                     className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                   ></span>
@@ -217,15 +211,15 @@ const FormDetailAppointmentHome = ({
                     style={{
                       backgroundColor:
                         data?.status?.status_type ===
-                        "ACCEPTED"
+                          "ACCEPTED"
                           ? "green"
                           : data?.status?.status_type ===
                             "QUEUE"
-                          ? "#999"
-                          : data?.status?.status_type ===
-                            "COMPLETED"
-                          ? "blue"
-                          : "red",
+                            ? "#999"
+                            : data?.status?.status_type ===
+                              "COMPLETED"
+                              ? "blue"
+                              : "red",
                     }}
                     className="relative inline-flex h-4 w-4 rounded-full"
                   ></span>
@@ -243,24 +237,23 @@ const FormDetailAppointmentHome = ({
             <div className="flex flex-col gap-1">
               {!display && (
                 <>
-                  {(userData.user?._id ===
-                    doctorRecord?.doctor?._id &&
-                    finish) && (
-                      <button
-                        onClick={() => {
-                          finishAppointmentHome();
-                        }}
-                        className="hover:scale-[1.05] transition-all bg-[#49c520] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-                      >
-                        Đã hoành thành cuộc hẹn
-                      </button>
-                    )}
+                  {(userData.user?._id === doctorRecord?.doctor?._id && finish && data?.status?.status_type !== 'COMPLETED') && (
+                    <button
+                      onClick={() => {
+                        finishAppointmentHome();
+                      }}
+                      className="hover:scale-[1.05] transition-all bg-[#49c520] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                    >
+                      Hoàn thành cuộc hẹn
+                    </button>
+                  )}
                   {(userData.user?._id ===
                     data?.patient?._id &&
                     data?.status.status_type === "COMPLETED") && (
                       <button
                         onClick={() => {
-                          assessmentDoctor();
+                          // assessmentDoctor();
+                          setType(2)
                         }}
                         className="hover:scale-[1.05] transition-all bg-[#49c520] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                       >
@@ -307,7 +300,7 @@ const FormDetailAppointmentHome = ({
               <span>
                 Thiết bị huyết áp:{" "}
                 {data?.equipment?.bloodPressureMonitor ===
-                false
+                  false
                   ? "Không"
                   : "Có"}
               </span>
@@ -320,7 +313,7 @@ const FormDetailAppointmentHome = ({
               <span>
                 Thiết bị đo đường huyết:{" "}
                 {data?.equipment?.bloodGlucoseMonitor ===
-                false
+                  false
                   ? "Không"
                   : "Có"}
               </span>
@@ -463,6 +456,10 @@ const FormDetailAppointmentHome = ({
           setType={setType}
           doctorRecord1={doctorRecord}
           appointmentHome1={data}
+        />
+        <AssessmentDoctor
+          appointmentHome={data}
+          setType={setType}
         />
       </div>
       <button
