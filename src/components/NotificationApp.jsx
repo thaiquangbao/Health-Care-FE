@@ -87,6 +87,18 @@ const NotificationApp = () => {
         router.push("/theo-doi-suc-khoe");
       });
     } else if (
+      item.category === "APPOINTMENTHOME" &&
+      userData.user?.role === "USER"
+    ) {
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/kham-suc-khoe-tai-nha");
+      });
+    } else if (
       item.title.toLowerCase().trim() ===
         "cảnh báo sức khỏe" &&
       userData.user?.role === "DOCTOR"
@@ -110,6 +122,18 @@ const NotificationApp = () => {
         path: "/notices/update",
       }).then((res) => {
         router.push("/ho-so-ca-nhan-bac-si");
+      });
+    } else if (
+      item.category === "APPOINTMENTHOME" &&
+      userData.user?.role === "DOCTOR"
+    ) {
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/phieu-dang-ky");
       });
     } else {
       api({

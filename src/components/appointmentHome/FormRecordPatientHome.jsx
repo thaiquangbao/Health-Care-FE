@@ -26,20 +26,20 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
 
-  useEffect(() => {
-    if (appointmentData.medicalRecord) {
-      setMedical(appointmentData.medicalRecord.medical)
-      setDiagnosisDisease(appointmentData.medicalRecord.diagnosisDisease)
-      setSymptoms(appointmentData.medicalRecord.symptoms)
-      setNote(appointmentData.medicalRecord.note)
-      setReAppointmentDate(`${appointmentData.medicalRecord.reExaminationDate.year}-${appointmentData.medicalRecord.reExaminationDate.month}-${appointmentData.medicalRecord.reExaminationDate.day}`)
-      setTemperature(appointmentData.medicalRecord.temperature)
-      setBloodPressure(appointmentData.medicalRecord.bloodPressure)
-      setHeartRate(appointmentData.medicalRecord.healthRate)
-      setWeight(appointmentData.medicalRecord.weight)
-      setHeight(appointmentData.medicalRecord.height)
-    }
-  }, [appointmentData.medicalRecord])
+  // useEffect(() => {
+  //   if (appointmentData.medicalRecord) {
+  //     setMedical(appointmentData.medicalRecord.medical)
+  //     setDiagnosisDisease(appointmentData.medicalRecord.diagnosisDisease)
+  //     setSymptoms(appointmentData.medicalRecord.symptoms)
+  //     setNote(appointmentData.medicalRecord.note)
+  //     setReAppointmentDate(`${appointmentData.medicalRecord.reExaminationDate.year}-${appointmentData.medicalRecord.reExaminationDate.month}-${appointmentData.medicalRecord.reExaminationDate.day}`)
+  //     setTemperature(appointmentData.medicalRecord.temperature)
+  //     setBloodPressure(appointmentData.medicalRecord.bloodPressure)
+  //     setHeartRate(appointmentData.medicalRecord.healthRate)
+  //     setWeight(appointmentData.medicalRecord.weight)
+  //     setHeight(appointmentData.medicalRecord.height)
+  //   }
+  // }, [appointmentData.medicalRecord])
 
   useEffect(() => {
     setDoctorRecord(doctorRecord1)
@@ -47,18 +47,18 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
 
   }, [doctorRecord1, appointmentHome1, type]);
 
-  useEffect(() => {
-    if (appointmentHome1?.patient) {
-      api({ type: TypeHTTP.GET, sendToken: false, path: `/medicalRecords/findByPatient/${appointmentHome1.patient._id}` })
-        .then(res => {
-          const filter = res.filter(item => item.appointment === appointmentHome1._id)[0]
-          if (filter) {
-            console.log(filter)
-            appointmentHandler.setMedicalRecord(filter)
-          }
-        })
-    }
-  }, [appointmentHome1])
+  // useEffect(() => {
+  //   if (appointmentHome1?.patient) {
+  //     api({ type: TypeHTTP.GET, sendToken: false, path: `/medicalRecords/findByPatient/${appointmentHome1.patient._id}` })
+  //       .then(res => {
+  //         const filter = res.filter(item => item.appointment === appointmentHome1._id)[0]
+  //         if (filter) {
+  //           console.log(filter)
+  //           appointmentHandler.setMedicalRecord(filter)
+  //         }
+  //       })
+  //   }
+  // }, [appointmentHome1])
 
   // Xử lý
   // Thêm thuốc
@@ -401,7 +401,6 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
           </table>
         </div>
       </div>
-      {!appointmentData.medicalRecord && (
         <div className="full flex justify-end">
           <button
             onClick={() => updateMedicalRecord()}
@@ -410,7 +409,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Cập Nhật Hồ Sơ
           </button>
         </div>
-      )}
+  
 
     </div>
   );
