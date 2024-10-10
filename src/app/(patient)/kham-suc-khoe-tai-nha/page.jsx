@@ -60,7 +60,7 @@ const KhamSucKhoeTaiNha = () => {
       note: ''
     }
     globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
-    api({ sendToken: true, path: '/appointmentHomes/doctor-cancel', type: TypeHTTP.POST, body: body })
+    api({ sendToken: true, path: '/appointmentHomes/patient-cancel', type: TypeHTTP.POST, body: body })
       .then(res => {
         // let record = JSON.parse(JSON.stringify(doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]))
         // let schedule = record.schedules.filter(item => item.date.day === appointment.appointment_date.day && item.date.month === appointment.appointment_date.month && item.date.year === appointment.appointment_date.year)[0]
@@ -199,9 +199,11 @@ const KhamSucKhoeTaiNha = () => {
                         )
                       }
                       >
-                        {`${convertDateToDayMonthYearVietNam(
+                        {appointmentHome.appointment_date.month !== null && appointmentHome.appointment_date.month !== 0 ?
+                        `${convertDateToDayMonthYearVietNam(
                           appointmentHome.appointment_date
-                        )}`}
+                        )}` : "Chưa rõ thời gian"}
+                        
                       </td>
                       <td className="py-4" onClick={() =>
                         appointmentHandler.showFormDetailAppointmentHome(
