@@ -32,7 +32,7 @@ const FormBookingHome = ({ visible, hidden }) => {
         }
         api({ sendToken: true, type: TypeHTTP.POST, body, path: '/appointmentHomes/save' })
             .then(res => {
-                // globalHandler.notify(notifyType.SUCCESS, 'Đặt Hẹn Thành Công, Chờ Bác Sĩ Phản Hồi')
+                globalThis.window.location.reload()
                 hidden()
             })
     }

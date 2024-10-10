@@ -290,7 +290,8 @@ const AppointmentProvider = ({ children }) => {
         hiddenFormAppointmentHomeCalendar,
         showFormAppointmentHomeCalendar,
         setAppointmentHomes,
-        setCurrentAppointmentHome
+        setCurrentAppointmentHome,
+        setDataFormDetailAppointmentHome
     }
 
     return (

@@ -4,7 +4,7 @@ import { utilsContext } from '@/context/UtilsContext';
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearVietNam } from "@/utils/date";
 import React, { useContext, useEffect, useState } from 'react';
-const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, appointmentHome1 }) => {
+const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, appointmentHome1, setReload }) => {
   const { appointmentData, appointmentHandler } = useContext(
     appointmentContext
   );
@@ -139,6 +139,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
         })
           .then(res => {
             // thông báo thành công
+            setReload(prev => !prev)
             utilsHandler.notify(notifyType.SUCCESS, "Đã lưu hồ sơ bệnh nhân")
             setType(0)
           })
@@ -401,15 +402,15 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
           </table>
         </div>
       </div>
-        <div className="full flex justify-end">
-          <button
-            onClick={() => updateMedicalRecord()}
-            className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
-          >
-            Cập Nhật Hồ Sơ
-          </button>
-        </div>
-  
+      <div className="full flex justify-end">
+        <button
+          onClick={() => updateMedicalRecord()}
+          className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
+        >
+          Cập Nhật Hồ Sơ
+        </button>
+      </div>
+
 
     </div>
   );
