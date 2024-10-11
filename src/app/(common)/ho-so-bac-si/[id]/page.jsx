@@ -45,7 +45,9 @@ const HoSoBacSi = () => {
   const [healthLogBooks, setHealthLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext);
   const [priceListHome, setPriceListHome] = useState(0);
-  const [appointmentHomes, setAppointmentHomes] = useState([])
+  const [appointmentHomes, setAppointmentHomes] = useState(
+    []
+  );
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -72,11 +74,13 @@ const HoSoBacSi = () => {
         setHealthLogBooks(res);
       });
 
-      api({ type: TypeHTTP.GET, path: `/appointmentHomes/findByPatient/${userData.user?._id}`, sendToken: true })
-        .then(res => {
-
-          setAppointmentHomes(res)
-        })
+      api({
+        type: TypeHTTP.GET,
+        path: `/appointmentHomes/findByPatient/${userData.user?._id}`,
+        sendToken: true,
+      }).then((res) => {
+        setAppointmentHomes(res);
+      });
     }
   }, [userData.user]);
   useEffect(() => {
@@ -137,10 +141,11 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${star <= rating
-              ? "text-yellow-500"
-              : "text-gray-300"
-              }`}
+            className={`w-6 h-6 ${
+              star <= rating
+                ? "text-yellow-500"
+                : "text-gray-300"
+            }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -220,12 +225,13 @@ const HoSoBacSi = () => {
 
             {/* chổ này */}
 
-            {healthLogBooks.filter(
-              (log) =>
-                log.status.status_type === "ACCEPTED" ||
-                log.status.status_type === "QUEUE" ||
-                log.status.status_type === "TRANSFER"
-            ).length > 0 && (
+            {healthLogBooks.length > 0 &&
+              healthLogBooks.filter(
+                (log) =>
+                  log.status.status_type === "ACCEPTED" ||
+                  log.status.status_type === "QUEUE" ||
+                  log.status.status_type === "TRANSFER"
+              ).length > 0 && (
                 <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                   <div className="flex flex-col text-[#333333]">
                     <span className="text-[14px]">
@@ -268,7 +274,17 @@ const HoSoBacSi = () => {
                   </div>
                 </div>
               )}
-            {(appointmentHomes.length === 0 || appointmentHomes.filter(item => ['CANCELED', 'REJECTED', 'COMPLETED'].includes(item.status.status_type)).map(item => item.doctor_record_id).includes(doctorRecord?._id)) && (
+            {(appointmentHomes.length === 0 ||
+              appointmentHomes
+                .filter((item) =>
+                  [
+                    "CANCELED",
+                    "REJECTED",
+                    "COMPLETED",
+                  ].includes(item.status.status_type)
+                )
+                .map((item) => item.doctor_record_id)
+                .includes(doctorRecord?._id)) && (
               <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                 <div className="flex flex-col text-[#333333]">
                   <span className="text-[14px]">
@@ -293,8 +309,9 @@ const HoSoBacSi = () => {
                       appointmentHandler.setPriceList(
                         priceListHome
                       );
-                      appointmentHandler.showFormBookingHome(doctorRecord);
-
+                      appointmentHandler.showFormBookingHome(
+                        doctorRecord
+                      );
                     }}
                     style={{
                       background:
