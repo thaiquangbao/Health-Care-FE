@@ -2,8 +2,8 @@ import { appointmentContext } from "@/context/AppointmentContext"
 import { globalContext, notifyType } from "@/context/GlobalContext"
 import { userContext } from "@/context/UserContext"
 import { api, TypeHTTP } from "@/utils/api"
+import axios from "axios"
 import { useContext, useState } from "react"
-
 
 const FormBookingHome = ({ visible, hidden }) => {
     const { appointmentData } = useContext(appointmentContext)
@@ -16,32 +16,44 @@ const FormBookingHome = ({ visible, hidden }) => {
         heartRateMonitor: false,
         bloodGlucoseMonitor: false
     })
-
+    const [location, setLocation] = useState({
+        lon: '106.7214343',
+        lat: '10.9398407'
+    })
     const handleCreateAppointment = () => {
-        const body = {
-            doctor_record_id: appointmentData.doctorRecordBookingHome._id,
-            patient: userData.user ? userData.user._id : null,
-            appointment_date: { day: 0, month: 0, year: 0, time: '' },
-            status: {
-                status_type: 'QUEUE',
-                message: 'Đang chờ bác sĩ xác nhận'
-            },
-            note,
-            price_list: appointmentData.priceList._id,
-            equipment: equipments
+        if (userData.user) {
+            axios.get(`https://photon.komoot.io/api?q=${userData.user.address.replaceAll(',', '-')}`)
+                .then(res => {
+                    const lon = res.data.features[0].geometry.coordinates[0]
+                    const lat = res.data.features[0].geometry.coordinates[1]
+                    const address = userData.user.address + '(' + lon + '-' + lat + ')'
+                    const body = {
+                        doctor_record_id: appointmentData.doctorRecordBookingHome._id,
+                        patient: userData.user ? userData.user._id : null,
+                        appointment_date: { day: 0, month: 0, year: 0, time: '' },
+                        address,
+                        status: {
+                            status_type: 'QUEUE',
+                            message: 'Đang chờ bác sĩ xác nhận'
+                        },
+                        note,
+                        price_list: appointmentData.priceList._id,
+                        equipment: equipments
+                    }
+                    api({ sendToken: true, type: TypeHTTP.POST, body, path: '/appointmentHomes/save' })
+                        .then(res => {
+                            globalThis.window.location.reload()
+                            hidden()
+                        })
+                })
         }
-        api({ sendToken: true, type: TypeHTTP.POST, body, path: '/appointmentHomes/save' })
-            .then(res => {
-                globalThis.window.location.reload()
-                hidden()
-            })
     }
 
     return (
         <div style={visible ? { maxHeight: '90%', height: 'auto', width: '800px', transition: '0.3s', backgroundSize: 'cover', overflow: 'hidden' } : { height: 0, width: 0, transition: '0.3s', overflow: 'hidden' }} className='z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
             {visible && (
-                <div style={{ transition: '0.5s', marginLeft: `-${(currentStep - 1) * 100}%` }} className='w-[100%] flex overflow-auto h-[100%]'>
-                    <div className='min-w-[100%] items-end gap-4 px-[2.5rem] py-[1rem] flex justify-center flex-col'>
+                <div style={{ transition: '0.5s', marginLeft: `-${(currentStep - 1) * 100}%` }} className='w-[100%] flex items-center h-[100%]'>
+                    <div className='min-w-[100%] h-full items-end gap-4 px-[2.5rem] py-[1rem] flex justify-center flex-col'>
                         <span className="w-full text-[20px] font-space font-bold">Đặt Khám Tại Nhà</span>
                         <div className='flex flex-col bg-[#33007d] w-full relative rounded-2xl px-3 overflow-hidden'>
                             <div className='h-[50px] w-full bg-[#33007d] flex items-center gap-1 px-3 text-[white] rounded-xl'>
@@ -86,10 +98,22 @@ const FormBookingHome = ({ visible, hidden }) => {
                         <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Lời dặn với bác sĩ" className="w-full p-2 focus:outline-0 border-[1px] border-[#999] rounded-lg" />
                         <button onClick={() => handleCreateAppointment()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[white] w-[200px] z-[50] shadow-[#767676] text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold'>Đặt Khám</button>
                     </div>
-                </div>
+                    {/* <div className='min-w-[100%] h-full items-end gap-4 px-[2.5rem] py-[1rem] flex justify-center flex-col'>
+                        <iframe
+                            src={`https://www.google.com/maps?q=${location.lat},${location.lon}&z=15&output=embed`}
+                            width="600"
+                            height="450"
+                            style={{ border: 0 }}
+                            allowFullScreen=""
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                        <button onClick={() => handleCreateAppointment()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[white] w-[200px] z-[50] shadow-[#767676] text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold'>Đặt Khám</button>
+                    </div> */}
+                </div >
             )}
             <button onClick={() => hidden()}><i className='bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]'></i></button>
-        </div>
+        </div >
     )
 }
 

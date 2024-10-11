@@ -22,6 +22,7 @@ import FormDetailMedicalRecord from "./FormDetailMedicalRecord";
 import FormRecordPatientHome from "./FormRecordPatientHome";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { utilsContext } from "@/context/UtilsContext";
+import Location from "./Location";
 const FormDetailAppointmentHome = ({
   hidden,
   data,
@@ -80,15 +81,12 @@ const FormDetailAppointmentHome = ({
 
   const changeFormRecord = () => {
     if (finish === true) {
-
       setDisplayConnect(true);
-
     } else {
       setType(1);
     }
-
-
   };
+
   const finishAppointmentHome = () => {
     const body = {
       _id: data._id,
@@ -171,13 +169,18 @@ const FormDetailAppointmentHome = ({
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-[14px]">
-                Thời gian hẹn:{" "}
-                {data?.appointment_date?.time} ngày{" "}
-                {data?.appointment_date?.day} tháng{" "}
-                {data?.appointment_date?.month},{" "}
-                {data?.appointment_date?.year}
-              </span>
+              {data?.appointment_date?.day === 0 ? (
+                <span className="text-[14px] font-semibold text-center">Chưa rõ lịch hẹn khám bệnh</span>
+              ) : (
+                <span className="text-[14px]">
+                  Thời gian hẹn:{" "}
+                  {data?.appointment_date?.time} ngày{" "}
+                  {data?.appointment_date?.day} tháng{" "}
+                  {data?.appointment_date?.month},{" "}
+                  {data?.appointment_date?.year}
+                </span>
+              )}
+
               <div className="flex items-center space-x-2 justify-end">
                 <span
                   style={{
@@ -295,7 +298,7 @@ const FormDetailAppointmentHome = ({
 
                   <button
                     onClick={() => {
-                      hidden();
+                      setType(3);
                     }}
                     className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                   >
@@ -486,6 +489,9 @@ const FormDetailAppointmentHome = ({
             medicalRecord={medicalRecord}
             hidden={() => setDisplayConnect(false)}
           />
+        )}
+        {data && (
+          <Location address={data.patient.address.split('(')[0]} setType={setType} lon={data.patient.address.split('(')[1].split(')')[0].split('-')[0]} lat={data.patient.address.split('(')[1].split(')')[0].split('-')[1]} />
         )}
       </div>
       <button
