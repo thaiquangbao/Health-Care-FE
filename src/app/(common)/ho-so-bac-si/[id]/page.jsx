@@ -225,7 +225,7 @@ const HoSoBacSi = () => {
 
             {/* chổ này */}
 
-            {healthLogBooks.length > 0 &&
+            {
               !healthLogBooks.filter(
                 (log) =>
                   log.status.status_type === "ACCEPTED" ||
