@@ -1,29 +1,29 @@
 
 import { appointmentContext } from "@/context/AppointmentContext";
 import {
-  globalContext,
-  notifyType,
+    globalContext,
+    notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
-  compare2Date,
-  compareTimeDate1GreaterThanDate2,
-  convertDateToDayMonthYearObject,
-  convertDateToDayMonthYearTimeObject,
-  convertDateToDayMonthYearVietNam,
-  isALargerThanBPlus60Minutes,
-  isALargerWithin10Minutes,
-  isALargerWithin60Minutes,
-  sortByAppointmentDate,
+    compare2Date,
+    compareTimeDate1GreaterThanDate2,
+    convertDateToDayMonthYearObject,
+    convertDateToDayMonthYearTimeObject,
+    convertDateToDayMonthYearVietNam,
+    isALargerThanBPlus60Minutes,
+    isALargerWithin10Minutes,
+    isALargerWithin60Minutes,
+    sortByAppointmentDate,
 } from "@/utils/date";
 import { returnNumber } from "@/utils/other";
 import Link from "next/link";
 import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 const KhamTaiNha = ({ type, setType }) => {
 
@@ -251,30 +251,6 @@ const KhamTaiNha = ({ type, setType }) => {
             type: TypeHTTP.POST,
             body: body,
         }).then((res) => {
-            // let record = JSON.parse(
-            //     JSON.stringify(appointmentData.doctorRecord)
-            // );
-            // let schedule = record.schedules.filter(
-            //     (item) =>
-            //         item.date.day ===
-            //         appointment.appointment_date.day &&
-            //         item.date.month ===
-            //         appointment.appointment_date.month &&
-            //         item.date.year ===
-            //         appointment.appointment_date.year
-            // )[0];
-            // let time = schedule.times.filter(
-            //     (item) =>
-            //         item.time === appointment.appointment_date.time
-            // )[0];
-            // time.status = "";
-            // api({
-            //     type: TypeHTTP.POST,
-            //     path: "/doctorRecords/update",
-            //     sendToken: false,
-            //     body: record,
-            // }).then((res1) => {
-
             appointmentHandler.setAppointmentHomes((prev) =>
                 prev.map((item) => {
                     if (item._id === res._id) {
@@ -288,7 +264,6 @@ const KhamTaiNha = ({ type, setType }) => {
                 "Đã hủy cuộc hẹn"
             );
             globalHandler.reload();
-            // });
         });
     };
 
@@ -548,7 +523,7 @@ const KhamTaiNha = ({ type, setType }) => {
                                         {appointmentHome.note}
                                     </td>
                                     <td className="py-4 flex gap-2 items-center justify-center">
-                                        {appointmentHome.status?.status_type === "QUEUE" ? (
+                                        {appointmentHome.status?.status_type === "QUEUE" && (
                                             <>
                                                 <button
                                                     onClick={() =>
@@ -572,19 +547,6 @@ const KhamTaiNha = ({ type, setType }) => {
                                                     Từ Chối
                                                 </button>
                                             </>
-                                        ) : (
-                                            (appointmentHome.status?.status_type === "ACCEPTED" && appointmentHome.processAppointment !== 2) && (
-                                                <button
-                                                    onClick={() =>
-                                                        handleCancelAppointmentHomes(
-                                                            appointmentHome
-                                                        )
-                                                    }
-                                                    className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-                                                >
-                                                    Hủy
-                                                </button>
-                                            )
                                         )}
                                         {displayConnect ===
                                             appointmentHome._id && (

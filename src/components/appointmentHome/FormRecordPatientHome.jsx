@@ -144,9 +144,6 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             setType(0)
           })
       });
-
-
-
     }
 
     utilsHandler.showSure({

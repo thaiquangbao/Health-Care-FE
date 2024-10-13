@@ -110,7 +110,7 @@ const Schedule = ({ day, setCurrentStep, data, hidden }) => {
                                     times: [
                                         {
                                             time: timeTarget,
-                                            status: 'health',
+                                            status: 'home',
                                             price: 0
                                         }
                                     ]
