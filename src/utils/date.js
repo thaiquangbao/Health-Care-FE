@@ -9,6 +9,14 @@ export function convertDateToDay(dateString) {
     return `${day}`;
 }
 
+export function convertDateInputToObject(dateString) {
+    return {
+        day: Number(dateString.split('-')[2]),
+        month: Number(dateString.split('-')[1]),
+        year: Number(dateString.split('-')[0])
+    }
+}
+
 export function convertDateToDayMonth(dateString) {
     // Tạo một đối tượng Date từ chuỗi ngày hiện tại
     let currentDate = new Date(dateString);
@@ -144,6 +152,13 @@ export const compareDateIsHaveInSchedule = (day, schedules) => {
 
 export const compare2Date = (date1, date2) => {
     if (date1.month === date2.month && date1.year === date2.year && date1.day === date2.day) {
+        return true
+    }
+    return false
+}
+export const compare2DateTime = (date1, date2) => {
+    console.log(date1, date2)
+    if (date1.month === date2.month && date1.year === date2.year && date1.day === date2.day && date1.time === date2.time) {
         return true
     }
     return false

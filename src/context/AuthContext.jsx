@@ -14,6 +14,7 @@ import { userContext } from "./UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import HealthResponseForm from "@/components/benh-nhan-theo-doi/HealthResponseForm";
 import QRDownload from "@/components/QRDownload";
+import Form from "@/components/smart-searching/Form";
 
 export const authContext = createContext();
 
@@ -33,6 +34,7 @@ const AuthContext = ({ children }) => {
   const [currentRoom, setCurrentRoom] = useState()
   const [rooms, setRooms] = useState([])
   const [visibleQR, setVisibleQR] = useState(false)
+  const [visibleSmartSearching, setVisibleSmartSearching] = useState(false)
 
   useEffect(() => {
     if (userData.user && userData.user?.role === 'USER') {
@@ -158,6 +160,16 @@ const AuthContext = ({ children }) => {
     setVisibleQR(false)
   };
 
+  const showSmartSearching = () => {
+    showWrapper();
+    setVisibleSmartSearching(true)
+  };
+
+  const hiddenSmartSearching = () => {
+    hiddenWrapper();
+    setVisibleSmartSearching(false)
+  };
+
   const hidden = () => {
     hiddenWrapper();
     hiddenSignUp();
@@ -169,6 +181,8 @@ const AuthContext = ({ children }) => {
     hiddenDetailMedicalRecord();
     setCurrentRoom()
     setVisibleQR(false)
+    setVisibleSmartSearching(false)
+    setHealthResponse()
   };
 
   const data = {
@@ -203,7 +217,9 @@ const AuthContext = ({ children }) => {
     showHealthResponse,
     hiddenHealthResponse,
     showQR,
-    hiddenQR
+    hiddenQR,
+    showSmartSearching,
+    hiddenSmartSearching
   };
 
   return (
@@ -222,6 +238,7 @@ const AuthContext = ({ children }) => {
         />
         <HealthResponseForm healthResponse={healthResponse} setHealthResponse={setHealthResponse} />
         <QRDownload visible={visibleQR} hidden={hidden} />
+        <Form visible={visibleSmartSearching} hidden={hidden} />
         {children}
       </div>
       {loading && <Loading />}

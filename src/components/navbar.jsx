@@ -104,24 +104,6 @@ const Navbar = () => {
             userData.user?.processSignup === 3 && (
               <NotificationApp />
             )}
-
-          {/* {(userData.user && userData.user?.processSignup === 3) ?
-            <div className='flex items-center gap-3 relative'>
-              <span>{user?.fullName}</span>
-              <div onClick={() => setVisibleUserInfo(!visibleUserInfo)} style={{ backgroundImage: `url(${user?.image})`, backgroundSize: 'cover' }} className='rounded-full cursor-pointer h-[40px] w-[40px]' />
-              <div style={visibleUserInfo ? { height: 'auto', transition: '0.5s' } : { height: 0, transition: '0.5s' }} className='z-50 w-[200px] shadow-lg overflow-hidden absolute right-0 top-[45px] bg-[white] rounded-md '>
-                <div className='w-full flex py-1 flex-col px-2 items-start'>
-                  <button className='w-full my-[5px]'><Link href={'/ho-so'}>Thông Tin Cá Nhân</Link></button>
-                  <button onClick={() => handleSignOut()} className='w-full my-[5px]'>Đăng Xuất</button>
-                </div>
-              </div>
-            </div>
-            :
-            <>
-              <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Đặt Lịch Khám</button></Link>
-              <Link href={'/bac-si-noi-bat'}><button className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">Tải Ứng Dụng Ngay</button></Link>
-            </>
-          } */}
           <Link href={"/bac-si-noi-bat"}>
             <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
               Đặt Lịch Khám
@@ -205,6 +187,20 @@ const Navbar = () => {
                 <i className="bx text-[#ed4c4c] bxs-plus-circle text-[23px]"></i>
                 <span className="text-[16px] font-medium">
                   Các Dịch Vụ
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  authHandler.setVisibleMore(false);
+                  setTimeout(() => {
+                    authHandler.showSmartSearching()
+                  }, 1000);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="text-[#5dade2] bx bx-search text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Tìm Kiếm Thông Minh
                 </span>
               </li>
               <li
