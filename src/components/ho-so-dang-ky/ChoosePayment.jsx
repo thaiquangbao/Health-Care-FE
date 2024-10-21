@@ -1,18 +1,72 @@
+import { appointmentContext } from '@/context/AppointmentContext'
 import { bookingContext } from '@/context/BookingContext'
+import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { api, baseURL, TypeHTTP } from '@/utils/api'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
+import { useRouter } from 'next/navigation'
 import React, { useContext, useEffect } from 'react'
 import { io } from 'socket.io-client'
 const socket = io.connect(baseURL)
 const ChoosePayment = () => {
     const { bookingData, bookingHandler } = useContext(bookingContext)
+    const { globalHandler } = useContext(globalContext)
     const { userData } = useContext(userContext)
+    const { appointmentHandler, appointmentData } = useContext(appointmentContext)
+    const router = useRouter()
     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=200000&des=MaKH${userData.user?._id}`
+    const handleSubmit = () => {
+      if (userData.user) {
+          globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+          const formData = new FormData()
+          bookingData.images.forEach(item => {
+              formData.append('files', item.file)
+          })
+          api({ type: TypeHTTP.POST, sendToken: false, body: formData, path: '/upload-image/save' })
+              .then(listImage => {
+                  api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id, images: listImage } })
+                      .then(res => {
+                          let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+                          let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+                          let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+                          time.status = 'Queue'
+                          api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
+                              .then(res => {
+                                  bookingHandler.setDoctorRecord()
+                                  appointmentHandler.setDoctorRecord()
+                                  globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+                                  bookingHandler.setCurrentStep(3)
+                                  // router.push('/bac-si-noi-bat')
+                                  // globalHandler.reload()
+                              })
+                      })
+              })
+      } else {
+          globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+          api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
+              .then(res => {
+                  let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+                  let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+                  let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+                  time.status = 'Queue'
+                  api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
+                      .then(res => {
+                          bookingHandler.setDoctorRecord()
+                          appointmentHandler.setDoctorRecord()
+                          globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+                          bookingHandler.setCurrentStep(3)
+                          // globalHandler.reload()
+
+                      })
+              })
+      }
+  }
     useEffect(() => {
       socket.on(`payment-appointment-online${userData.user?._id}`, (data) => {
-          console.log(data);
+          if(data){
+            handleSubmit() 
+          }
           
       })
       return () => {
@@ -63,9 +117,9 @@ const ChoosePayment = () => {
                     <span className='text-[red] text-[16px]'>{formatMoney(bookingData.booking?.priceList.price)} đ</span>
                 </div>
             </div>
-            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
-                <button onClick={() => bookingHandler.setCurrentStep(3)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
-            </div>
+            {/* <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
+                <button onClick={() => } className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
+            </div> */}
         </>
     )
 }

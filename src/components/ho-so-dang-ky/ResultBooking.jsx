@@ -17,46 +17,48 @@ const ResultBooking = () => {
 
     const handleSubmit = () => {
         if (userData.user) {
-            globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
-            const formData = new FormData()
-            bookingData.images.forEach(item => {
-                formData.append('files', item.file)
-            })
-            api({ type: TypeHTTP.POST, sendToken: false, body: formData, path: '/upload-image/save' })
-                .then(listImage => {
-                    api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id, images: listImage } })
-                        .then(res => {
-                            let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
-                            let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
-                            let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
-                            time.status = 'Queue'
-                            api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-                                .then(res => {
-                                    bookingHandler.setDoctorRecord()
-                                    appointmentHandler.setDoctorRecord()
-                                    globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-                                    router.push('/bac-si-noi-bat')
-                                    // globalHandler.reload()
-                                })
-                        })
-                })
-        } else {
-            globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
-            api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
-                .then(res => {
-                    let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
-                    let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
-                    let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
-                    time.status = 'Queue'
-                    api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-                        .then(res => {
-                            bookingHandler.setDoctorRecord()
-                            appointmentHandler.setDoctorRecord()
-                            globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-                            router.push('/bac-si-noi-bat')
-                            globalHandler.reload()
-                        })
-                })
+          router.push('/bac-si-noi-bat')
+          globalHandler.reload()
+        //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+        //     const formData = new FormData()
+        //     bookingData.images.forEach(item => {
+        //         formData.append('files', item.file)
+        //     })
+        //     api({ type: TypeHTTP.POST, sendToken: false, body: formData, path: '/upload-image/save' })
+        //         .then(listImage => {
+        //             api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id, images: listImage } })
+        //                 .then(res => {
+        //                     let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+        //                     let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+        //                     let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+        //                     time.status = 'Queue'
+        //                     api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
+        //                         .then(res => {
+        //                             bookingHandler.setDoctorRecord()
+        //                             appointmentHandler.setDoctorRecord()
+        //                             globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+        //                             router.push('/bac-si-noi-bat')
+        //                             // globalHandler.reload()
+        //                         })
+        //                 })
+        //         })
+        // } else {
+        //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+        //     api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
+        //         .then(res => {
+        //             let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
+        //             let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
+        //             let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
+        //             time.status = 'Queue'
+        //             api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
+        //                 .then(res => {
+        //                     bookingHandler.setDoctorRecord()
+        //                     appointmentHandler.setDoctorRecord()
+        //                     globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+        //                     router.push('/bac-si-noi-bat')
+        //                     globalHandler.reload()
+        //                 })
+        //         })
         }
     }
 
