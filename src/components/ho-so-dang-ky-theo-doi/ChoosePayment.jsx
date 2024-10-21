@@ -22,7 +22,7 @@ const ChoosePayment = () => {
           if(data){
             handleSubmit() 
           } else {
-            globalHandler.notify(notifyType.WARNING, "Thanh toán thất bại")
+            globalHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại")
           }
           
       })

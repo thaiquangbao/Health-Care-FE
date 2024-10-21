@@ -28,6 +28,7 @@ const ChoosePayment = () => {
           globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
           api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
               .then((res => {
+                globalHandler.notify(notifyType.WARNING, "Thanh Toán Thành Công")
                 bookingHomeHandler.setCurrentStep(3)
               }))
           
@@ -39,6 +40,8 @@ const ChoosePayment = () => {
       socket.on(`payment-appointment-offline${userData.user?._id}`, (data) => {
           if(data){
             handleSubmit() 
+          }else {
+            globalHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại")
           }
           
       })

@@ -17,6 +17,7 @@ const ResultBooking = () => {
 
     const handleSubmit = () => {
         if (userData.user) {
+          globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
           router.push('/bac-si-noi-bat')
           globalHandler.reload()
         //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")

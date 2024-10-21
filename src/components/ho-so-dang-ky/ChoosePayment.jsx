@@ -18,7 +18,7 @@ const ChoosePayment = () => {
     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=200000&des=MaKH${userData.user?._id}`
     const handleSubmit = () => {
       if (userData.user) {
-          globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+          globalHandler.notify(notifyType.LOADING, "Đang Thanh Toán Lịch Hẹn")
           const formData = new FormData()
           bookingData.images.forEach(item => {
               formData.append('files', item.file)
@@ -35,7 +35,7 @@ const ChoosePayment = () => {
                               .then(res => {
                                   bookingHandler.setDoctorRecord()
                                   appointmentHandler.setDoctorRecord()
-                                  globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+                                  globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
                                   bookingHandler.setCurrentStep(3)
                                   // router.push('/bac-si-noi-bat')
                                   // globalHandler.reload()
@@ -43,7 +43,7 @@ const ChoosePayment = () => {
                       })
               })
       } else {
-          globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
+          globalHandler.notify(notifyType.LOADING, "Đang Thanh Toán Lịch Hẹn")
           api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
               .then(res => {
                   let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
@@ -54,7 +54,7 @@ const ChoosePayment = () => {
                       .then(res => {
                           bookingHandler.setDoctorRecord()
                           appointmentHandler.setDoctorRecord()
-                          globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+                          globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
                           bookingHandler.setCurrentStep(3)
                           // globalHandler.reload()
 
@@ -66,6 +66,8 @@ const ChoosePayment = () => {
       socket.on(`payment-appointment-online${userData.user?._id}`, (data) => {
           if(data){
             handleSubmit() 
+          } else {
+            globalHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại")
           }
           
       })
