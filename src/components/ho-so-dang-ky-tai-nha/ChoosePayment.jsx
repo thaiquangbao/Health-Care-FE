@@ -1,50 +1,68 @@
+import { appointmentContext } from '@/context/AppointmentContext'
 import { bookingContext } from '@/context/BookingContext'
 import { bookingHomeContext } from '@/context/BookingHomeContext'
+import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
+import { api, baseURL, TypeHTTP } from '@/utils/api'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
 import React, { useContext } from 'react'
-
+import { io } from 'socket.io-client'
+const socket = io.connect(baseURL)
 const ChoosePayment = () => {
     const { bookingHomeData, bookingHomeHandler } = useContext(bookingHomeContext)
     const { userData } = useContext(userContext)
+    const { globalHandler } = useContext(globalContext)
+    const { appointmentHandler, appointmentData } = useContext(appointmentContext)
+     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=300000&des=MaKH${userData.user?._id}`
+     const handleSubmit = () => {
+      if (userData.user) {
+          const body = {
+              _id: bookingHomeData.booking._id,
+              processAppointment: 2,
+              status: {
+                  status_type: "ACCEPTED",
+                  message: "Bệnh nhân đã thanh toán",
+              },
+          }
+          globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
+          api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
+              .then((res => {
+                bookingHomeHandler.setCurrentStep(3)
+              }))
+          
+      }
 
-    return (
+  }
+
+     useEffect(() => {
+      socket.on(`payment-appointment-offline${userData.user?._id}`, (data) => {
+          if(data){
+            handleSubmit() 
+          }
+          
+      })
+      return () => {
+          socket.off(`payment-appointment-offline${userData.user?._id}`);
+      }
+  }, [userData.user?._id])
+     return (
         <>
-            <div className='border-[#cfcfcf] overflow-hidden relative w-[70%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-start'>
-                <div className='flex gap-3 py-2 mt-1 items-center px-4 w-full text-[13px] font-medium'>
-                    <span className='text-[14px]'>Phương Thức Thanh Toán</span>
-                </div>
-                <div className='grid grid-cols-2'>
-                    <div className='cursor-pointer flex gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]'>
-                        <img className='w-[60px]' src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png' />
-                        <div className='flex flex-col'>
-                            <span className='font-medium'>Thanh Toán Qua Ví MOMO</span>
-                            <span className='rounded-md text-[12px]'>Sử dụng app Momo quét mã vạch hoặc nhập thông tin để thanh toán</span>
-                        </div>
-                    </div>
-                    <div className='cursor-pointer flex gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]'>
-                        <img className='w-[60px]' src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png' />
-                        <div className='flex flex-col'>
-                            <span className='font-medium'>Thanh Toán Qua Ví MOMO</span>
-                            <span className='rounded-md text-[12px]'>Sử dụng app Momo quét mã vạch hoặc nhập thông tin để thanh toán</span>
-                        </div>
-                    </div>
-                    <div className='cursor-pointer flex gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]'>
-                        <img className='w-[60px]' src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png' />
-                        <div className='flex flex-col'>
-                            <span className='font-medium'>Thanh Toán Qua Ví MOMO</span>
-                            <span className='rounded-md text-[12px]'>Sử dụng app Momo quét mã vạch hoặc nhập thông tin để thanh toán</span>
-                        </div>
-                    </div>
-                    <div className='cursor-pointer flex gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]'>
-                        <img className='w-[60px]' src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png' />
-                        <div className='flex flex-col'>
-                            <span className='font-medium'>Thanh Toán Qua Ví MOMO</span>
-                            <span className='rounded-md text-[12px]'>Sử dụng app Momo quét mã vạch hoặc nhập thông tin để thanh toán</span>
-                        </div>
-                    </div>
-                </div>
+            <div className='border-[#cfcfcf] overflow-hidden relative w-[60%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-center'>
+                  <div className='flex gap-3 py-2 mt-1 items-center px-4 w-full text-[13px] font-medium'>
+                      <span className='text-[14px]'>Thanh Toán Qua Mã QR</span>
+                  </div>
+                  
+                      <div className='flex flex-col gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]'>
+                          <img className='w-[50%]' src={qrUrl}/>
+                          <div className='flex flex-col items-center'>
+                              <span className='rounded-md text-[12px]'>Tên chủ TK: THAI ANH THU</span>
+                              <span className='font-medium'>Số TK: 0834885704 </span>
+                              <span className='rounded-md text-[12px]'>Sử dụng app Momo hoặc app Ngân hàng để thanh toán </span>
+                          </div>
+                      </div>
+                    
+                  
             </div>
             <div className='border-[#cfcfcf] relative py-1 w-[70%] gap-2 mt-1 rounded-md border-[1px] flex flex-col items-start'>
                 <div className='flex gap-3 py-2 items-center px-4 w-full border-[#cfcfcf] border-b-[1px] text-[13px] font-medium'>
@@ -72,9 +90,9 @@ const ChoosePayment = () => {
                     <span className='text-[red] text-[16px]'>{formatMoney(bookingHomeData.booking?.price_list?.price)} đ</span>
                 </div>
             </div>
-            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
+            {/* <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
                 <button onClick={() => bookingHomeHandler.setCurrentStep(3)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
-            </div>
+            </div> */}
         </>
     )
 }

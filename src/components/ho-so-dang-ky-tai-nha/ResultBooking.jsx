@@ -18,20 +18,22 @@ const ResultBooking = () => {
 
     const handleSubmit = () => {
         if (userData.user) {
-            const body = {
-                _id: bookingHomeData.booking._id,
-                processAppointment: 2,
-                status: {
-                    status_type: "ACCEPTED",
-                    message: "Bệnh nhân đã thanh toán",
-                },
-            }
-            globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
-            api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
-                .then((res => {
-                    globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
-                    globalHandler.reload()
-                }))
+            // const body = {
+            //     _id: bookingHomeData.booking._id,
+            //     processAppointment: 2,
+            //     status: {
+            //         status_type: "ACCEPTED",
+            //         message: "Bệnh nhân đã thanh toán",
+            //     },
+            // }
+            // globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
+            // api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
+            //     .then((res => {
+            //         globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
+            //         globalHandler.reload()
+            //     }))
+            globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
+            globalHandler.reload()
         }
 
     }

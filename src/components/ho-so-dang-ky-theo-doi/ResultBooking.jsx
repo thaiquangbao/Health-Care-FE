@@ -12,12 +12,15 @@ const ResultBooking = () => {
     const router = useRouter()
 
     const handleSubmit = () => {
-        api({ type: TypeHTTP.POST, path: '/healthLogBooks/save', sendToken: true, body: bookingServiceData.bookingServiceRecord })
-            .then(res => {
-                globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+        // api({ type: TypeHTTP.POST, path: '/healthLogBooks/save', sendToken: true, body: bookingServiceData.bookingServiceRecord })
+        //     .then(res => {
+        //         globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+        //         router.push('/bac-si-noi-bat')
+        //         globalHandler.reload()
+        //     })
+        globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
                 router.push('/bac-si-noi-bat')
                 globalHandler.reload()
-            })
     }
 
     return (
