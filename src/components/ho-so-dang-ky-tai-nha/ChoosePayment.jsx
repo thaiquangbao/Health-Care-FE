@@ -6,7 +6,7 @@ import { userContext } from '@/context/UserContext'
 import { api, baseURL, TypeHTTP } from '@/utils/api'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { io } from 'socket.io-client'
 const socket = io.connect(baseURL)
 const ChoosePayment = () => {
