@@ -83,22 +83,33 @@ const ChoosePayment = () => {
                   time.status = 'Queue'
                   api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
                       .then(res => {
-                        const payment = {
-                          patient_id: userData.user?._id,
-                          doctor_id: bookingData.doctorRecord?.doctor._id,
-                          namePayment: "APPOINTMENT",
-                          date: bookingData.booking?.appointment_date,
-                          status_payment: {
-                            type: "SUCCESS",
-                            messages: "Thanh toán thành công"
-                          },
-                          status_take_money: {
-                            type: "WAITING",
-                            messages: "Chưa rút tiền"
-                          },
-                          price: bookingData.booking?.priceList?.price,
-                          description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}`
-                        }
+                        const currentDate = new Date();
+                                const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
+                                const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+                                const vietnamTime = new Date(currentDate.getTime() + (vietnamTimeOffset + localTimeOffset) * 60000);
+                                const time = {
+                                    day: vietnamTime.getDate(),
+                                    month: vietnamTime.getMonth() + 1,
+                                    year: vietnamTime.getFullYear(),
+                                    time: `${vietnamTime.getHours()}:${vietnamTime.getMinutes()}`
+                                }
+                                const payment = {
+                                  patient_id: userData.user?._id,
+                                  doctor_id: bookingData.doctorRecord?.doctor._id,
+                                  category: bookingData.booking?._id,
+                                  namePayment: "APPOINTMENT",
+                                  date: time,
+                                  status_payment: {
+                                    type: "SUCCESS",
+                                    messages: "Thanh toán thành công"
+                                  },
+                                  status_take_money: {
+                                    type: "WAITING",
+                                    messages: "Chưa rút tiền"
+                                  },
+                                  price: bookingData.booking?.priceList?.price,
+                                  description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}`
+                                }
                         api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
                         .then(pay => {
                           bookingHandler.setDoctorRecord()
