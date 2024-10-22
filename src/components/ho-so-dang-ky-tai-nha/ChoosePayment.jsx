@@ -14,7 +14,7 @@ const ChoosePayment = () => {
     const { userData } = useContext(userContext)
     const { globalHandler } = useContext(globalContext)
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
-     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}`
+     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingHomeData.booking?.price_list?.price}&des=MaKH${userData.user?._id}`
      const handleSubmit = () => {
       if (userData.user) {
           const body = {
