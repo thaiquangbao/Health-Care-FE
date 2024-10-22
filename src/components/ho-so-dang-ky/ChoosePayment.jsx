@@ -15,7 +15,7 @@ const ChoosePayment = () => {
     const { userData } = useContext(userContext)
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
     const router = useRouter()
-    const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=200000&des=MaKH${userData.user?._id}`
+    const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}`
     const handleSubmit = () => {
       if (userData.user) {
           globalHandler.notify(notifyType.LOADING, "Đang Thanh Toán Lịch Hẹn")
@@ -33,12 +33,32 @@ const ChoosePayment = () => {
                           time.status = 'Queue'
                           api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
                               .then(res => {
+                                const payment = {
+                                  patient_id: userData.user?._id,
+                                  doctor_id: bookingData.doctorRecord?.doctor._id,
+                                  namePayment: "APPOINTMENT",
+                                  date: bookingData.booking?.appointment_date,
+                                  status_payment: {
+                                    type: "SUCCESS",
+                                    messages: "Thanh toán thành công"
+                                  },
+                                  status_take_money: {
+                                    type: "WAITING",
+                                    messages: "Chưa rút tiền"
+                                  },
+                                  price: bookingData.booking?.priceList?.price,
+                                  description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}`
+                                }
+                                api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
+                                .then(pay => {
                                   bookingHandler.setDoctorRecord()
                                   appointmentHandler.setDoctorRecord()
                                   globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
                                   bookingHandler.setCurrentStep(3)
                                   // router.push('/bac-si-noi-bat')
                                   // globalHandler.reload()
+                                })
+                                 
                               })
                       })
               })
@@ -52,12 +72,30 @@ const ChoosePayment = () => {
                   time.status = 'Queue'
                   api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
                       .then(res => {
+                        const payment = {
+                          patient_id: userData.user?._id,
+                          doctor_id: bookingData.doctorRecord?.doctor._id,
+                          namePayment: "APPOINTMENT",
+                          date: bookingData.booking?.appointment_date,
+                          status_payment: {
+                            type: "SUCCESS",
+                            messages: "Thanh toán thành công"
+                          },
+                          status_take_money: {
+                            type: "WAITING",
+                            messages: "Chưa rút tiền"
+                          },
+                          price: bookingData.booking?.priceList?.price,
+                          description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}`
+                        }
+                        api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
+                        .then(pay => {
                           bookingHandler.setDoctorRecord()
                           appointmentHandler.setDoctorRecord()
                           globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
                           bookingHandler.setCurrentStep(3)
                           // globalHandler.reload()
-
+                        })
                       })
               })
       }

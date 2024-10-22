@@ -1,5 +1,5 @@
 import axios from "axios";
-export let baseURL = 'https://shoeshop-backend.online'
+export let baseURL = 'https://shoeshop-backend.online' //https://shoeshop-backend.online
 axios.defaults.baseURL = `${baseURL}`
 export const deploy = 'https://heath-haven-meet.vercel.app'
 
