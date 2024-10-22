@@ -57,7 +57,7 @@ const ChoosePayment = () => {
                 }
                 api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
                 .then(pay => {
-                globalHandler.notify(notifyType.WARNING, "Thanh Toán Thành Công")
+                globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
                 bookingHomeHandler.setCurrentStep(3)
                 })
               }))

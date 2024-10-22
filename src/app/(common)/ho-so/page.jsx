@@ -1,6 +1,8 @@
 "use client";
 import Navbar from "@/components/navbar";
 import Password from "@/components/profile/Password";
+import PaymentDoctor from "@/components/profile/PaymentDoctor";
+import PaymentPatient from "@/components/profile/PaymentPatient";
 import UserInformation from "@/components/profile/UserInformation";
 import {
   globalContext,
@@ -24,12 +26,11 @@ const HoSo = () => {
   const [user, setUser] = useState();
   const imgRef = useRef();
   const [visibleUpdate, setVisibleUpdate] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if (!userData.user)
-      router.push('/')
-  }, [userData.user])
+    if (!userData.user) router.push("/");
+  }, [userData.user]);
 
   useEffect(() => {
     setUser(userData.user);
@@ -75,12 +76,12 @@ const HoSo = () => {
     api({
       type: TypeHTTP.POST,
       body: { ...user },
-      path: `/auth/update/${userData.user?.role === "DOCTOR" ? "doctor" : "User"
-        }`,
+      path: `/auth/update/${
+        userData.user?.role === "DOCTOR" ? "doctor" : "User"
+      }`,
       sendToken: true,
     })
       .then((res) => {
-
         userHandler.setUser(res);
         globalHandler.notify(
           notifyType.SUCCESS,
@@ -107,10 +108,11 @@ const HoSo = () => {
     api({
       sendToken: true,
       type: TypeHTTP.POST,
-      path: `/auth/update-information/${userData.user?.role === "DOCTOR"
-        ? "doctors"
-        : "patients"
-        }`,
+      path: `/auth/update-information/${
+        userData.user?.role === "DOCTOR"
+          ? "doctors"
+          : "patients"
+      }`,
       body: formData,
     })
       .then((data) => {
@@ -217,8 +219,10 @@ const HoSo = () => {
           <UserInformation user={user} setUser={setUser} />
         ) : choose === 2 ? (
           <Password />
+        ) : userData.user?.role === "DOCTOR" ? (
+          <PaymentDoctor user={user} setUser={setUser} />
         ) : (
-          <></>
+          <PaymentPatient user={user} setUser={setUser} />
         )}
       </div>
     </div>
