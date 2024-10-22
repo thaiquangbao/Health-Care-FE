@@ -27,7 +27,7 @@ const ChoosePayment = () => {
             }
             const payment = {
               patient_id: userData.user?._id,
-              doctor_id: bookingHomeData.booking?.doctor?._id,
+              doctor_id: bookingServiceData.bookingServiceRecord.doctor?._id,
               category: res._id,
               namePayment: "HEALTHLOGBOOK",
               date: time,
