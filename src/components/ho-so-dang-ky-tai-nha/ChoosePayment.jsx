@@ -14,7 +14,7 @@ const ChoosePayment = () => {
     const { userData } = useContext(userContext)
     const { globalHandler } = useContext(globalContext)
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
-     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=300000&des=MaKH${userData.user?._id}`
+     const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}`
      const handleSubmit = () => {
       if (userData.user) {
           const body = {
@@ -28,8 +28,38 @@ const ChoosePayment = () => {
           globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
           api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
               .then((res => {
+                const currentDate = new Date();
+                const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
+                const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+                const vietnamTime = new Date(currentDate.getTime() + (vietnamTimeOffset + localTimeOffset) * 60000);
+                const time = {
+                    day: vietnamTime.getDate(),
+                    month: vietnamTime.getMonth() + 1,
+                    year: vietnamTime.getFullYear(),
+                    time: `${vietnamTime.getHours()}:${vietnamTime.getMinutes()}`
+                }
+                const payment = {
+                  patient_id: userData.user?._id,
+                  doctor_id: bookingHomeData.booking?.doctor?._id,
+                  category: res._id,
+                  namePayment: "APPOINTMENTHOME",
+                  date: time,
+                  status_payment: {
+                    type: "SUCCESS",
+                    messages: "Thanh toán thành công"
+                  },
+                  status_take_money: {
+                    type: "WAITING",
+                    messages: "Chưa rút tiền"
+                  },
+                  price: bookingHomeData.booking?.price_list?.price,
+                   description: `Thanh toán tư vấn sức khỏe tại nhà HealthHaven - MaKH${userData.user?._id}.Lịch hẹn lúc (${res.appointment_date.time}) ngày ${res.appointment_date.day}/${res.appointment_date.month}/${res.appointment_date.year}.`
+                }
+                api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
+                .then(pay => {
                 globalHandler.notify(notifyType.WARNING, "Thanh Toán Thành Công")
                 bookingHomeHandler.setCurrentStep(3)
+                })
               }))
           
       }

@@ -58,7 +58,7 @@ const ChoosePayment = () => {
                                     messages: "Chưa rút tiền"
                                   },
                                   price: bookingData.booking?.priceList?.price,
-                                  description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}`
+                                  description: `Thanh toán tư vấn sức khỏe trực tuyến HealthHaven - MaKH${userData.user?._id}.Lịch hẹn lúc (${res.appointment_date.time}) ngày ${res.appointment_date.day}/${res.appointment_date.month}/${res.appointment_date.year}.`
                                 }
                                 api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
                                 .then(pay => {

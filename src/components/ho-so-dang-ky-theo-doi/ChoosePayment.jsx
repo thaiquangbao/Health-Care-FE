@@ -15,8 +15,39 @@ const ChoosePayment = () => {
     const handleSubmit = () => {
       api({ type: TypeHTTP.POST, path: '/healthLogBooks/save', sendToken: true, body: bookingServiceData.bookingServiceRecord })
           .then(res => {
+            const currentDate = new Date();
+            const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
+            const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+            const vietnamTime = new Date(currentDate.getTime() + (vietnamTimeOffset + localTimeOffset) * 60000);
+            const time = {
+                day: vietnamTime.getDate(),
+                month: vietnamTime.getMonth() + 1,
+                year: vietnamTime.getFullYear(),
+                time: `${vietnamTime.getHours()}:${vietnamTime.getMinutes()}`
+            }
+            const payment = {
+              patient_id: userData.user?._id,
+              doctor_id: bookingHomeData.booking?.doctor?._id,
+              category: res._id,
+              namePayment: "HEALTHLOGBOOK",
+              date: time,
+              status_payment: {
+                type: "SUCCESS",
+                messages: "Thanh toán thành công"
+              },
+              status_take_money: {
+                type: "WAITING",
+                messages: "Chưa rút tiền"
+              },
+              price: bookingServiceData.bookingServiceRecord.priceList.price,
+               description: `Thanh toán theo dõi sức khỏe ${bookingServiceData.bookingServiceRecord.priceList.type} HealthHaven - MaKH${userData.user?._id}.`
+            }
+            api({ type: TypeHTTP.POST, path: '/payments/save', sendToken: false, body: payment })
+            .then(pay => {
               globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công")
               bookingServiceHandler.setCurrentStep(3)
+            })
+           
           })
     
     }
