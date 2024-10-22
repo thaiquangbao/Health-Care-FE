@@ -32,7 +32,7 @@ const ChoosePayment = () => {
                           let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
                           time.status = 'Queue'
                           api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-                              .then(res => {
+                              .then(resDoctor => {
                                 const currentDate = new Date();
                                 const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
                                 const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
@@ -46,7 +46,7 @@ const ChoosePayment = () => {
                                 const payment = {
                                   patient_id: userData.user?._id,
                                   doctor_id: bookingData.doctorRecord?.doctor._id,
-                                  category: bookingData.booking?._id,
+                                  category: res._id,
                                   namePayment: "APPOINTMENT",
                                   date: time,
                                   status_payment: {
@@ -82,7 +82,7 @@ const ChoosePayment = () => {
                   let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
                   time.status = 'Queue'
                   api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-                      .then(res => {
+                      .then(resDoctor => {
                         const currentDate = new Date();
                                 const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
                                 const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
@@ -96,7 +96,7 @@ const ChoosePayment = () => {
                                 const payment = {
                                   patient_id: userData.user?._id,
                                   doctor_id: bookingData.doctorRecord?.doctor._id,
-                                  category: bookingData.booking?._id,
+                                  category: res._id,
                                   namePayment: "APPOINTMENT",
                                   date: time,
                                   status_payment: {
