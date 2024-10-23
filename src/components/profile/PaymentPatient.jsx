@@ -86,12 +86,12 @@ const PaymentPatient = ({ user, setUser }) => {
                   {index + 1}
                 </td>
                 <td className="py-4 text-[13px]">
-                  {payment.beneficiaryAccount?.bankName}
-                  {
-                    payment.beneficiaryAccount
-                      ?.accountNumber
-                  }
-                  -{payment.beneficiaryAccount?.accountName}
+                  {payment?.beneficiaryAccount?.bankName ===
+                  ""
+                    ? "Đang xử lý"
+                    : `${payment.beneficiaryAccount?.bankName}
+                      ${payment.beneficiaryAccount?.accountNumber} -
+                      ${payment.beneficiaryAccount?.accountName}`}
                 </td>
                 <td className="py-4 text-[13px]">
                   {payment.namePayment === "APPOINTMENT"
@@ -116,45 +116,18 @@ const PaymentPatient = ({ user, setUser }) => {
                   style={{
                     color:
                       payment.status_payment?.type ===
-                        "SUCCESS" && "green",
+                      "SUCCESS"
+                        ? "green"
+                        : payment.status_payment?.type ===
+                          "RESOLVED"
+                        ? "blue"
+                        : "black",
                   }}
                 >
-                  {payment.status_payment?.type ===
-                    "SUCCESS" &&
-                    payment.status_payment?.messages}
+                  {payment.status_payment?.messages}
                 </td>
               </tr>
             ))}
-
-            {/* {sortByAppointmentDate(appointments).map((appointment, index) => (
-                                <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                    <td  scope="row" className="px-6 py-4 text-center font-medium">
-                                        {index + 1}
-                                    </td>
-                                    <td  className="py-4 text-[15px]">
-                                        BS. {doctorRecords.filter(item => item._id === appointment.doctor_record_id)[0]?.doctor?.fullName}
-                                    </td>
-                                    <td  style={{ color: appointment.status === 'QUEUE' ? 'black' : appointment.status === 'ACCEPTED' ? 'green' : appointment.status === "COMPLETED" ? 'blue' : "red" }} className="py-4">
-                                        {appointment.status_message}
-                                    </td>
-                                    <td  className="py-4">
-                                        {`${convertDateToDayMonthYearVietNam(appointment.appointment_date)}`}
-                                    </td>
-                                    <td  className="py-4">
-                                        {appointment.note}
-                                    </td>
-                                    <td className="py-4 flex gap-2 items-center justify-center">
-                                        {!['CANCELED', 'ACCEPTED', 'REJECTED', 'COMPLETED'].includes(appointment.status) && (
-                                            <button onClick={() => handleCancelAppointment(appointment)} className='hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Hủy Cuộc Hẹn</button>
-                                        )}
-                                        {(displayConnect === appointment._id) && (
-                                            <Link href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === 'USER' ? 'patient' : 'doctor'}`}>
-                                                <button className='hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1'>Tham Gia Cuộc Hẹn</button>
-                                            </Link>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))} */}
           </tbody>
         </table>
         {/* {appointments.length === 0 && (

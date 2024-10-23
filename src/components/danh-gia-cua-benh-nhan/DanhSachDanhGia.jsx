@@ -4,7 +4,10 @@ import React, {
   useState,
 } from "react";
 
-import { globalContext, notifyType } from "@/context/GlobalContext";
+import {
+  globalContext,
+  notifyType,
+} from "@/context/GlobalContext";
 import { healthContext } from "@/context/HealthContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
@@ -12,24 +15,21 @@ import { convertDateToDayMonthYearTimeObject } from "@/utils/date";
 import { useParams, useRouter } from "next/navigation";
 const DanhSachDanhGia = ({ hidden }) => {
   const [assessments, setAssessments] = useState([]);
-  const { healthHandler } = useContext(healthContext)
-  const { globalHandler } = useContext(globalContext)
+  const { healthHandler } = useContext(healthContext);
+  const { globalHandler } = useContext(globalContext);
   const [doctorRecord, setDoctorRecord] = useState();
   const { userData } = useContext(userContext);
   const router = useRouter();
   useEffect(() => {
-    if(userData.user){
+    if (userData.user) {
       api({
         type: TypeHTTP.GET,
         path: `/doctorRecords/getById/${userData.user?._id}`,
         sendToken: false,
-      })
-        .then((res) => {
-          setDoctorRecord(res);
-        })
-        
+      }).then((res) => {
+        setDoctorRecord(res);
+      });
     }
-   
   }, [userData.user]);
   useEffect(() => {
     if (doctorRecord) {
@@ -40,19 +40,19 @@ const DanhSachDanhGia = ({ hidden }) => {
       }).then((res) => {
         setAssessments(res);
       });
-      
     }
-  },[doctorRecord])
+  }, [doctorRecord]);
   const renderStars = (rating) => {
     return (
       <div className="flex gap-2">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${star <= rating
+            className={`w-6 h-6 ${
+              star <= rating
                 ? "text-yellow-500"
                 : "text-gray-300"
-              }`}
+            }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -63,12 +63,12 @@ const DanhSachDanhGia = ({ hidden }) => {
       </div>
     );
   };
- 
+
   return (
     <section
       style={{
-        height: "90%" ,
-        width: "70%" ,
+        height: "90%",
+        width: "70%",
         transition: "0.3s",
         backgroundSize: "cover",
         overflow: "auto",
@@ -78,12 +78,15 @@ const DanhSachDanhGia = ({ hidden }) => {
     >
       <div className="px-[2rem] py-[1.5rem] w-full flex flex-col text-center">
         <span className="font-semibold text-[30px]">
-        Đánh giá từ người bệnh ({assessments.length})
+          Đánh giá từ người bệnh ({assessments.length})
         </span>
       </div>
       <div className="flex flex-col gap-4 mt-2 w-full justify-center items-center">
         <div className="p-4 rounded w-[90%]">
-        {assessments.slice().reverse().map((assessment, index) => (
+          {assessments
+            .slice()
+            .reverse()
+            .map((assessment, index) => (
               <div
                 key={index}
                 className="p-4 rounded w-[100%] flex flex-row shadow-l border hover:shadow-x"
@@ -115,12 +118,16 @@ const DanhSachDanhGia = ({ hidden }) => {
                       {assessment.assessment_list.content}
                     </p>
                   </div>
-                 
+
                   <div className="flex mt-2 ml-4">
                     <p className="text-[16px] text-gray-500 text-start">
                       Ngày:{" "}
                       {assessment.assessment_list.date.day}/
-                      {assessment.assessment_list.date.month}/
+                      {
+                        assessment.assessment_list.date
+                          .month
+                      }
+                      /
                       {assessment.assessment_list.date.year}
                     </p>
                   </div>
@@ -133,6 +140,6 @@ const DanhSachDanhGia = ({ hidden }) => {
         <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
       </button>
     </section>
-  )
-}
+  );
+};
 export default DanhSachDanhGia;
