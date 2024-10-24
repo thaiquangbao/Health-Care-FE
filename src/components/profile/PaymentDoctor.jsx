@@ -121,13 +121,56 @@ const PaymentDoctor = ({ user, setUser }) => {
     if (result === 0) return 0;
     return formatMoney(result);
   };
-  const receiveMoney = () => { };
+  const receiveMoney = () => {};
   return (
     <div className="w-full min-h-screen">
-      <div className="px-[2rem] py-[1.5rem] w-full flex flex-row justify-between">
+      <div className="px-[2rem] py-[1.5rem] w-full flex flex-col">
         <span className="font-semibold text-[18px]">
           Nhận tiền
         </span>
+        <div className="grid grid-cols-3 h-auto gap-x-[1rem] gap-y-[1rem] mt-[1rem] px-[2rem]">
+          <Input
+            name={"Tên Ngân Hàng"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  bankName: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.bankName}
+          />
+          <Input
+            name={"Tên Chủ Tài Khoản"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  accountName: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.accountName}
+          />
+          <Input
+            name={"Số Tài Khoản"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  accountNumber: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.accountNumber}
+          />
+        </div>
+      </div>
+      <div className="px-[2rem] py-[1.5rem] w-full flex flex-row">
         <div className="flex flex-row gap-3">
           <div
             className="px-5 py-1 gap-6 flex flex-row shadow-lg text-center focus:outline-0 rounded-md font-medium "
@@ -306,12 +349,12 @@ const PaymentDoctor = ({ user, setUser }) => {
                       ? "Tư vấn trực tuyến"
                       : payment.namePayment ===
                         "APPOINTMENTHOME"
-                        ? "Tư vấn sức khỏe tại nhà"
-                        : "Theo dõi sức khỏe"}
+                      ? "Tư vấn sức khỏe tại nhà"
+                      : "Theo dõi sức khỏe"}
                   </td>
                   <td className="py-4 text-[13px]">
                     {payment.dateTake?.day === 0 &&
-                      payment.dateTake?.month === 0
+                    payment.dateTake?.month === 0
                       ? "Chưa xác định"
                       : `${payment.dateTake?.time}-
                   ${payment.dateTake?.day}/
@@ -337,7 +380,7 @@ const PaymentDoctor = ({ user, setUser }) => {
                     style={{
                       color:
                         payment.status_take_money.type ===
-                        "WAITING" && "black",
+                          "WAITING" && "black",
                     }}
                   >
                     {payment.status_take_money.type ===

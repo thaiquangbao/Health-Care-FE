@@ -33,6 +33,52 @@ const PaymentPatient = ({ user, setUser }) => {
     <div className="w-full min-h-screen">
       <div className="px-[2rem] py-[1.5rem] w-full flex flex-col">
         <span className="font-semibold text-[20px]">
+          Thông tin thanh toán
+        </span>
+        <div className="grid grid-cols-3 h-auto gap-x-[1rem] gap-y-[1rem] mt-[1rem] px-[2rem]">
+          <Input
+            name={"Tên Ngân Hàng"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  bankName: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.bankName}
+          />
+          <Input
+            name={"Tên Chủ Tài Khoản"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  accountName: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.accountName}
+          />
+          <Input
+            name={"Số Tài Khoản"}
+            onChange={(e) =>
+              setUser({
+                ...user,
+                bank: {
+                  ...user.bank,
+                  accountNumber: e.target.value,
+                },
+              })
+            }
+            value={user?.bank?.accountNumber}
+          />
+        </div>
+      </div>
+      <div className="px-[2rem] py-[1.5rem] w-full flex flex-col">
+        <span className="font-semibold text-[20px]">
           Lịch sử thanh toán
         </span>
       </div>

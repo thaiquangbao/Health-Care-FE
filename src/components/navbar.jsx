@@ -193,7 +193,7 @@ const Navbar = () => {
                 onClick={() => {
                   authHandler.setVisibleMore(false);
                   setTimeout(() => {
-                    authHandler.showSmartSearching()
+                    authHandler.showSmartSearching();
                   }, 1000);
                 }}
                 className="flex gap-3 cursor-pointer mt-5"
@@ -371,7 +371,7 @@ const Navbar = () => {
               </li>
               <li
                 onClick={() => {
-                  router.push("/doanh-thu-cua-toi");
+                  router.push("/thong-ke-doanh-thu");
                   authHandler.hiddenWrapper();
                   authHandler.setVisibleMore(false);
                 }}
@@ -379,7 +379,20 @@ const Navbar = () => {
               >
                 <i className="bx text-[#e6e635] bxs-bar-chart-alt-2 text-[23px]"></i>
                 <span className="text-[16px] font-medium">
-                  Doanh thu của tôi
+                  Thống Kê Doanh Thu
+                </span>
+              </li>
+              <li
+                onClick={() => {
+                  router.push("/doanh-thu-cua-toi");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="bx text-[#3d992b] bxs-dollar-circle text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Doanh Thu Của Tôi
                 </span>
               </li>
               <li

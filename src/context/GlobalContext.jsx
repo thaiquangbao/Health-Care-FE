@@ -95,12 +95,11 @@ const GlobalProvider = ({ children }) => {
       "/ho-so-ca-nhan-bac-si",
       "/them-cam-nang",
       "/benh-nhan-cua-toi",
+      "/thong-ke-doanh-thu",
       "/doanh-thu-cua-toi",
     ];
     if (pathname.includes("location")) {
-
-    }
-    else if (pathname !== "/") {
+    } else if (pathname !== "/") {
       if (userData.user) {
         if (userData.user.role === "ADMIN") {
           notify(

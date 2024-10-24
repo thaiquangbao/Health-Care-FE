@@ -6,11 +6,19 @@ import {
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
+  compare2Date,
+  compareTimeDate1GreaterThanDate2,
+  convertDateToDayMonthYearObject,
   convertDateToDayMonthYearTimeObject,
   convertDateToDayMonthYearVietNam,
+  isALargerThanBPlus60Minutes,
+  isALargerWithin10Minutes,
+  isALargerWithin60Minutes,
+  sortByAppointmentDate,
 } from "@/utils/date";
 import { formatMoney, returnNumber } from "@/utils/other";
 import { Chart } from "chart.js/auto";
+import { set } from "date-fns";
 import Link from "next/link";
 import React, {
   useContext,
@@ -18,316 +26,36 @@ import React, {
   useRef,
   useState,
 } from "react";
-const TheoDoiSucKhoe = ({ type, setType }) => {
+
+const TheoDoiSucKhoe = () => {
   const { userData } = useContext(userContext);
-  const [logBooks, setLogBooks] = useState([]);
-  const { globalHandler } = useContext(globalContext);
+  const [dsPayBack, setDsPayBack] = useState([]);
   const [loading, setLoading] = useState(false);
-  const chartRef = useRef(null);
-  const [sumLogBook, setSumLogBook] = useState([]);
-  const [sumLogBookWeek, setSumLogBookWeek] = useState([]);
-  const [sumLogBookMonth, setSumLogBookMonth] = useState(
-    []
-  );
-  const typeTime = {
-    1: "tổng",
-    2: "tuần này",
-    3: "tháng này",
-  };
-  useEffect(() => {
-    if (chartRef.current && logBooks) {
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
-      }
-      // Tạo đối tượng để lưu trữ số lượng lịch đặt hẹn cho mỗi ngày
-      const logBookCount = {};
-      const logBookPrice = {};
-      // Duyệt qua danh sách appointments và cập nhật đối tượng
-      logBooks.forEach((item) => {
-        const date = `${item.date.day}/${item.date.month}/${item.date.year}`;
-        if (logBookCount[date]) {
-          logBookCount[date]++;
-          logBookPrice[date] += item.priceList.price;
-        } else {
-          logBookCount[date] = 1;
-          logBookPrice[date] = item.priceList.price;
-        }
-      });
-
-      // Chuyển đổi đối tượng thành mảng để sử dụng trong biểu đồ
-      const labels = Object.keys(logBookCount);
-      const data = Object.keys(logBookCount).map(
-        (date) => ({
-          count: logBookCount[date],
-          totalPrice: logBookPrice[date],
-        })
-      );
-
-      const context = chartRef.current.getContext("2d");
-      const newChart = new Chart(context, {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "My First Dataset",
-              data: data.map((item) => {
-                if (item.totalPrice === 1350000) {
-                  return 945000 * item.count;
-                } else if (item.totalPrice === 2300000) {
-                  return 1610000 * item.count;
-                } else {
-                  return 2800000 * item.count;
-                }
-              }),
-              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
-              borderColor: ["rgba(255, 99, 132, 0.2)"],
-              borderWidth: 2,
-            },
-            {
-              type: "line",
-              label: "Line Dataset",
-              data: data.map((item) => {
-                if (item.totalPrice === 1350000) {
-                  return 945000 * item.count;
-                } else if (item.totalPrice === 2300000) {
-                  return 1610000 * item.count;
-                } else {
-                  return 2800000 * item.count;
-                }
-              }),
-              borderColor: "rgb(255, 99, 132)",
-              backgroundColor: "rgb(255, 99, 132)",
-              borderWidth: 2,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: false,
-              title: {
-                display: true,
-                text: "Doanh thu (VNĐ)",
-              },
-            },
-            x: {
-              title: {
-                display: true,
-                text: "Thời gian",
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              position: "top",
-              labels: {
-                usePointStyle: true,
-              },
-            },
-          },
-          maintainAspectRatio: false,
-        },
-      });
-
-      chartRef.current.chart = newChart;
-    }
-  }, [logBooks]);
   useEffect(() => {
     if (userData.user) {
       setLoading(true);
-      if (type === "1") {
-        api({
-          path: "/healthLogBooks/get-all",
-          type: TypeHTTP.GET,
-          sendToken: true,
-        }).then((logBooks) => {
-          setLogBooks(
-            logBooks.filter(
-              (item) =>
-                item.doctor?._id === userData.user._id &&
-                item.status.status_type === "COMPLETED"
-            )
-          );
-          setLoading(false);
-        });
-      } else {
-        api({
-          path: `/healthLogBooks/findBy${
-            type === "2" ? "Week" : "Month"
-          }`,
-          type: TypeHTTP.POST,
-          sendToken: true,
-          body: {
-            doctor: userData.user._id,
-          },
-        }).then((logBooks) => {
-          setLogBooks(
-            logBooks.filter(
-              (item) =>
-                item.doctor?._id === userData.user._id &&
-                item.status.status_type === "COMPLETED"
-            )
-          );
-          setLoading(false);
-        });
-      }
+      api({
+        type: TypeHTTP.POST,
+        path: "/payBacks/get-by-type",
+        sendToken: true,
+        body: {
+          doctor_id: userData.user?._id,
+          type: "HEALTHLOGBOOK",
+        },
+      }).then((res) => {
+        setDsPayBack(
+          res.filter(
+            (item) =>
+              item.doctor?._id === userData.user?._id
+          )
+        );
+        setLoading(false);
+      });
     }
-  }, [type, userData.user]);
-  const calculator = (logBooks) => {
-    let logBookPrice = 0;
-    logBooks.forEach((logBook) => {
-      if (logBook.priceList?.price === 1350000) {
-        logBookPrice += 945000;
-      } else if (logBook.priceList?.price === 2300000) {
-        logBookPrice += 1610000;
-      } else {
-        logBookPrice += 2800000;
-      }
-    });
-    return logBookPrice;
-  };
-  useEffect(() => {
-    api({
-      path: "/healthLogBooks/get-all",
-      type: TypeHTTP.GET,
-      sendToken: true,
-    }).then((logBooks) => {
-      setSumLogBook(
-        logBooks.filter(
-          (item) =>
-            item.doctor?._id === userData.user._id &&
-            item.status.status_type === "COMPLETED"
-        )
-      );
-    });
-    api({
-      path: "/healthLogBooks/findByWeek",
-      type: TypeHTTP.POST,
-      body: {
-        doctor: userData.user._id,
-      },
-      sendToken: true,
-    }).then((logBooks) => {
-      setSumLogBookWeek(
-        logBooks.filter(
-          (item) =>
-            item.doctor?._id === userData.user._id &&
-            item.status.status_type === "COMPLETED"
-        )
-      );
-    });
-    api({
-      path: "/healthLogBooks/findByMonth",
-      type: TypeHTTP.POST,
-      body: {
-        doctor: userData.user._id,
-      },
-      sendToken: true,
-    }).then((logBooks) => {
-      setSumLogBookMonth(
-        logBooks.filter(
-          (item) =>
-            item.doctor?._id === userData.user._id &&
-            item.status.status_type === "COMPLETED"
-        )
-      );
-    });
   }, [userData.user]);
   return (
     <>
-      <div className="grid grid-cols-4 gap-4 mt-2">
-        <div
-          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
-          style={{
-            backgroundImage: "url(/EndlessRiver.jpg)",
-            backgroundSize: "cover",
-          }}
-        >
-          <div className="flex items-end gap-2">
-            <i className="text-[40px] bx bx-calendar-check"></i>
-            <span className="text-[25px] font-semibold">
-              {returnNumber(sumLogBook.length)}
-            </span>
-          </div>
-          <span className="font-medium text-[15px]">
-            Tất cả cuộc hẹn đã hoàn tất
-          </span>
-        </div>
-        <div
-          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
-          style={{
-            backgroundImage: "url(/Flare.jpg)",
-            backgroundSize: "cover",
-          }}
-        >
-          <div className="flex items-end gap-2">
-            <i className="text-[40px] bx bx-dollar-circle"></i>
-            <span className="text-[25px] font-semibold">
-              {sumLogBook.length === 0
-                ? 0
-                : formatMoney(calculator(sumLogBook))}{" "}
-              đ
-            </span>
-          </div>
-          <span className="font-medium text-[15px]">
-            Tổng doanh thu
-          </span>
-        </div>
-        <div
-          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
-          style={{
-            backgroundImage: "url(/Quepal.jpg)",
-            backgroundSize: "cover",
-          }}
-        >
-          <div className="flex items-end gap-2">
-            <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
-            <span className="text-[25px] font-semibold">
-              {sumLogBookWeek.length === 0
-                ? 0
-                : formatMoney(
-                    calculator(sumLogBookWeek)
-                  )}{" "}
-              đ
-            </span>
-          </div>
-          <span className="font-medium text-[15px]">
-            Doanh thu theo tuần
-          </span>
-        </div>
-        <div
-          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
-          style={{
-            backgroundImage: "url(/SinCityRed.jpg)",
-            backgroundSize: "cover",
-          }}
-        >
-          <div className="flex items-end gap-2">
-            <i className="text-[40px] bx bx-line-chart"></i>
-            <span className="text-[25px] font-semibold">
-              {sumLogBookMonth.length === 0
-                ? 0
-                : formatMoney(
-                    calculator(sumLogBookMonth)
-                  )}{" "}
-              đ
-            </span>
-          </div>
-          <span className="font-medium text-[15px]">
-            Doanh thu theo tháng
-          </span>
-        </div>
-      </div>
-      <div className="mt-8 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
-        <div>
-          <span className="text-[20px] font-bold">
-            Doanh thu {typeTime[type]}
-          </span>
-        </div>
-        <canvas ref={chartRef} />
-      </div>
-      <div className="w-full max-h-[500px] mt-4 overflow-y-auto relative">
+      <div className="w-full max-h-[500px] mt-6 overflow-y-auto relative">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -337,23 +65,20 @@ const TheoDoiSucKhoe = ({ type, setType }) => {
               >
                 #
               </th>
-              <th scope="col" className="w-[15%] py-3">
-                Bệnh Nhân
+              <th scope="col" className="w-[30%] py-3">
+                Dịch Vụ
               </th>
-              <th scope="col" className="w-[20%] py-3">
+              <th scope="col" className="w-[30%] py-3">
+                Số Tiền
+              </th>
+              <th scope="col" className="w-[30%] py-3">
                 Trạng Thái
-              </th>
-              <th scope="col" className="w-[23%] py-3">
-                Thời Gian
-              </th>
-              <th scope="col" className="w-[20%] py-3">
-                Loại Phiếu
               </th>
             </tr>
           </thead>
           <tbody className=" w-[full] bg-black font-medium">
             {!loading &&
-              logBooks.map((logBook, index) => (
+              dsPayBack.map((payback, index) => (
                 <tr
                   key={index}
                   className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
@@ -365,38 +90,38 @@ const TheoDoiSucKhoe = ({ type, setType }) => {
                     {index + 1}
                   </td>
                   <td className="py-4 text-[15px]">
-                    {logBook.patient.fullName}
+                    Theo dõi sức khỏe
+                  </td>
+                  <td className="py-4">
+                    {formatMoney(payback.price)} đ
                   </td>
                   <td
-                    style={{
-                      color: "blue",
-                    }}
                     className="py-4"
+                    style={{
+                      color:
+                        payback.status?.type === "AVAILABLE"
+                          ? "black"
+                          : payback.status?.type ===
+                            "REQUEST"
+                          ? "#FFFF00"
+                          : payback.status?.type ===
+                            "ACCEPT"
+                          ? "green"
+                          : payback.status?.type ===
+                            "REFUSE"
+                          ? "red"
+                          : "blue",
+                    }}
                   >
-                    {logBook.status.message}
-                  </td>
-                  <td className="py-4">
-                    {`${convertDateToDayMonthYearVietNam(
-                      logBook.date
-                    )}`}
-                  </td>
-                  <td className="py-4">
-                    {logBook.priceList.price === 1350000
-                      ? formatMoney(945000)
-                      : logBook.priceList.price === 2300000
-                      ? formatMoney(1610000)
-                      : formatMoney(2800000)}
-                    đ/
-                    {logBook.priceList.type}
+                    {payback.status?.messages}
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
-        {!loading && logBooks.length === 0 && (
+        {!loading && dsPayBack.length === 0 && (
           <div className="w-full flex items-center justify-center my-10 text-[18px] font-medium">
-            Không có phiếu theo dõi sức khỏe được đăng ký
-            trong {typeTime[type]}
+            Bác sĩ chưa có doanh thu nào
           </div>
         )}
         {loading && (
