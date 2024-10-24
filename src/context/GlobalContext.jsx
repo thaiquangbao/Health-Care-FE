@@ -97,7 +97,10 @@ const GlobalProvider = ({ children }) => {
       "/benh-nhan-cua-toi",
       "/doanh-thu-cua-toi",
     ];
-    if (pathname !== "/") {
+    if (pathname.includes("location")) {
+
+    }
+    else if (pathname !== "/") {
       if (userData.user) {
         if (userData.user.role === "ADMIN") {
           notify(

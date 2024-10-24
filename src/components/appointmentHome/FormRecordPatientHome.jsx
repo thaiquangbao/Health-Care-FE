@@ -4,7 +4,7 @@ import { utilsContext } from '@/context/UtilsContext';
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearVietNam } from "@/utils/date";
 import React, { useContext, useEffect, useState } from 'react';
-const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, appointmentHome1, setReload }) => {
+const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doctorRecord1, appointmentHome1, setReload }) => {
   const { appointmentData, appointmentHandler } = useContext(
     appointmentContext
   );
@@ -26,20 +26,20 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
 
-  // useEffect(() => {
-  //   if (appointmentData.medicalRecord) {
-  //     setMedical(appointmentData.medicalRecord.medical)
-  //     setDiagnosisDisease(appointmentData.medicalRecord.diagnosisDisease)
-  //     setSymptoms(appointmentData.medicalRecord.symptoms)
-  //     setNote(appointmentData.medicalRecord.note)
-  //     setReAppointmentDate(`${appointmentData.medicalRecord.reExaminationDate.year}-${appointmentData.medicalRecord.reExaminationDate.month}-${appointmentData.medicalRecord.reExaminationDate.day}`)
-  //     setTemperature(appointmentData.medicalRecord.temperature)
-  //     setBloodPressure(appointmentData.medicalRecord.bloodPressure)
-  //     setHeartRate(appointmentData.medicalRecord.healthRate)
-  //     setWeight(appointmentData.medicalRecord.weight)
-  //     setHeight(appointmentData.medicalRecord.height)
-  //   }
-  // }, [appointmentData.medicalRecord])
+  useEffect(() => {
+    if (medicalRecord) {
+      setMedical(medicalRecord.medical)
+      setDiagnosisDisease(medicalRecord.diagnosisDisease)
+      setSymptoms(medicalRecord.symptoms)
+      setNote(medicalRecord.note)
+      setReAppointmentDate(`${medicalRecord.reExaminationDate.year}-${medicalRecord.reExaminationDate.month}-${medicalRecord.reExaminationDate.day}`)
+      setTemperature(medicalRecord.temperature)
+      setBloodPressure(medicalRecord.bloodPressure)
+      setHeartRate(medicalRecord.healthRate)
+      setWeight(medicalRecord.weight)
+      setHeight(medicalRecord.height)
+    }
+  }, [medicalRecord])
 
   useEffect(() => {
     setDoctorRecord(doctorRecord1)
@@ -204,6 +204,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
           Triệu Chứng:
         </span>{" "}
         <input
+          disabled={medicalRecord ? true : false}
           className="text-[14px] w-[500px] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
           onChange={(e) => setSymptoms(e.target.value)}
           value={symptoms}
@@ -215,6 +216,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Huyết áp:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) =>
               setBloodPressure(e.target.value)
@@ -228,6 +230,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Nhịp tim:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) => setHeartRate(e.target.value)}
             value={heartRate}
@@ -239,6 +242,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Cân nặng:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) => setWeight(e.target.value)}
             value={weight}
@@ -250,6 +254,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Chiều cao:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) => setHeight(e.target.value)}
             value={height}
@@ -261,6 +266,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Nhiệt độ:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) =>
               setTemperature(e.target.value)
@@ -274,6 +280,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
             Tái khám:
           </span>
           <input
+            disabled={medicalRecord ? true : false}
             type="date"
             className="text-[14px] w-[150px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
             onChange={(e) =>
@@ -285,6 +292,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
       </div>
       <div className="grid grid-cols-2 h-auto gap-x-[0.5rem] px-2">
         <textarea
+          disabled={medicalRecord ? true : false}
           placeholder="Chuẩn đoán bệnh"
           className="text-[14px] w-[100%] h-[90px] py-2 bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
           onChange={(e) =>
@@ -293,6 +301,7 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
           value={diagnosisDisease}
         ></textarea>
         <textarea
+          disabled={medicalRecord ? true : false}
           placeholder="Lời dặn bác sĩ"
           className="text-[14px] w-[100%] h-[90px] py-2 bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
           onChange={(e) => setNote(e.target.value)}
@@ -303,51 +312,53 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
         Đơn Thuốc
       </span>
       <div className="grid grid-cols-2 h-auto gap-x-[0.25rem] px-2">
-        <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4">
-          <input
-            placeholder="Tên thuốc"
-            className="text-[14px] w-[100%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-            onChange={(e) =>
-              setNameMedical(e.target.value)
-            }
-            value={nameMedical}
-          />
-          <div className="flex items-center justify-between">
-            <select
-              className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              value={unitOfCalculation}
-              onChange={(e) =>
-                setUnitOfCalculation(e.target.value)
-              }
-            >
-              <option>Đơn vị tính</option>
-              <option>Viên</option>
-              <option>Vỉ</option>
-              <option>Hộp</option>
-              <option>Ống</option>
-              <option>Gói</option>
-              <option>Chai/Lọ</option>
-              <option>Tuýp</option>
-            </select>
+        {!medicalRecord && (
+          <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4">
             <input
-              placeholder="Số lượng"
-              className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+              placeholder="Tên thuốc"
+              className="text-[14px] w-[100%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
               onChange={(e) =>
-                setQuantity(e.target.value)
+                setNameMedical(e.target.value)
               }
-              value={quantity}
+              value={nameMedical}
             />
-          </div>
-          {!appointmentData.medicalRecord && (
-            <button
-              className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
-              onClick={() => addMedical()}
-            >
-              Thêm
-            </button>
-          )}
+            <div className="flex items-center justify-between">
+              <select
+                className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                value={unitOfCalculation}
+                onChange={(e) =>
+                  setUnitOfCalculation(e.target.value)
+                }
+              >
+                <option>Đơn vị tính</option>
+                <option>Viên</option>
+                <option>Vỉ</option>
+                <option>Hộp</option>
+                <option>Ống</option>
+                <option>Gói</option>
+                <option>Chai/Lọ</option>
+                <option>Tuýp</option>
+              </select>
+              <input
+                placeholder="Số lượng"
+                className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                onChange={(e) =>
+                  setQuantity(e.target.value)
+                }
+                value={quantity}
+              />
+            </div>
+            {!appointmentData.medicalRecord && (
+              <button
+                className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
+                onClick={() => addMedical()}
+              >
+                Thêm
+              </button>
+            )}
 
-        </div>
+          </div>
+        )}
         <div className="w-full max-h-[140px] overflow-y-auto relative">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -400,12 +411,14 @@ const FormRecordPatientHome = ({ type, setType, setTemporary, doctorRecord1, app
         </div>
       </div>
       <div className="full flex justify-end">
-        <button
-          onClick={() => updateMedicalRecord()}
-          className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
-        >
-          Cập Nhật Hồ Sơ
-        </button>
+        {!medicalRecord && (
+          <button
+            onClick={() => updateMedicalRecord()}
+            className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
+          >
+            Cập Nhật Hồ Sơ
+          </button>
+        )}
       </div>
 
 

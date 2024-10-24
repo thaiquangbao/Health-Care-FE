@@ -121,7 +121,7 @@ const PaymentDoctor = ({ user, setUser }) => {
     if (result === 0) return 0;
     return formatMoney(result);
   };
-  const receiveMoney = () => {};
+  const receiveMoney = () => { };
   return (
     <div className="w-full min-h-screen">
       <div className="px-[2rem] py-[1.5rem] w-full flex flex-row justify-between">
@@ -186,23 +186,6 @@ const PaymentDoctor = ({ user, setUser }) => {
         <div
           className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
           style={{
-            backgroundImage: "url(/Flare.jpg)",
-            backgroundSize: "cover",
-          }}
-        >
-          <div className="flex items-end gap-2">
-            <i className="text-[40px] bx bx-dollar-circle"></i>
-            <span className="text-[25px] font-semibold">
-              {takedMoney()} đ
-            </span>
-          </div>
-          <span className="font-medium text-[15px]">
-            Đã nhận
-          </span>
-        </div>
-        <div
-          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
-          style={{
             backgroundImage: "url(/Quepal.jpg)",
             backgroundSize: "cover",
           }}
@@ -231,7 +214,24 @@ const PaymentDoctor = ({ user, setUser }) => {
             </span>
           </div>
           <span className="font-medium text-[15px]">
-            Có thể nhận
+            Đã Duyệt
+          </span>
+        </div>
+        <div
+          className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
+          style={{
+            backgroundImage: "url(/Flare.jpg)",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="flex items-end gap-2">
+            <i className="text-[40px] bx bx-dollar-circle"></i>
+            <span className="text-[25px] font-semibold">
+              {takedMoney()} đ
+            </span>
+          </div>
+          <span className="font-medium text-[15px]">
+            Đã nhận
           </span>
         </div>
       </div>
@@ -306,12 +306,12 @@ const PaymentDoctor = ({ user, setUser }) => {
                       ? "Tư vấn trực tuyến"
                       : payment.namePayment ===
                         "APPOINTMENTHOME"
-                      ? "Tư vấn sức khỏe tại nhà"
-                      : "Theo dõi sức khỏe"}
+                        ? "Tư vấn sức khỏe tại nhà"
+                        : "Theo dõi sức khỏe"}
                   </td>
                   <td className="py-4 text-[13px]">
                     {payment.dateTake?.day === 0 &&
-                    payment.dateTake?.month === 0
+                      payment.dateTake?.month === 0
                       ? "Chưa xác định"
                       : `${payment.dateTake?.time}-
                   ${payment.dateTake?.day}/
@@ -337,7 +337,7 @@ const PaymentDoctor = ({ user, setUser }) => {
                     style={{
                       color:
                         payment.status_take_money.type ===
-                          "WAITING" && "black",
+                        "WAITING" && "black",
                     }}
                   >
                     {payment.status_take_money.type ===
