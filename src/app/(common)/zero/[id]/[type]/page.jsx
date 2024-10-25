@@ -33,11 +33,13 @@ const Zero = () => {
     useState(false);
   const { globalHandler } = useContext(globalContext);
   const router = useRouter();
-  const [offset, setOffset] = useState()
-  const wrapperRef = useRef()
+  const [offset, setOffset] = useState();
+  const wrapperRef = useRef();
 
   useEffect(() => {
-    const element = document.querySelector('.QeMJj1LEulq1ApqLHxuM');
+    const element = document.querySelector(
+      ".QeMJj1LEulq1ApqLHxuM"
+    );
     if (element) {
       const rect = element.getBoundingClientRect();
       const position = {
@@ -46,12 +48,11 @@ const Zero = () => {
         right: rect.right,
         bottom: rect.bottom,
         width: rect.width,
-        height: rect.height
+        height: rect.height,
       };
-      setOffset(position)
+      setOffset(position);
     }
-
-  }, [document.querySelector('.QeMJj1LEulq1ApqLHxuM')])
+  }, [document.querySelector(".QeMJj1LEulq1ApqLHxuM")]);
 
   useEffect(() => {
     if (userData.user) {
@@ -69,8 +70,8 @@ const Zero = () => {
   }, [id]);
 
   const endMeet = async () => {
-    const appId = 990593542;
-    const server = "2cb25276b88aed6a8b25fb750babb23a";
+    const appId = 1613583576;
+    const server = "16501249a2c1edce3c8e713cc2a7e441";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,
@@ -105,8 +106,8 @@ const Zero = () => {
   };
 
   const myMeeting = async (element) => {
-    const appId = 990593542;
-    const server = "2cb25276b88aed6a8b25fb750babb23a";
+    const appId = 1613583576;
+    const server = "16501249a2c1edce3c8e713cc2a7e441";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,
@@ -147,19 +148,19 @@ const Zero = () => {
 
   const checkMedicalRecord = (record) => {
     if (record) {
-      if (record.diagnosisDisease === '') {
-        return false
+      if (record.diagnosisDisease === "") {
+        return false;
       }
       if (record.medical.length === 0) {
-        return false
+        return false;
       }
       if (record.note === "") {
-        return false
+        return false;
       }
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <div className="relative">
@@ -170,15 +171,28 @@ const Zero = () => {
           ref={myMeeting}
         ></div>
       )}
-      {(offset && !checkMedicalRecord(appointmentData.medicalRecord) && type !== 'patient') && (
-        <button onClick={() => {
-          authHandler.showMedicalRecord();
-          globalHandler.notify(notifyType.WARNING, 'Bác sĩ cần hoàn thành thông tin bệnh nhân trước khi rời khỏi phòng')
-        }}
-          style={{ width: offset.width + 'px', height: offset.height + 'px', top: offset.top + 'px', left: offset.left + 'px' }}
-          className="fixed z-[1]">
-        </button>
-      )}
+      {offset &&
+        !checkMedicalRecord(
+          appointmentData.medicalRecord
+        ) &&
+        type !== "patient" && (
+          <button
+            onClick={() => {
+              authHandler.showMedicalRecord();
+              globalHandler.notify(
+                notifyType.WARNING,
+                "Bác sĩ cần hoàn thành thông tin bệnh nhân trước khi rời khỏi phòng"
+              );
+            }}
+            style={{
+              width: offset.width + "px",
+              height: offset.height + "px",
+              top: offset.top + "px",
+              left: offset.left + "px",
+            }}
+            className="fixed z-[1]"
+          ></button>
+        )}
       {userData.user?.role === "DOCTOR" && (
         <button
           onClick={() => authHandler.showMedicalRecord()}
