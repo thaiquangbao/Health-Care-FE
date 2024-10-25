@@ -108,9 +108,15 @@ const DoanhThuCuaToi = () => {
           type: "REQUEST",
           messages: "Đã gửi yêu cầu",
         },
+        priceValid: sumAvailable,
+        descriptionTake: "Đang chờ xác nhận",
       },
       sendToken: true,
     }).then((res) => {
+      setSumAvailable(0);
+      setSumRequest(
+        (prevSumRequest) => prevSumRequest + sumAvailable
+      );
       utilsHandler.notify(
         notifyType.SUCCESS,
         "Đã gửi yêu cầu nhận tiền thành công!!!"
