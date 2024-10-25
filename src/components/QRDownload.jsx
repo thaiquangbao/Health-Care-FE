@@ -15,7 +15,7 @@ const QRDownload = ({ visible, hidden }) => {
       </button>
       <div className="w-full h-full flex flex-col px-4 text-[14px] items-center py-4 gap-2">
         <span>
-          Vui lòng quét mã bên dưới để tải ứng dụng
+          Vui lòng quét mã bên dưới để tải ứng dụng nhé
         </span>
         <img src="/qr.jpg" className="w-[80%] h-[80%]" />
       </div>
