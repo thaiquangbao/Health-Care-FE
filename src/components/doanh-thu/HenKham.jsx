@@ -65,13 +65,16 @@ const HenKham = () => {
               >
                 #
               </th>
-              <th scope="col" className="w-[30%] py-3">
+              <th scope="col" className="w-[25%] py-3">
                 Dịch Vụ
               </th>
-              <th scope="col" className="w-[30%] py-3">
+              <th scope="col" className="w-[25%] py-3">
+                thời gian
+              </th>
+              <th scope="col" className="w-[25%] py-3">
                 Số Tiền
               </th>
-              <th scope="col" className="w-[30%] py-3">
+              <th scope="col" className="w-[25%] py-3">
                 Trạng Thái
               </th>
             </tr>
@@ -91,6 +94,9 @@ const HenKham = () => {
                   </td>
                   <td className="py-4 text-[15px]">
                     Tư vấn sức khỏe trực tuyến
+                  </td>
+                  <td className="py-4">
+                    {payback.date?.time}-{payback.date?.day}/{payback.date?.month}/{payback.date?.year}
                   </td>
                   <td className="py-4">
                     {formatMoney(payback.price)} đ
