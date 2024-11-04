@@ -223,7 +223,7 @@ const FormSchedule = ({ visible, hidden, day }) => {
                     <div className='grid grid-cols-8 gap-2 mt-2'>
                         {times.map((time, index) => {
                             if (compare2Date(convertDateToDayMonthYearObject(new Date().toISOString()), day)) {
-                                if (new Date().getHours() + 2 >= Number(time.split(':')[0])) {
+                                if (new Date(new Date().getTime() + 120 * 60000).getHours() >= Number(time.split(':')[0])) {
                                     // return <div key={index} className={`px-4 flex item-center justify-center py-2 transition-all border-[1px] border-[#999] text-[13px] font-medium bg-[#b7b7b7] rounded-md`}>{time}</div>
                                 } else {
                                     return <div key={index} style={{ backgroundColor: checkSchedule(time) === 0 ? 'white' : checkSchedule(time) === 4 ? '#ffc1b4' : checkSchedule(time) === 3 ? '#abebc6' : checkSchedule(time) === 1 ? '#eaeded' : '#fafac7' }} className=' border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center'>
