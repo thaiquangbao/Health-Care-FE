@@ -1,6 +1,7 @@
 'use client'
 import Navbar from '@/components/navbar';
 import { appointmentContext } from '@/context/AppointmentContext';
+import { authContext } from '@/context/AuthContext';
 import { globalContext, notifyType } from '@/context/GlobalContext';
 import { userContext } from '@/context/UserContext';
 import { api, TypeHTTP } from '@/utils/api';
@@ -16,6 +17,7 @@ const HoSoBacSi = () => {
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
     const { globalHandler } = useContext(globalContext)
     const { userData } = useContext(userContext)
+    const { authData } = useContext(authContext)
     useEffect(() => {
         const formatDays = eachDayOfInterval({ start: monthStart, end: monthEnd })
         if (formatDays[0].toString().includes('Tue'))
@@ -55,6 +57,18 @@ const HoSoBacSi = () => {
             })
     }
 
+    useEffect(() => {
+        if (appointmentData.doctorRecord) {
+            appointmentHandler.setDoctorRecord(() => {
+                const filter = authData.assessment.filter(item => item.doctor_record_id === appointmentData.doctorRecord._id)
+                return {
+                    ...appointmentData.doctorRecord,
+                    assessment: filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length === NaN ? 0 : filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length
+                }
+            });
+        }
+    }, [appointmentData.doctorRecord, authData.assessment])
+
     return (
         <div className="w-full pb-4 flex flex-col pt-[60px] px-[5%] background-public">
             <Navbar />
@@ -73,12 +87,8 @@ const HoSoBacSi = () => {
                             <span className='text-[14px]'>Lượt Gọi Khám: {appointmentData.doctorRecord?.examination_call}</span>
                         </div>
                         <div className='flex items-center gap-2'>
-                            <i className='bx bxs-calendar-check text-[22px] text-[#5050ff]' ></i>
-                            <span className='text-[14px]'>Lượt Tư Vấn: {appointmentData.doctorRecord?.consultation}</span>
-                        </div>
-                        <div className='flex items-center gap-2'>
                             <i className='bx bxs-star text-[22px] text-[#5050ff93]' ></i>
-                            <span className='text-[14px]'>Đánh Giá: {appointmentData.doctorRecord?.assessment}</span>
+                            <span className='text-[14px]'>Đánh Giá: {appointmentData.doctorRecord?.assessment.toFixed(1)}</span>
                         </div>
                     </div>
                 </div>

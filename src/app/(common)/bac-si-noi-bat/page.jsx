@@ -1,9 +1,10 @@
 "use client";
 
 import Navbar from "@/components/navbar";
+import { authContext } from "@/context/AuthContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 const BacSiNoiBat = () => {
   const [doctorRecords, setDoctorRecords] = useState([]);
@@ -12,16 +13,29 @@ const BacSiNoiBat = () => {
   const [filteredDoctors, setFilteredDoctors] = useState(
     []
   );
+  const { authData } = useContext(authContext)
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
       path: "/doctorRecords/getAll",
       sendToken: false,
     }).then((res) => {
-      setDoctorRecords(res);
-      setFilteredDoctors(res);
+      setDoctorRecords(res.map(doctorRecord => {
+        const filter = authData.assessment.filter(item => item.doctor_record_id === doctorRecord._id)
+        return {
+          ...doctorRecord,
+          assessment: filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length === NaN ? 0 : filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length
+        }
+      }));
+      setFilteredDoctors(res.map(doctorRecord => {
+        const filter = authData.assessment.filter(item => item.doctor_record_id === doctorRecord._id)
+        return {
+          ...doctorRecord,
+          assessment: filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length === NaN ? 0 : filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length
+        }
+      }));
     });
-  }, []);
+  }, [authData.assessment]);
   const handleFindDoctor = (e) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
@@ -97,15 +111,15 @@ const BacSiNoiBat = () => {
               </span>
               <div className="px-[1rem] flex items-center gap-[1rem] mt-[0.5rem] font-medium">
                 <div className="flex items-center gap-1">
-                  <i className="bx bxs-calendar-check text-[18px] text-[#5050ff]"></i>
+                  <i className="bx bxs-calendar-check text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
                   <span className="text-[14px]">
                     {item?.examination_call}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <i className="bx bxs-star text-[18px] text-[#5050ff]"></i>
+                  <i className="bx bxs-star text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
                   <span className="text-[14px]">
-                    {item?.assessment}
+                    {item?.assessment + '' === 'NaN' ? 0 : item?.assessment.toFixed(1)}
                   </span>
                 </div>
               </div>

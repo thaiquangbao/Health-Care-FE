@@ -35,6 +35,12 @@ const AuthContext = ({ children }) => {
   const [rooms, setRooms] = useState([])
   const [visibleQR, setVisibleQR] = useState(false)
   const [visibleSmartSearching, setVisibleSmartSearching] = useState(false)
+  const [assessment, setAssessments] = useState([])
+
+  useEffect(() => {
+    api({ type: TypeHTTP.GET, sendToken: false, path: '/assessments/getAll' })
+      .then(res => setAssessments(res))
+  }, [])
 
   useEffect(() => {
     if (userData.user && userData.user?.role === 'USER') {
@@ -193,7 +199,8 @@ const AuthContext = ({ children }) => {
     detailMedicalRecord,
     currentRoom,
     rooms,
-    healthResponse
+    healthResponse,
+    assessment
   };
 
   const handler = {
@@ -219,7 +226,8 @@ const AuthContext = ({ children }) => {
     showQR,
     hiddenQR,
     showSmartSearching,
-    hiddenSmartSearching
+    hiddenSmartSearching,
+    setAssessments
   };
 
   return (

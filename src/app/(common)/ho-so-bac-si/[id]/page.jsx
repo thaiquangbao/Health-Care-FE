@@ -11,13 +11,6 @@ import {
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
-  compare2Date,
-  compareDates,
-  convertDateToDayMonthYear,
-  convertDateToDayMonthYearObject,
-  convertqObjectToDate,
-} from "@/utils/date";
-import {
   formatMoney,
   formatTime,
   formatTimeAndFind,

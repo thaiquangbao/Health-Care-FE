@@ -236,16 +236,16 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                             }
                                         }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
                                         {(checkSchedule(time) === 0 || checkSchedule(time) === 1) && (
-                                            <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                            <div style={{ width: currentIndex === index ? 'auto' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
                                                 {visibleList === false ? (
                                                     <>
                                                         <button onClick={() => {
                                                             setCurrentIndex(-1)
                                                             handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                                        }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
-                                                            Thường
+                                                        }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]'>
+                                                            Trực tuyến
                                                         </button>
-                                                        <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
+                                                        <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all w-[100px] hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                             Theo Dõi
                                                         </button>
 
@@ -275,16 +275,16 @@ const FormSchedule = ({ visible, hidden, day }) => {
                                         }
                                     }} key={index} className={`transition-all cursor-pointer w-full h-full py-2 text-[13px] font-medium`}>{time}</button>
                                     {(checkSchedule(time) === 0 || checkSchedule(time) === 1) && (
-                                        <div style={{ transition: '0.5s', width: currentIndex === index ? '285px' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
+                                        <div style={{ width: currentIndex === index ? 'auto' : 0, height: currentIndex === index ? visibleList ? '80px' : '50px' : 0, bottom: '42px' }} className='absolute overflow-hidden bottom-[42px] px-2 left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md'>
                                             {visibleList === false ? (
                                                 <>
                                                     <button onClick={() => {
                                                         setCurrentIndex(-1)
                                                         handleTime(time, checkSchedule(time) === 2 ? true : false)
-                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] text-[white] text-[14px]'>
-                                                        Thường
+                                                    }} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]'>
+                                                        Trực tuyến
                                                     </button>
-                                                    <button onClick={() => setVisibleList(true)} className='px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
+                                                    <button onClick={() => setVisibleList(true)} className='px-3 py-1 w-[100px] transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]'>
                                                         Theo Dõi
                                                     </button>
 

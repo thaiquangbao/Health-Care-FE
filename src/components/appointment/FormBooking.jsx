@@ -92,19 +92,37 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
                             {sortDates(schedules).map((schedule, index) => (
                                 <div key={index} className='w-full px-[1rem] cursor-pointer flex flex-col shadow-[#35a4ff2a] border-[1px] border-[#0890ff2a] bg-[white] shadow-xl py-2 text-[15px] font-semibold rounded-lg'>
                                     <span onClick={() => display === index + 1 ? setDisplay(0) : setDisplay(index + 1)} className='text-[16px] '>{convertDateToDayMonthYearVietNam2(schedule.date)}</span>
-                                    <div style={{ height: display === index + 1 ? `${40 + (timeRef.current ? (timeRef.current.offsetHeight + 2) * schedule.times.length : 0)}px` : 0, transition: '0.5s' }} className='overflow-hidden flex flex-col gap-1'>
-                                        <span className='mt-2 font-bold px-[1rem]'>Giờ hẹn hiện có</span>
-                                        {sortTimes(schedule.times).map((time, indexTime) => (
-                                            <div key={index} style={{ backgroundColor: appointmentDate.time === time.time ? '#35a4ff2a' : 'white' }} className='rounded-lg'>
-                                                <button onClick={() => setAppointmentDate({
-                                                    day: schedule.date.day,
-                                                    month: schedule.date.month,
-                                                    year: schedule.date.year,
-                                                    time: time.time
-                                                })} ref={timeRef} key={indexTime} className='hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]'>{time.time}</button>
+                                    {
+                                        compare2Date(schedule.date, convertDateToDayMonthYearObject(new Date().toISOString())) ? (
+                                            <div style={{ height: display === index + 1 ? `${40 + (timeRef.current ? (timeRef.current.offsetHeight + 2) * schedule.times.filter(time => new Date(new Date().getTime() + 120 * 60000).getHours() < Number(time.time.split(':')[0])).length : 0)}px` : 0, transition: '0.5s' }} className='overflow-hidden flex flex-col gap-1'>
+                                                <span className='mt-2 font-bold px-[1rem]'>Giờ hẹn hiện có</span>
+                                                {sortTimes(schedule.times).filter(time => new Date(new Date().getTime() + 120 * 60000).getHours() < Number(time.time.split(':')[0])).map((time, indexTime) => {
+                                                    return <div key={index} style={{ backgroundColor: appointmentDate.time === time.time ? '#35a4ff2a' : 'white' }} className='rounded-lg'>
+                                                        <button onClick={() => setAppointmentDate({
+                                                            day: schedule.date.day,
+                                                            month: schedule.date.month,
+                                                            year: schedule.date.year,
+                                                            time: time.time
+                                                        })} ref={timeRef} key={indexTime} className='hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]'>{time.time}</button>
+                                                    </div>
+                                                })}
                                             </div>
-                                        ))}
-                                    </div>
+                                        ) : (
+                                            <div style={{ height: display === index + 1 ? `${40 + (timeRef.current ? (timeRef.current.offsetHeight + 2) * schedule.times.length : 0)}px` : 0, transition: '0.5s' }} className='overflow-hidden flex flex-col gap-1'>
+                                                <span className='mt-2 font-bold px-[1rem]'>Giờ hẹn hiện có</span>
+                                                {sortTimes(schedule.times).map((time, indexTime) => {
+                                                    return <div key={index} style={{ backgroundColor: appointmentDate.time === time.time ? '#35a4ff2a' : 'white' }} className='rounded-lg'>
+                                                        <button onClick={() => setAppointmentDate({
+                                                            day: schedule.date.day,
+                                                            month: schedule.date.month,
+                                                            year: schedule.date.year,
+                                                            time: time.time
+                                                        })} ref={timeRef} key={indexTime} className='hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]'>{time.time}</button>
+                                                    </div>
+                                                })}
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             ))}
                         </div>

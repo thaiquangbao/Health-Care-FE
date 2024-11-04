@@ -1,6 +1,7 @@
 import { appointmentContext } from "@/context/AppointmentContext"
 import { globalContext, notifyType } from "@/context/GlobalContext"
 import { userContext } from "@/context/UserContext"
+import { utilsContext } from "@/context/UtilsContext"
 import { api, TypeHTTP } from "@/utils/api"
 import axios from "axios"
 import { useContext, useState } from "react"
@@ -10,6 +11,7 @@ const FormBookingHome = ({ visible, hidden }) => {
     const { userData } = useContext(userContext)
     const [currentStep, setCurrentStep] = useState(1)
     const [note, setNote] = useState('')
+    const { utilsHandler } = useContext(utilsContext)
     const [equipments, setEquipments] = useState({
         thermometer: false,
         bloodPressureMonitor: false,
@@ -40,10 +42,14 @@ const FormBookingHome = ({ visible, hidden }) => {
                         price_list: appointmentData.priceList._id,
                         equipment: equipments
                     }
+                    utilsHandler.notify(notifyType.LOADING, 'Đang đặt hẹn')
                     api({ sendToken: true, type: TypeHTTP.POST, body, path: '/appointmentHomes/save' })
                         .then(res => {
-                            globalThis.window.location.reload()
-                            hidden()
+                            utilsHandler.notify(notifyType.SUCCESS, 'Đặt hẹn thành công, chờ bác sĩ xác nhận')
+                            setTimeout(() => {
+                                globalThis.window.location.reload()
+                                hidden()
+                            }, 500);
                         })
                 })
         }
