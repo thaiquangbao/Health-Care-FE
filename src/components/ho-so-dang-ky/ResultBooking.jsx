@@ -16,10 +16,12 @@ const ResultBooking = () => {
     const router = useRouter()
 
     const handleSubmit = () => {
-        if (userData.user) {
-          globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-          router.push('/bac-si-noi-bat')
-          globalHandler.reload()
+        router.push('/bac-si-noi-bat')
+        globalHandler.reload()
+        // if (userData.user) {
+        //   globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
+        //   router.push('/bac-si-noi-bat')
+        //   globalHandler.reload()
         //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
         //     const formData = new FormData()
         //     bookingData.images.forEach(item => {
@@ -60,7 +62,7 @@ const ResultBooking = () => {
         //                     globalHandler.reload()
         //                 })
         //         })
-        }
+        // }
     }
 
     return (
