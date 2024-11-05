@@ -142,51 +142,59 @@ const CuocHenCuaBan = () => {
       path: "/appointments/patient-cancel",
       type: TypeHTTP.POST,
       body: body,
-    }).then((res) => {
-      let record = JSON.parse(
-        JSON.stringify(
-          doctorRecords.filter(
-            (item) =>
-              item._id === appointment.doctor_record_id
-          )[0]
-        )
-      );
-      let schedule = record.schedules.filter(
-        (item) =>
-          item.date.day ===
-            appointment.appointment_date.day &&
-          item.date.month ===
-            appointment.appointment_date.month &&
-          item.date.year ===
-            appointment.appointment_date.year
-      )[0];
-      let time = schedule.times.filter(
-        (item) =>
-          item.time === appointment.appointment_date.time
-      )[0];
-      time.status = "";
-      api({
-        type: TypeHTTP.POST,
-        path: "/doctorRecords/update",
-        sendToken: false,
-        body: record,
-      }).then((res1) => {
-        setAppointments((prev) =>
-          prev.map((item) => {
-            if (item._id === res._id) {
-              //res._id ???
-              return res;
-            }
-            return item;
-          })
+    })
+      .then((res) => {
+        let record = JSON.parse(
+          JSON.stringify(
+            doctorRecords.filter(
+              (item) =>
+                item._id === appointment.doctor_record_id
+            )[0]
+          )
         );
+        let schedule = record.schedules.filter(
+          (item) =>
+            item.date.day ===
+              appointment.appointment_date.day &&
+            item.date.month ===
+              appointment.appointment_date.month &&
+            item.date.year ===
+              appointment.appointment_date.year
+        )[0];
+        let time = schedule.times.filter(
+          (item) =>
+            item.time === appointment.appointment_date.time
+        )[0];
+        time.status = "";
+        api({
+          type: TypeHTTP.POST,
+          path: "/doctorRecords/update",
+          sendToken: false,
+          body: record,
+        }).then((res1) => {
+          setAppointments((prev) =>
+            prev.map((item) => {
+              if (item._id === res._id) {
+                //res._id ???
+                return res;
+              }
+              return item;
+            })
+          );
+          globalHandler.notify(
+            notifyType.SUCCESS,
+            "Đã hủy cuộc hẹn"
+          );
+          globalHandler.reload();
+        });
+      })
+      .catch((err) => {
         globalHandler.notify(
-          notifyType.SUCCESS,
-          "Đã hủy cuộc hẹn"
+          notifyType.WARNING,
+          err.message
         );
         globalHandler.reload();
       });
-    });
   };
 
   return (
