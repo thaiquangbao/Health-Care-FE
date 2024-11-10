@@ -23,7 +23,6 @@ const FormDetailAppointment = ({
   const [medicalRecords, setMedicalRecords] = useState([]);
   useEffect(() => {
     if (data) {
-
       api({
         type: TypeHTTP.GET,
         sendToken: false,
@@ -42,19 +41,19 @@ const FormDetailAppointment = ({
       style={
         data
           ? {
-            height: "90%",
-            width: "80%",
-            transition: "0.3s",
-            backgroundSize: "cover",
-            overflow: "hidden",
-            backgroundImage: "url(/bg.png)",
-          }
+              height: "90%",
+              width: "80%",
+              transition: "0.3s",
+              backgroundSize: "cover",
+              overflow: "hidden",
+              backgroundImage: "url(/bg.png)",
+            }
           : {
-            height: 0,
-            width: 0,
-            transition: "0.3s",
-            overflow: "hidden",
-          }
+              height: 0,
+              width: 0,
+              transition: "0.3s",
+              overflow: "hidden",
+            }
       }
       className="z-[41] w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -66,10 +65,11 @@ const FormDetailAppointment = ({
               className="w-[60px] aspect-square shadow-xl rounded-full"
               style={{
                 backgroundSize: "cover",
-                backgroundImage: `url(${userData.user?.role !== "DOCTOR"
-                  ? doctorRecord?.doctor?.image
-                  : data?.patient?.image
-                  })`,
+                backgroundImage: `url(${
+                  userData.user?.role !== "DOCTOR"
+                    ? doctorRecord?.doctor?.image
+                    : data?.patient?.image
+                })`,
               }}
             ></div>
             <div className="flex flex-col">
@@ -100,18 +100,20 @@ const FormDetailAppointment = ({
                     data?.status === "ACCEPTED"
                       ? "green"
                       : data?.status === "QUEUE"
-                        ? "#999"
-                        : data?.status === "COMPLETED" ? 'blue' : "red",
+                      ? "#999"
+                      : data?.status === "COMPLETED"
+                      ? "blue"
+                      : "red",
                 }}
                 className="font-medium text-[14px]"
               >
                 {data?.status === "ACCEPTED"
                   ? calculateDetailedTimeDifference(
-                    convertDateToDayMonthYearTimeObject(
-                      new Date().toISOString()
-                    ),
-                    data?.appointment_date
-                  )
+                      convertDateToDayMonthYearTimeObject(
+                        new Date().toISOString()
+                      ),
+                      data?.appointment_date
+                    )
                   : data?.status_message}
               </span>
               <div className="relative flex h-4 w-4">
@@ -121,8 +123,10 @@ const FormDetailAppointment = ({
                       data?.status === "ACCEPTED"
                         ? "green"
                         : data?.status === "QUEUE"
-                          ? "#999"
-                          : data?.status === "COMPLETED" ? 'blue' : "red",
+                        ? "#999"
+                        : data?.status === "COMPLETED"
+                        ? "blue"
+                        : "red",
                   }}
                   className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                 ></span>
@@ -132,8 +136,10 @@ const FormDetailAppointment = ({
                       data?.status === "ACCEPTED"
                         ? "green"
                         : data?.status === "QUEUE"
-                          ? "#999"
-                          : data?.status === "COMPLETED" ? 'blue' : "red",
+                        ? "#999"
+                        : data?.status === "COMPLETED"
+                        ? "blue"
+                        : "red",
                   }}
                   className="relative inline-flex h-4 w-4 rounded-full"
                 ></span>
@@ -148,15 +154,17 @@ const FormDetailAppointment = ({
             </span>{" "}
             {data?.note}
           </span>
-          {display && (
+          {!display && (
             <button
               onClick={() => {
                 hidden();
-                globalThis.window.location.href = `${deploy}/zero/${data?._id
-                  }/${userData.user?.role === "USER"
+                globalThis.window.location.href = `${deploy}/zero/${
+                  data?._id
+                }/${
+                  userData.user?.role === "USER"
                     ? "patient"
                     : "doctor"
-                  }`;
+                }`;
               }}
               className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
             >
@@ -167,18 +175,43 @@ const FormDetailAppointment = ({
         <div className="flex px-4 text-[14px] gap-[2rem]">
           <span className="font-semibold">Thông Số: </span>
           <div className="flex items-center gap-5 text-[13px]">
-            <span>Cân Nặng: {data?.weight === 0 ? "Không" : data?.weight}</span>
-            <span>Chiều cao: {data?.height === 0 ? "Không" : data?.weight}</span>
-            <span>Nhịp Tim: {data?.healthRate === 0 ? "Không" : data?.healthRate}</span>
-            <span>Huyết Áp: {data?.bloodPressure === "" ? "Không" : data?.bloodPressure}</span>
-            <span>Nhiệt độ: {data?.temperature === 0 ? "Không" : data?.temperature}</span>
+            <span>
+              Cân Nặng:{" "}
+              {data?.weight === 0 ? "Không" : data?.weight}
+            </span>
+            <span>
+              Chiều cao:{" "}
+              {data?.height === 0 ? "Không" : data?.weight}
+            </span>
+            <span>
+              Nhịp Tim:{" "}
+              {data?.healthRate === 0
+                ? "Không"
+                : data?.healthRate}
+            </span>
+            <span>
+              Huyết Áp:{" "}
+              {data?.bloodPressure === ""
+                ? "Không"
+                : data?.bloodPressure}
+            </span>
+            <span>
+              Nhiệt độ:{" "}
+              {data?.temperature === 0
+                ? "Không"
+                : data?.temperature}
+            </span>
           </div>
         </div>
         <div className="flex px-4 text-[14px] gap-[2rem]">
           <span className="font-semibold">Hình Ảnh: </span>
           <div className="flex items-center gap-5 text-[13px]">
             {data?.images?.map((image, index) => (
-              <div key={index} style={{ backgroundImage: `url(${image})` }} className="h-[50px] bg-cover aspect-video" />
+              <div
+                key={index}
+                style={{ backgroundImage: `url(${image})` }}
+                className="h-[50px] bg-cover aspect-video"
+              />
             ))}
           </div>
         </div>
