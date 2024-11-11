@@ -67,7 +67,7 @@ const HoSoBacSi = () => {
                 }
             });
         }
-    }, [appointmentData.doctorRecord, authData.assessment])
+    }, [authData.assessment])
 
     return (
         <div className="w-full pb-4 flex flex-col pt-[60px] px-[5%] background-public">

@@ -79,15 +79,14 @@ const Schedule = ({
         currentDate.getTimezoneOffset(); // Local timezone offset in minutes
       const vietnamTime = new Date(
         currentDate.getTime() +
-          (vietnamTimeOffset + localTimeOffset) * 60000
+        (vietnamTimeOffset + localTimeOffset) * 60000
       );
       const timeLimit = {
         day: vietnamTime.getDate(),
         month: vietnamTime.getMonth() + 1,
         year: vietnamTime.getFullYear(),
-        time: `${
-          vietnamTime.getHours() + 2
-        }:${vietnamTime.getMinutes()}`,
+        time: `${vietnamTime.getHours() + 2
+          }:${vietnamTime.getMinutes()}`,
       };
       // data là AppointmentHome á nha
       const body = {
