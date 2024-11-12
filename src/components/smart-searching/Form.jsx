@@ -40,7 +40,7 @@ const Form = ({ visible, hidden }) => {
   const [activeMetric, setActiveMetric] =
     useState("thoigian");
   const router = useRouter();
-
+  const [answerAI, setAnswerAI] = useState("");
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -114,7 +114,12 @@ const Form = ({ visible, hidden }) => {
         symptom: des,
       },
     })
-      .then((res) => console.log(res))
+      .then((res) => {
+        setDoctorRecordAIs(res.data);
+        setAnswerAI(res.ai);
+        setDes("");
+        setCurrentStep(2);
+      })
       .catch((err) =>
         utilsHandler.notify(
           notifyType.WARNING,
@@ -170,7 +175,12 @@ const Form = ({ visible, hidden }) => {
       }
     });
   };
-
+  const handleDoctorRecord = (dr) => {
+    refresh();
+    hidden();
+    setAnswerAI("");
+    router.push(`/ho-so-bac-si/${dr.doctor._id}`);
+  };
   return (
     <div
       style={
@@ -279,59 +289,141 @@ const Form = ({ visible, hidden }) => {
                 </div>
               )}
             </div>
-            <div className="min-w-[100%] flex flex-col gap-4 px-4 pt-9">
-              <span className="font-space font-bold text-[20px]">
-                Các Bác Sĩ Được Đề Xuất (
-                {date &&
-                  time &&
-                  convertDateToDayMonthYearVietNam({
-                    ...convertDateInputToObject(date),
-                    time,
-                  })}
-                )
-              </span>
-              <div className="px-2 py-2 grid grid-cols-4 gap-5 rounded-lg h-[300px] overflow-auto w-full ">
-                {filterDoctorRecords.map((item, index) => (
-                  <div
-                    onClick={() =>
-                      handleCreateAppointment(item)
-                    }
-                    key={index}
-                    className="bg-[white] cursor-pointer h-[220px] shadow-xl shadow-[#35a4ff2a] pt-[5px] overflow-hidden rounded-lg justify-center items-center flex flex-col"
-                  >
-                    <div
-                      style={{
-                        backgroundImage: `url(${item?.doctor?.image})`,
-                        backgroundSize: "cover",
-                      }}
-                      className="px-[1rem] w-[60%] aspect-square rounded-full"
-                    ></div>
-                    <span className="px-[1rem] font-space text-[15px] font-medium mt-[0.5rem]">
-                      BS {item?.doctor?.fullName}
-                    </span>
-                    <div className="px-[1rem] flex items-center scale-[0.9] gap-[1rem] mt-[0.5rem] font-medium">
-                      <div className="flex items-center gap-1">
-                        <i className="bx bxs-calendar-check text-[18px] text-[#5050ff]"></i>
-                        <span className="text-[14px]">
-                          {item?.examination_call}
+            {activeMetric === "thoigian" ? (
+              // Tìm kiếm bằng thời gian
+              <div className="min-w-[100%] flex flex-col gap-4 px-4 pt-9">
+                <div className="flex flex-row">
+                  <i
+                    onClick={() => setCurrentStep(1)}
+                    className="bx bx-chevron-left text-[30px] cursor-pointer text-[#565656]"
+                  ></i>
+                  <span className="font-space font-bold text-[20px]">
+                    Các Bác Sĩ Được Đề Xuất (
+                    {date &&
+                      time &&
+                      convertDateToDayMonthYearVietNam({
+                        ...convertDateInputToObject(date),
+                        time,
+                      })}
+                    )
+                  </span>
+                </div>
+
+                <div className="px-2 py-2 grid grid-cols-4 gap-5 rounded-lg h-[300px] overflow-auto w-full ">
+                  {filterDoctorRecords.map(
+                    (item, index) => (
+                      <div
+                        onClick={() =>
+                          handleCreateAppointment(item)
+                        }
+                        key={index}
+                        className="bg-[white] cursor-pointer h-[220px] shadow-xl shadow-[#35a4ff2a] pt-[5px] overflow-hidden rounded-lg justify-center items-center flex flex-col"
+                      >
+                        <div
+                          style={{
+                            backgroundImage: `url(${item?.doctor?.image})`,
+                            backgroundSize: "cover",
+                          }}
+                          className="px-[1rem] w-[60%] aspect-square rounded-full"
+                        ></div>
+                        <span className="px-[1rem] font-space text-[15px] font-medium mt-[0.5rem]">
+                          BS {item?.doctor?.fullName}
+                        </span>
+                        <div className="px-[1rem] flex items-center scale-[0.9] gap-[1rem] mt-[0.5rem] font-medium">
+                          <div className="flex items-center gap-1">
+                            <i className="bx bxs-calendar-check text-[18px] text-[#5050ff]"></i>
+                            <span className="text-[14px]">
+                              {item?.examination_call}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <i className="bx bxs-star text-[18px] text-[#5050ff]"></i>
+                            <span className="text-[14px]">
+                              {item?.assessment === 0
+                                ? 0
+                                : item?.assessment.toFixed(
+                                    1
+                                  )}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="px-[1rem] mt-[0.25rem] py-1 rounded-md text-[12px] bg-[#e0eff6]">
+                          Chuyên {item?.doctor.specialize}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <i className="bx bxs-star text-[18px] text-[#5050ff]"></i>
-                        <span className="text-[14px]">
-                          {item?.assessment === 0
-                            ? 0
-                            : item?.assessment.toFixed(1)}
-                        </span>
-                      </div>
-                    </div>
-                    <span className="px-[1rem] mt-[0.25rem] py-1 rounded-md text-[12px] bg-[#e0eff6]">
-                      Chuyên {item?.doctor.specialize}
-                    </span>
-                  </div>
-                ))}
+                    )
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              // Tìm kiểm bằng AI
+              <div className="min-w-[100%] flex flex-col gap-4 px-4 pt-9">
+                <div className="flex flex-row">
+                  <i
+                    onClick={() => setCurrentStep(1)}
+                    className="bx bx-chevron-left text-[30px] cursor-pointer text-[#565656]"
+                  ></i>
+                  <span className="font-space font-bold text-[20px]">
+                    Các Bác Sĩ Được Đề Xuất
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[14px] font-bold">
+                    Mô tả sức khỏe
+                  </span>
+                  <span className="text-[13px]">
+                    {answerAI}
+                  </span>
+                  <span className="text-[14px] font-bold">
+                    Các bác sĩ chúng tôi đề xuất cho bạn:
+                  </span>
+                </div>
+                {/* router.push(
+                          `/ho-so-bac-si/${item.doctor._id}`
+                        ) */}
+                <div className="px-2 py-2 grid grid-cols-4 gap-5 rounded-lg h-[300px] overflow-auto w-full ">
+                  {doctorRecordAIs.map((item, index) => (
+                    <div
+                      onClick={() =>
+                        handleDoctorRecord(item)
+                      }
+                      key={index}
+                      className="bg-[white] cursor-pointer h-[250px] shadow-xl shadow-[#35a4ff2a] pt-[5px] overflow-hidden rounded-lg justify-center items-center flex flex-col"
+                    >
+                      <div
+                        style={{
+                          backgroundImage: `url(${item?.doctor?.image})`,
+                          backgroundSize: "cover",
+                        }}
+                        className="px-[1rem] w-[60%] aspect-square rounded-full"
+                      ></div>
+                      <span className="px-[1rem] font-space text-[15px] font-medium mt-[0.5rem]">
+                        BS {item?.doctor?.fullName}
+                      </span>
+                      <div className="px-[1rem] flex items-center scale-[0.9] gap-[1rem] mt-[0.5rem] font-medium">
+                        <div className="flex items-center gap-1">
+                          <i className="bx bxs-calendar-check text-[18px] text-[#5050ff]"></i>
+                          <span className="text-[14px]">
+                            {item?.examination_call}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <i className="bx bxs-star text-[18px] text-[#5050ff]"></i>
+                          <span className="text-[14px]">
+                            {item?.assessment === 0
+                              ? 0
+                              : item?.assessment.toFixed(1)}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="px-[1rem] mt-[0.25rem] py-1 rounded-md text-[12px] bg-[#e0eff6]">
+                        Chuyên {item?.doctor.specialize}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
