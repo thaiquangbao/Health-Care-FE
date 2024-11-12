@@ -432,3 +432,60 @@ export const adjustDisplayTime = (time) => {
     }
     return timeNumber
 }
+
+/// them
+export const getMonthArray = (startMonth, startYear) => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // Tháng hiện tại (1 - 12)
+
+    const months = [];
+
+    let year = startYear;
+    let month = startMonth;
+
+    while (year < currentYear || (year === currentYear && month <= currentMonth)) {
+        months.push(`${month.toString().padStart(2, '0')}/${year}`);
+        month++;
+
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
+    }
+
+    return months;
+};
+
+export const getFirstAndLastDayOfMonth = (month) => {
+    const [monthStr, yearStr] = month.split('/');
+    const monthNumber = parseInt(monthStr, 10) - 1; // Trừ đi 1 vì tháng trong Date bắt đầu từ 0
+    const year = parseInt(yearStr, 10);
+
+    // Ngày đầu tiên của tháng
+    const firstDay = new Date(year, monthNumber, 1).toISOString();
+
+    // Ngày cuối cùng của tháng
+    const lastDay = new Date(year, monthNumber + 1, 0).toISOString(); // Chuyển sang tháng tiếp theo và lùi lại một ngày
+
+    return {
+        firstDay,
+        lastDay,
+    };
+};
+
+export const getFirstAndLastDayOfWeek = (date = new Date()) => {
+    const currentDate = new Date(date);
+
+    // Tìm ngày đầu tiên của tuần (Thứ Hai)
+    const firstDay = new Date(currentDate);
+    const dayOfWeek = currentDate.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Nếu là Chủ Nhật (0), lùi về Thứ Hai trước đó
+    firstDay.setDate(currentDate.getDate() + diffToMonday);
+
+    // Tìm ngày cuối cùng của tuần (Chủ Nhật)
+    const lastDay = new Date(firstDay);
+    lastDay.setDate(firstDay.getDate() + 6); // Cộng 6 ngày để ra Chủ Nhật
+
+    return { firstDay: firstDay.toISOString(), lastDay: lastDay.toISOString() };
+};

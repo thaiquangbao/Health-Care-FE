@@ -140,11 +140,11 @@ const Form = ({ visible, hidden }) => {
         .filter(
           (item) =>
             item.appointment_date.day ===
-              convertDateInputToObject(date).day &&
+            convertDateInputToObject(date).day &&
             item.appointment_date.month ===
-              convertDateInputToObject(date).month &&
+            convertDateInputToObject(date).month &&
             item.appointment_date.year ===
-              convertDateInputToObject(date).year &&
+            convertDateInputToObject(date).year &&
             item.appointment_date.time === time
         )[0];
       if (result) {
@@ -186,19 +186,19 @@ const Form = ({ visible, hidden }) => {
       style={
         visible
           ? {
-              height: "400px",
-              width: "800px",
-              transition: "0.3s",
-              backgroundImage: "url(/bg.png)",
-              backgroundSize: "cover",
-              overflow: "hidden",
-            }
+            height: "400px",
+            width: "800px",
+            transition: "0.3s",
+            backgroundImage: "url(/bg.png)",
+            backgroundSize: "cover",
+            overflow: "hidden",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -217,11 +217,10 @@ const Form = ({ visible, hidden }) => {
               </span>
               <div className="flex space-x-2">
                 <button
-                  className={`border border-gray-300 rounded-full px-4 py-1 text-black ${
-                    activeMetric === "thoigian"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white"
-                  }`}
+                  className={`border border-gray-300 rounded-full px-4 py-1 text-black ${activeMetric === "thoigian"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white"
+                    }`}
                   onClick={() =>
                     setActiveMetric("thoigian")
                   }
@@ -229,11 +228,10 @@ const Form = ({ visible, hidden }) => {
                   Tìm kiếm theo thời gian
                 </button>
                 <button
-                  className={`border border-gray-300 rounded-full px-4 text-black ${
-                    activeMetric === "hethong"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white"
-                  }`}
+                  className={`border border-gray-300 rounded-full px-4 text-black ${activeMetric === "hethong"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white"
+                    }`}
                   onClick={() => setActiveMetric("hethong")}
                 >
                   Gợi ý của hệ thống
@@ -283,7 +281,7 @@ const Form = ({ visible, hidden }) => {
                       onChange={(e) =>
                         setDes(e.target.value)
                       }
-                      className="border-[1px] focus:outline-none px-2 py-1 h-[100px] border-[#d7d7d7] rounded-lg w-full"
+                      className="border-[1px] focus:outline-none px-2 py-1 h-[170px] border-[#d7d7d7] rounded-lg w-full"
                     />
                   </div>
                 </div>
@@ -342,8 +340,8 @@ const Form = ({ visible, hidden }) => {
                               {item?.assessment === 0
                                 ? 0
                                 : item?.assessment.toFixed(
-                                    1
-                                  )}
+                                  1
+                                )}
                             </span>
                           </div>
                         </div>
@@ -357,7 +355,7 @@ const Form = ({ visible, hidden }) => {
               </div>
             ) : (
               // Tìm kiểm bằng AI
-              <div className="min-w-[100%] flex flex-col gap-4 px-4 pt-9">
+              <div className="min-w-[100%] max-h-[100%] flex flex-col gap-4 px-4 pt-3">
                 <div className="flex flex-row">
                   <i
                     onClick={() => setCurrentStep(1)}
@@ -381,14 +379,14 @@ const Form = ({ visible, hidden }) => {
                 {/* router.push(
                           `/ho-so-bac-si/${item.doctor._id}`
                         ) */}
-                <div className="px-2 py-2 grid grid-cols-4 gap-5 rounded-lg h-[300px] overflow-auto w-full ">
+                <div className="px-2 pb-16 grid grid-cols-4 gap-5 rounded-lg h-[300px] overflow-auto w-full ">
                   {doctorRecordAIs.map((item, index) => (
                     <div
                       onClick={() =>
                         handleDoctorRecord(item)
                       }
                       key={index}
-                      className="bg-[white] cursor-pointer h-[250px] shadow-xl shadow-[#35a4ff2a] pt-[5px] overflow-hidden rounded-lg justify-center items-center flex flex-col"
+                      className="bg-[white] cursor-pointer h-[220px] shadow-xl shadow-[#35a4ff2a] overflow-hidden rounded-lg justify-center items-center flex flex-col"
                     >
                       <div
                         style={{
@@ -397,7 +395,7 @@ const Form = ({ visible, hidden }) => {
                         }}
                         className="px-[1rem] w-[60%] aspect-square rounded-full"
                       ></div>
-                      <span className="px-[1rem] font-space text-[15px] font-medium mt-[0.5rem]">
+                      <span className="px-[1rem] font-space text-[13px] text-center font-medium mt-[0.5rem]">
                         BS {item?.doctor?.fullName}
                       </span>
                       <div className="px-[1rem] flex items-center scale-[0.9] gap-[1rem] mt-[0.5rem] font-medium">

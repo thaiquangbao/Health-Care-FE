@@ -7,10 +7,13 @@ import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
   compare2Date,
+  compareDate1GetterThanDate2,
   compareTimeDate1GreaterThanDate2,
   convertDateToDayMonthYearObject,
   convertDateToDayMonthYearTimeObject,
   convertDateToDayMonthYearVietNam,
+  getFirstAndLastDayOfMonth,
+  getFirstAndLastDayOfWeek,
   isALargerThanBPlus60Minutes,
   isALargerWithin10Minutes,
   isALargerWithin60Minutes,
@@ -27,8 +30,7 @@ import React, {
   useState,
 } from "react";
 
-const HenKhamTaiNha = ({ type, setType }) => {
-  const { userData } = useContext(userContext);
+const HenKhamTaiNha = ({ month }) => {
   const [appointmentHomes, setAppointmentHomes] = useState([]);
   const { appointmentData, appointmentHandler } =
     useContext(appointmentContext);
@@ -37,235 +39,56 @@ const HenKhamTaiNha = ({ type, setType }) => {
   const [time, setTime] = useState(
     new Date().getHours() + ":" + new Date().getMinutes()
   );
-  const [displayConnect, setDisplayConnect] =
-    useState(false);
   const intervalRef = useRef();
-  const chartRef = useRef(null);
-  const [sumAppointmentHome, setSumAppointmentHome] = useState(0);
-  const [sumAppointmentWeekHome, setSumAppointmentWeekHome] =
-    useState(0);
-  const [sumAppointmentMonthHome, setSumAppointmentMonthHome] =
-    useState(0);
-  const typeTime = {
-    1: "tổng",
-    2: "tuần này",
-    3: "tháng này",
-  };
+  const [revenueToday, setRevenueToday] = useState(0);
+  const [revenueYesterday, setRevenueYesterday] = useState(0);
+  const [revenueWeek, setRevenueWeek] = useState(0);
+  const [revenueMonth, setRevenueMonth] = useState(0);
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setTime(
         new Date().getHours() +
-          ":" +
-          new Date().getMinutes()
+        ":" +
+        new Date().getMinutes()
       );
     }, 60000);
   }, []);
+
   useEffect(() => {
-    if (chartRef.current && appointmentHomes) {
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
-      }
-      // Tạo đối tượng để lưu trữ số lượng lịch đặt hẹn cho mỗi ngày
-      const appointmentCounts = {};
-
-      // Duyệt qua danh sách appointments và cập nhật đối tượng
-      appointmentHomes.forEach((item) => {
-        const date = `${item.appointment_date.day}/${item.appointment_date.month}/${item.appointment_date.year}`;
-        if (appointmentCounts[date]) {
-          appointmentCounts[date]++;
-        } else {
-          appointmentCounts[date] = 1;
-        }
-      });
-
-      // Chuyển đổi đối tượng thành mảng để sử dụng trong biểu đồ
-      const labels = Object.keys(appointmentCounts);
-      const data = Object.values(appointmentCounts).map(
-        (item) => item * 280000
-      );
-
-      // setTimesLong(times);
-      const context = chartRef.current.getContext("2d");
-      const newChart = new Chart(context, {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Bar Dataset",
-              data: data,
-              backgroundColor: ["rgba(255, 99, 132, 0.2)"],
-              borderColor: ["rgba(255, 99, 132, 0.2)"],
-              borderWidth: 2,
-            },
-            {
-              type: "line",
-              label: "Line Dataset",
-              data: data,
-              borderColor: "rgb(255, 99, 132)",
-              backgroundColor: "rgb(255, 99, 132)",
-              borderWidth: 2,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: false,
-              title: {
-                display: true,
-                text: "Doanh thu (VNĐ)",
-              },
-            },
-            x: {
-              title: {
-                display: true,
-                text: "Thời gian",
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              position: "top",
-              labels: {
-                usePointStyle: true,
-              },
-            },
-          },
-          maintainAspectRatio: false,
-        },
-      });
-
-      chartRef.current.chart = newChart;
-    }
-  }, [appointmentHomes]);
-  useEffect(() => {
-    api({
-      type: TypeHTTP.GET,
-      path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
-      sendToken: true,
-    }).then((res) => {
-      setSumAppointmentHome(res.filter((item) => item.status?.status_type === "COMPLETED").length);
-    });
-    const body = {
-      doctor_record_id: appointmentData.doctorRecord?._id,
-    };
-    api({
-      type: TypeHTTP.POST,
-      path: "/appointmentHomes/findByWeek",
-      body,
-      sendToken: false,
-    }).then((res) => {
-      const app = res.filter(
-        (item) => item.status?.status_type === "COMPLETED"
-      );
-
-      setSumAppointmentWeekHome(app.length);
-    });
-    api({
-      type: TypeHTTP.POST,
-      path: "/appointmentHomes/findByMonth",
-      body,
-      sendToken: false,
-    }).then((res) => {
-      const app = res.filter(
-        (item) => item.status?.status_type === "COMPLETED"
-      );
-
-      setSumAppointmentMonthHome(app.length);
-    });
-  }, [appointmentData.doctorRecord?._id]);
-  useEffect(() => {
-    if (appointmentHomes.length > 0) {
-      const theFirstAppointment = sortByAppointmentDate(
-        appointmentHomes.filter(
+    if (appointmentData.doctorRecord && month !== '') {
+      const firstDay = convertDateToDayMonthYearObject(getFirstAndLastDayOfMonth(month).firstDay)
+      const lastDay = convertDateToDayMonthYearObject(getFirstAndLastDayOfMonth(month).lastDay)
+      setLoading(true)
+      api({
+        type: TypeHTTP.GET,
+        path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord._id}`,
+        sendToken: true,
+      }).then((res) => {
+        // filter complete
+        let app = res.filter(
           (item) => item.status.status_type === "COMPLETED"
-        )
-      ).filter((item) =>
-        compareTimeDate1GreaterThanDate2(
-          item.appointment_date,
-          convertDateToDayMonthYearTimeObject(
-            new Date().toISOString()
+        );
+        // filter by date
+        app = app.filter(item => {
+          return (compareDate1GetterThanDate2(item.appointment_date, firstDay) === true &&
+            compareDate1GetterThanDate2(lastDay, item.appointment_date)
           )
-        )
-      )[0];
-      if (theFirstAppointment) {
-        if (
-          compare2Date(
-            convertDateToDayMonthYearTimeObject(
-              new Date().toISOString()
-            ),
-            theFirstAppointment.appointment_date
-          )
-        ) {
-          if (
-            isALargerWithin10Minutes(
-              theFirstAppointment.appointment_date.time,
-              time
-            ) ||
-            isALargerWithin60Minutes(
-              time,
-              theFirstAppointment.appointment_date.time
-            )
-          ) {
-            setDisplayConnect(theFirstAppointment._id);
-          }
-        }
-      }
+        })
+        setAppointmentHomes(app)
+        setLoading(false)
+      });
     }
-  }, [appointmentHomes, time]);
+  }, [appointmentData.doctorRecord, month]);
 
   useEffect(() => {
-    if (appointmentData.doctorRecord) {
-      if (type === "1") {
-        setLoading(true);
-        api({
-          type: TypeHTTP.GET,
-          path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
-          sendToken: true,
-        }).then((res) => {
-          setAppointmentHomes(res.filter((item) => item.status?.status_type === "COMPLETED"));
-          setLoading(false);
-        });
-      } else if (type === "2") {
-        const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
-        };
-        api({
-          type: TypeHTTP.POST,
-          path: "/appointmentHomes/findByWeek",
-          body,
-          sendToken: false,
-        }).then((res) => {
-          const app = res.filter(
-            (item) => item.status?.status_type === "COMPLETED"
-          );
-
-          setAppointmentHomes(app);
-          setLoading(false);
-        });
-      } else if (type === "3") {
-        const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
-        };
-        api({
-          type: TypeHTTP.POST,
-          path: "/appointmentHomes/findByMonth",
-          body,
-          sendToken: false,
-        }).then((res) => {
-          const app = res.filter(
-            (item) => item.status?.status_type === "COMPLETED"
-          );
-
-          setAppointmentHomes(app);
-          setLoading(false);
-        });
-      }
-    }
-  }, [type, appointmentData.doctorRecord]);
+    const today = convertDateToDayMonthYearObject(new Date().toISOString());
+    const yesterday = convertDateToDayMonthYearObject(new Date(new Date().setDate(new Date().getDate() - 1)).toISOString());
+    const { firstDay, lastDay } = getFirstAndLastDayOfWeek()
+    setRevenueToday(appointmentHomes.filter(item => compare2Date(item.appointment_date, today)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
+    setRevenueYesterday(appointmentHomes.filter(item => compare2Date(item.appointment_date, yesterday)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
+    setRevenueMonth(appointmentHomes.reduce((total, item) => total += item.price_list.price * 0.7, 0))
+    setRevenueWeek(appointmentHomes.filter(item => compareDate1GetterThanDate2(item.appointment_date, convertDateToDayMonthYearObject(firstDay)) && compareDate1GetterThanDate2(convertDateToDayMonthYearObject(lastDay), item.appointment_date)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
+  }, [appointmentHomes])
 
   return (
     <>
@@ -280,11 +103,11 @@ const HenKhamTaiNha = ({ type, setType }) => {
           <div className="flex items-end gap-2">
             <i className="text-[40px] bx bx-calendar-check"></i>
             <span className="text-[25px] font-semibold">
-              {returnNumber(sumAppointmentHome)}
+              {formatMoney(revenueToday) === '' ? 0 : formatMoney(revenueToday.toFixed(0))}đ
             </span>
           </div>
           <span className="font-medium text-[15px]">
-            Tất cả cuộc hẹn đã hoàn tất
+            Doanh thu hôm nay
           </span>
         </div>
         <div
@@ -297,16 +120,11 @@ const HenKhamTaiNha = ({ type, setType }) => {
           <div className="flex items-end gap-2">
             <i className="text-[40px] bx bx-dollar-circle"></i>
             <span className="text-[25px] font-semibold">
-              {sumAppointmentHome === 0
-                ? 0
-                : formatMoney(
-                    returnNumber(sumAppointmentHome) * 280000
-                  )}{" "}
-              đ
+              {formatMoney(revenueYesterday) === '' ? 0 : formatMoney(revenueYesterday.toFixed(0))}đ
             </span>
           </div>
           <span className="font-medium text-[15px]">
-            Tổng doanh thu
+            Doanh thu hôm qua
           </span>
         </div>
         <div
@@ -319,13 +137,7 @@ const HenKhamTaiNha = ({ type, setType }) => {
           <div className="flex items-end gap-2">
             <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
             <span className="text-[25px] font-semibold">
-              {sumAppointmentWeekHome === 0
-                ? 0
-                : formatMoney(
-                    returnNumber(sumAppointmentWeekHome) *
-                      280000
-                  )}{" "}
-              đ
+              {formatMoney(revenueWeek) === '' ? 0 : formatMoney(revenueWeek.toFixed(0))}đ
             </span>
           </div>
           <span className="font-medium text-[15px]">
@@ -342,27 +154,13 @@ const HenKhamTaiNha = ({ type, setType }) => {
           <div className="flex items-end gap-2">
             <i className="text-[40px] bx bx-line-chart"></i>
             <span className="text-[25px] font-semibold">
-              {sumAppointmentMonthHome === 0
-                ? 0
-                : formatMoney(
-                    returnNumber(sumAppointmentMonthHome) *
-                      280000
-                  )}{" "}
-              đ
+              {formatMoney(revenueMonth) === '' ? 0 : formatMoney(revenueMonth.toFixed(0))}đ
             </span>
           </div>
           <span className="font-medium text-[15px]">
             Doanh thu theo tháng
           </span>
         </div>
-      </div>
-      <div className="mt-8 relative h-[300px] w-full flex flex-col justify-center items-center gap-3">
-        <div>
-          <span className="text-[20px] font-bold">
-            Doanh thu {typeTime[type]}
-          </span>
-        </div>
-        <canvas ref={chartRef} />
       </div>
       <div className="w-full max-h-[500px] mt-6 overflow-y-auto relative">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -423,7 +221,7 @@ const HenKhamTaiNha = ({ type, setType }) => {
                   <td className="py-4">
                     {appointment.note}
                   </td>
-                  <td className="py-4">280.000đ</td>
+                  <td className="py-4">{formatMoney(appointment.price_list.price * 0.7)}đ</td>
                 </tr>
               ))}
           </tbody>

@@ -5,15 +5,28 @@ import HenKham from "@/components/thong-ke/HenKham";
 import HenKhamTaiNha from "@/components/thong-ke/HenKhamTaiNha";
 import TheoDoiSucKhoe from "@/components/thong-ke/TheoDoiSucKhoe";
 import { userContext } from "@/context/UserContext";
-import { useContext, useState } from "react";
+import { getMonthArray } from "@/utils/date";
+import { useContext, useEffect, useState } from "react";
 const ThongKeDoanhThu = () => {
   const { userData } = useContext(userContext);
   const [type, setType] = useState("1");
   const [ticketType, setTicketType] = useState("1");
   const [visibleForm, setVisibleForm] = useState(false);
+  const [months, setMonths] = useState([])
+  const [currentMonth, setCurrentMonth] = useState('')
   const hiddenTransfer = () => {
     setVisibleForm(false);
   };
+
+  useEffect(() => {
+    if (userData.user?.createdAt) {
+      const startMonth = Number(userData.user?.createdAt.split('-')[1])
+      const startYear = Number(userData.user?.createdAt.split('-')[0])
+      const months = getMonthArray(startMonth, startYear)
+      setMonths(months)
+      setCurrentMonth(months[months.length - 1])
+    }
+  }, [userData.user?.createdAt])
 
   return (
     <div className="w-full min-h-screen flex flex-col pt-[60px] px-[5%] background-public">
@@ -25,8 +38,8 @@ const ThongKeDoanhThu = () => {
               Chào Mừng Bác Sĩ{" "}
               {
                 userData.user?.fullName.split(" ")[
-                  userData.user?.fullName.split(" ")
-                    .length - 1
+                userData.user?.fullName.split(" ")
+                  .length - 1
                 ]
               }{" "}
               <img src="/hand.png" width={"30px"} />
@@ -36,7 +49,7 @@ const ThongKeDoanhThu = () => {
             </span>
           </div>
           <div className="flex gap-3">
-            <div
+            {/* <div
               className="px-4 py-2 text-[15px] shadow-lg text-center focus:outline-0 rounded-md font-medium cursor-pointer transition-transform transform hover:scale-105"
               style={{
                 background: "#28f677",
@@ -46,7 +59,7 @@ const ThongKeDoanhThu = () => {
               onClick={() => setVisibleForm(true)}
             >
               <span>Đánh giá của bệnh nhân</span>
-            </div>
+            </div> */}
             <select
               onChange={(e) =>
                 setTicketType(e.target.value)
@@ -64,26 +77,27 @@ const ThongKeDoanhThu = () => {
               </option>
             </select>
             <select
-              onChange={(e) => setType(e.target.value)}
+              value={currentMonth}
+              onChange={(e) => setCurrentMonth(e.target.value)}
               className="px-4 py-2 text-[15px] shadow-lg focus:outline-0 rounded-md font-medium"
             >
-              <option value={1}>Tất cả</option>
-              <option value={2}>Tuần này</option>
-              <option value={3}>Tháng Này</option>
+              {months.map((item, index) => (
+                <option key={index}>{item}</option>
+              ))}
             </select>
           </div>
         </div>
         {ticketType === "1" ? (
-          <HenKham type={type} setType={setType} />
+          <HenKham month={currentMonth} />
         ) : ticketType === "2" ? (
-          <TheoDoiSucKhoe type={type} setType={setType} />
+          <TheoDoiSucKhoe month={currentMonth} />
         ) : (
-          <HenKhamTaiNha type={type} setType={setType} />
+          <HenKhamTaiNha month={currentMonth} />
         )}
       </div>
-      {visibleForm && (
+      {/* {visibleForm && (
         <DanhSachDanhGia hidden={hiddenTransfer} />
-      )}
+      )} */}
     </div>
   );
 };

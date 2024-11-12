@@ -270,21 +270,9 @@ const HoSoBacSi = () => {
               (appointmentHomes
                 .filter((item) =>
                   [
-                    "CANCELED",
-                    "REJECTED",
-                    "COMPLETED",
+                    "QUEUE", 'ACCEPTED'
                   ].includes(item.status.status_type)
-                )
-                .map((item) => item.doctor_record_id)
-                .includes(doctorRecord?._id) &&
-                !appointmentHomes
-                  .filter((item) =>
-                    [
-                      "QUEUE"
-                    ].includes(item.status.status_type)
-                  )
-                  .map((item) => item.doctor_record_id)
-                  .includes(doctorRecord?._id))
+                ).filter(item => item.doctor_record_id === doctorRecord?._id && item.patient._id === userData.user?._id).length === 0)
             ) && (
                 <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                   <div className="flex flex-col text-[#333333]">
