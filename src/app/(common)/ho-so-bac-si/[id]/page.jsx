@@ -134,10 +134,11 @@ const HoSoBacSi = () => {
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
-            className={`w-6 h-6 ${star <= rating
-              ? "text-yellow-500"
-              : "text-gray-300"
-              }`}
+            className={`w-6 h-6 ${
+              star <= rating
+                ? "text-yellow-500"
+                : "text-gray-300"
+            }`}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -217,102 +218,112 @@ const HoSoBacSi = () => {
 
             {/* chổ này */}
 
-            {
-              !healthLogBooks.filter(
-                (log) =>
-                  log.status.status_type === "ACCEPTED" ||
-                  log.status.status_type === "QUEUE" ||
-                  log.status.status_type === "TRANSFER"
-              ).length > 0 && (
-                <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
-                  <div className="flex flex-col text-[#333333]">
-                    <span className="text-[14px]">
-                      SỐ ĐIỆN THOẠI
-                    </span>
-                    <span className="text-[17px]">
-                      {doctorRecord?.doctor?.phone}
-                    </span>
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => {
-                        if (userData.user) {
-                          if (userData.user?.email === "") {
-                            globalHandler.notify(
-                              notifyType.WARNING,
-                              "Vui lòng cập nhật email để đặt khám !!!"
-                            );
-                            return;
-                          }
-                        } else {
+            {!healthLogBooks.filter(
+              (log) =>
+                log.status.status_type === "ACCEPTED" ||
+                log.status.status_type === "QUEUE" ||
+                log.status.status_type === "TRANSFER"
+            ).length > 0 && (
+              <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+                <div className="flex flex-col text-[#333333]">
+                  <span className="text-[14px]">
+                    SỐ ĐIỆN THOẠI
+                  </span>
+                  <span className="text-[17px]">
+                    {doctorRecord?.doctor?.phone}
+                  </span>
+                </div>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (userData.user) {
+                        if (userData.user?.email === "") {
                           globalHandler.notify(
                             notifyType.WARNING,
-                            "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!"
+                            "Vui lòng cập nhật email để đặt khám !!!"
                           );
                           return;
                         }
-                        appointmentHandler.showFormSignUpHealth(
-                          doctorRecord
+                      } else {
+                        globalHandler.notify(
+                          notifyType.WARNING,
+                          "Vui lòng đăng nhập để đặt lịch theo dõi sức khỏe với bác sĩ nhé !!!"
                         );
-                      }}
-                      style={{
-                        background:
-                          "linear-gradient(to right, #6cd2c5, #2089e5)",
-                      }}
-                      className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
-                    >
-                      Đăng Ký Theo Dõi Sức Khỏe
-                    </button>
-                  </div>
+                        return;
+                      }
+                      appointmentHandler.showFormSignUpHealth(
+                        doctorRecord
+                      );
+                    }}
+                    style={{
+                      background:
+                        "linear-gradient(to right, #6cd2c5, #2089e5)",
+                    }}
+                    className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
+                  >
+                    Đăng Ký Theo Dõi Sức Khỏe
+                  </button>
                 </div>
-              )}
+              </div>
+            )}
             {(appointmentHomes.length === 0 ||
-              (appointmentHomes
+              appointmentHomes
                 .filter((item) =>
-                  [
-                    "QUEUE", 'ACCEPTED'
-                  ].includes(item.status.status_type)
-                ).filter(item => item.doctor_record_id === doctorRecord?._id && item.patient._id === userData.user?._id).length === 0)
-            ) && (
-                <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
-                  <div className="flex flex-col text-[#333333]">
-                    <span className="text-[14px]">
-                      GIÁ TƯ VẤN TẠI NHÀ
-                    </span>
-                    <span className="text-[17px]">
-                      {formatMoney(priceListHome?.price)} đ
-                    </span>
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => {
-                        if (userData.user) {
-                          if (userData.user?.email === "") {
-                            globalHandler.notify(
-                              notifyType.WARNING,
-                              "Vui lòng cập nhật email để đặt khám !!!"
-                            );
-                            return;
-                          }
-                        }
-                        appointmentHandler.setPriceList(
-                          priceListHome
-                        );
-                        appointmentHandler.showFormBookingHome(
-                          doctorRecord
-                        );
-                      }}
-                      style={{
-                        background:
-                          "linear-gradient(to right, #11998e, #38ef7d)",
-                      }}
-                      className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
-                    >
-                      Đặt Khám Ngay
-                    </button>
-                  </div>
+                  ["QUEUE", "ACCEPTED"].includes(
+                    item.status.status_type
+                  )
+                )
+                .filter(
+                  (item) =>
+                    item.doctor_record_id ===
+                      doctorRecord?._id &&
+                    item.patient._id === userData.user?._id
+                ).length === 0) && (
+              <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
+                <div className="flex flex-col text-[#333333]">
+                  <span className="text-[14px]">
+                    GIÁ TƯ VẤN TẠI NHÀ
+                  </span>
+                  <span className="text-[17px]">
+                    {formatMoney(priceListHome?.price)} đ
+                  </span>
                 </div>
-              )}
+                <div>
+                  <button
+                    onClick={() => {
+                      if (userData.user) {
+                        if (userData.user?.email === "") {
+                          globalHandler.notify(
+                            notifyType.WARNING,
+                            "Vui lòng cập nhật email để đặt khám !!!"
+                          );
+                          return;
+                        }
+                      } else {
+                        globalHandler.notify(
+                          notifyType.WARNING,
+                          "Vui lòng đăng nhập để đặt lịch tư vấn sức khỏe tại nhà với bác sĩ nhé !!!"
+                        );
+                        return;
+                      }
+                      appointmentHandler.setPriceList(
+                        priceListHome
+                      );
+                      appointmentHandler.showFormBookingHome(
+                        doctorRecord
+                      );
+                    }}
+                    style={{
+                      background:
+                        "linear-gradient(to right, #11998e, #38ef7d)",
+                    }}
+                    className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
+                  >
+                    Đặt Khám Ngay
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className=" z-0 pt-[15rem] overflow-hidden relative justify-center mt-[2rem] text-[#171717] w-[100%] items-center">
