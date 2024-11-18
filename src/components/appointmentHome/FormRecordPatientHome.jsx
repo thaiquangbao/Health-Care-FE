@@ -22,7 +22,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
   const [reAppointmentDate, setReAppointmentDate] = useState("");
   const [temperature, setTemperature] = useState(0);
   const [bloodPressure, setBloodPressure] = useState("");
-  const [heartRate, setHeartRate] = useState(0);
+  const [healthRate, setHealthRate] = useState(0);
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -35,7 +35,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
       setReAppointmentDate(`${medicalRecord.reExaminationDate.year}-${medicalRecord.reExaminationDate.month}-${medicalRecord.reExaminationDate.day}`)
       setTemperature(medicalRecord.temperature)
       setBloodPressure(medicalRecord.bloodPressure)
-      setHeartRate(medicalRecord.healthRate)
+      setHealthRate(medicalRecord.healthRate)
       setWeight(medicalRecord.weight)
       setHeight(medicalRecord.height)
     }
@@ -117,7 +117,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
         },
         temperature: temperature,
         bloodPressure: bloodPressure,
-        heartRate: heartRate,
+        healthRate: healthRate,
         weight: weight,
         height: height,
         medical: medical,
@@ -232,8 +232,8 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
           <input
             disabled={medicalRecord ? true : false}
             className="text-[14px] w-[80px] h-[30px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-            onChange={(e) => setHeartRate(e.target.value)}
-            value={heartRate}
+            onChange={(e) => setHealthRate(e.target.value)}
+            value={healthRate}
           />
           bpm
         </div>
