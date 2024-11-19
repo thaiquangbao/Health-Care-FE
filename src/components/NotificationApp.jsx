@@ -75,6 +75,19 @@ const NotificationApp = () => {
         }
       });
     } else if (
+      item.category === "PAYMENT" &&
+      userData.user?.role === "USER"
+    ) { 
+      api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/ho-so");
+      });
+    }
+    else if (
       item.category === "HEARTLOGBOOK" &&
       userData.user?.role === "USER"
     ) {
@@ -135,7 +148,17 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/phieu-dang-ky");
       });
-    } else {
+    } else if(item.category === "PAYBACK" &&
+      userData.user?.role === "DOCTOR") {
+        api({
+        type: TypeHTTP.POST,
+        body: { _id: item._id, seen: true },
+        sendToken: false,
+        path: "/notices/update",
+      }).then((res) => {
+        router.push("/ho-so");
+      });
+    }else {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },

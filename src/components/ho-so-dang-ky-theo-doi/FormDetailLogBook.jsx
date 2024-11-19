@@ -3,6 +3,7 @@ import { api, TypeHTTP } from "@/utils/api";
 import {
   calculateDetailedTimeDifference,
   convertDateToDayMonthYearTimeObject,
+  revertDate,
 } from "@/utils/date";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -147,7 +148,7 @@ const FormDetailLogBook = ({ data, onClose }) => {
                   <label className="text-[#5e5e5e] text-[15px]">
                     Ngày sinh:
                   </label>
-                  <span className="px-2 py-1">{logBook?.patient?.dateOfBirth}</span>
+                  <span className="px-2 py-1">{revertDate(logBook?.patient?.dateOfBirth)}</span>
                 </div>
                 <div className="flex items-center">
                   <label className="text-[#5e5e5e] text-[15px]">

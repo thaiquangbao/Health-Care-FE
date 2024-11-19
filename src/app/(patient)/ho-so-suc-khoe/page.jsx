@@ -10,6 +10,7 @@ import {
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
+import { revertDate } from "@/utils/date";
 import React, {
   useContext,
   useEffect,
@@ -99,7 +100,7 @@ const HoSoSucKhoe = () => {
                 Ngày sinh:{"   "}
               </span>
               <span className="text-[16px] font-semibold">
-                {userData.user?.dateOfBirth}
+                {revertDate(userData.user?.dateOfBirth)}
               </span>
             </div>
             <div className="w-full flex justify-start">

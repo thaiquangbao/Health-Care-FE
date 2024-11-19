@@ -92,7 +92,7 @@ const BenhLy = () => {
                             </div>
                             <div className='flex items-center gap-1'>
                                 <i className='bx bxs-star text-[18px] text-[#5050ff]' ></i>
-                                <span className='text-[14px]'>{item?.assessment}</span>
+                                <span className='text-[14px]'>{item?.assessment.toFixed(1)}</span>
                             </div>
                         </div>
                         <span className='px-[1rem] mt-[1rem] py-1 rounded-md text-[14px] bg-[#e0eff6]'>Chuyên {item?.doctor.specialize}</span>

@@ -8,6 +8,7 @@ import { api, TypeHTTP } from "@/utils/api";
 import { authContext } from "@/context/AuthContext";
 import { healthContext } from "@/context/HealthContext";
 import { globalContext, notifyType } from "@/context/GlobalContext";
+import { revertDate } from "@/utils/date";
 const FormHoSoSucKhoe = ({ visibleMedicalRecord, logBook, hidden }) => {
     const [medicalRecords, setMedicalRecords] = useState([]);
     useEffect(() => {

@@ -16,7 +16,12 @@ export function convertDateInputToObject(dateString) {
         year: Number(dateString.split('-')[0])
     }
 }
-
+// 2002-12-12 => 12-12-2002
+export function revertDate (dateString)  {
+    const [year, month, day] = dateString?.split('-');
+    const formattedDate = `${day}-${month}-${year}`;
+    return formattedDate;
+}
 export function convertDateToDayMonth(dateString) {
     // Tạo một đối tượng Date từ chuỗi ngày hiện tại
     let currentDate = new Date(dateString);
