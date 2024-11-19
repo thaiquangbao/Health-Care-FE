@@ -528,8 +528,9 @@ const KhamTaiNha = ({ type, setType }) => {
                       }
                       className="py-4"
                     >
-                      {appointmentHome.status
-                        ?.status_type === "ACCEPTED"
+                      {(appointmentHome.status
+                        ?.status_type === "ACCEPTED" || appointmentHome.status
+                        ?.status_type === "COMPLETED")
                         ? `${convertDateToDayMonthYearVietNam(
                             appointmentHome.appointment_date
                           )}`
