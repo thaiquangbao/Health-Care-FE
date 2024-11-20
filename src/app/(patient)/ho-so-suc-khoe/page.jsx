@@ -3,20 +3,12 @@ import DetailMedicalRecord from "@/components/ho-so-suc-khoe/DetailMedicalRecord
 import FormRecord from "@/components/ho-so-suc-khoe/FormRecord";
 import Navbar from "@/components/navbar";
 import { authContext } from "@/context/AuthContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import { revertDate } from "@/utils/date";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+// import { revertDate } from "@/utils/date";
+import React, { useContext, useEffect, useRef, useState } from "react";
 const HoSoSucKhoe = () => {
   const { userData, userHandler } = useContext(userContext);
   const [loading, setLoading] = useState(false);
@@ -32,6 +24,11 @@ const HoSoSucKhoe = () => {
       }).then((res) => setMedicalRecords(res));
     }
   }, [userData.user]);
+  const revertDate = (dateString) => {
+    const [year, month, day] = dateString.split("-");
+    const formattedDate = `${day}-${month}-${year}`;
+    return formattedDate;
+  };
   return (
     <div className="w-full flex flex-col min-h-screen pt-[60px] pb-[3%] px-[5%] background-public">
       <Navbar />
@@ -65,16 +62,12 @@ const HoSoSucKhoe = () => {
                 Giới tính:{"   "}
               </span>
               <span className="text-[16px] font-semibold">
-                {userData.user?.sex === true
-                  ? "Nam"
-                  : "Nữ"}{" "}
+                {userData.user?.sex === true ? "Nam" : "Nữ"}{" "}
               </span>
             </div>
 
             <div className="w-full flex justify-start">
-              <span className="text-[15px] text-[#5f5f5f]">
-                Email:{"   "}
-              </span>
+              <span className="text-[15px] text-[#5f5f5f]">Email:{"   "}</span>
               <span className="text-[16px] font-semibold">
                 {userData.user?.email}
               </span>
@@ -111,17 +104,13 @@ const HoSoSucKhoe = () => {
                 {userData.user?.cccd}
               </span>
             </div>
-
           </div>
         </div>
         <div className="w-full max-h-[500px] mt-4 overflow-y-auto relative">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th
-                  scope="col"
-                  className="w-[5%] py-3 text-center"
-                >
+                <th scope="col" className="w-[5%] py-3 text-center">
                   #
                 </th>
                 <th scope="col" className="w-[20%] py-3">
@@ -146,29 +135,19 @@ const HoSoSucKhoe = () => {
               {medicalRecords.map((medical, index) => (
                 <tr
                   key={index}
-                  onClick={() =>
-                    authHandler.showDetailMedicalRecord(medical)
-                  }
+                  onClick={() => authHandler.showDetailMedicalRecord(medical)}
                   className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 cursor-pointer even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
-                  <td
-                    scope="row"
-                    className="px-6 py-4 text-center font-medium"
-                  >
+                  <td scope="row" className="px-6 py-4 text-center font-medium">
                     {index + 1}
                   </td>
                   <td className="py-4 text-[15px]">
                     BS. {medical.doctor?.fullName}
                   </td>
-                  <td className="py-4 text-[15px]">
-                    {medical.symptoms}
-                  </td>
+                  <td className="py-4 text-[15px]">{medical.symptoms}</td>
+                  <td className="py-4">{medical.diagnosisDisease}</td>
                   <td className="py-4">
-                    {medical.diagnosisDisease}
-                  </td>
-                  <td className="py-4">
-                    {medical.date?.day}/
-                    {medical.date?.month}/
+                    {medical.date?.day}/{medical.date?.month}/
                     {medical.date?.year}
                   </td>
                   <td className="py-4">{medical.note}</td>

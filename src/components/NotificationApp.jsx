@@ -2,18 +2,13 @@ import { appointmentContext } from "@/context/AppointmentContext";
 import { userContext } from "@/context/UserContext";
 import { api, baseURL, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 const socket = io.connect(baseURL);
 const NotificationApp = () => {
   const { userData } = useContext(userContext);
   const [lengthNotice, setLengthNotice] = useState(0);
-  const [visibleUserInfo, setVisibleUserInfo] =
-    useState(false);
+  const [visibleUserInfo, setVisibleUserInfo] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [visibleCount, setVisibleCount] = useState(2);
   const router = useRouter();
@@ -28,56 +23,40 @@ const NotificationApp = () => {
         sendToken: false,
       }).then((res) => {
         setNotifications(res);
-        setLengthNotice(
-          res.filter((item) => item.seen === false).length
-        );
+        setLengthNotice(res.filter((item) => item.seen === false).length);
       });
     }
   }, [userData.user]);
   useEffect(() => {
-    socket.on(
-      `notice.create${userData.user?._id}`,
-      (notice) => {
-        setNotifications([...notifications, notice]);
-        setLengthNotice(lengthNotice + 1);
-      }
-    );
+    socket.on(`notice.create${userData.user?._id}`, (notice) => {
+      setNotifications([...notifications, notice]);
+      setLengthNotice(lengthNotice + 1);
+    });
     return () => {
       socket.off(`notice.create${userData.user?._id}`);
     };
   }, [lengthNotice, notifications, userData.user?._id]);
   const clickNotice = (item) => {
-    if (
-      item.category === "APPOINTMENT" &&
-      userData.user?.role === "USER"
-    ) {
+    if (item.category === "APPOINTMENT" && userData.user?.role === "USER") {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
         sendToken: false,
         path: "/notices/update",
       }).then((res) => {
-        if (
-          item.title.toLowerCase().trim() === "lịch hẹn"
-        ) {
+        if (item.title.toLowerCase().trim() === "lịch hẹn") {
           api({
             sendToken: false,
             path: `/appointments/get-one/${item.attached}`,
             type: TypeHTTP.GET,
           }).then((res1) => {
-            appointmentHandler.showFormDetailAppointment(
-              res1,
-              false
-            );
+            appointmentHandler.showFormDetailAppointment(res1, false);
           });
         } else {
           router.push("/cuoc-hen-cua-ban");
         }
       });
-    } else if (
-      item.category === "PAYMENT" &&
-      userData.user?.role === "USER"
-    ) { 
+    } else if (item.category === "PAYMENT" && userData.user?.role === "USER") {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
@@ -86,8 +65,7 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/ho-so");
       });
-    }
-    else if (
+    } else if (
       item.category === "HEARTLOGBOOK" &&
       userData.user?.role === "USER"
     ) {
@@ -112,8 +90,7 @@ const NotificationApp = () => {
         router.push("/kham-suc-khoe-tai-nha");
       });
     } else if (
-      item.title.toLowerCase().trim() ===
-        "cảnh báo sức khỏe" &&
+      item.title.toLowerCase().trim() === "cảnh báo sức khỏe" &&
       userData.user?.role === "DOCTOR"
     ) {
       api({
@@ -148,9 +125,11 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/phieu-dang-ky");
       });
-    } else if(item.category === "PAYBACK" &&
-      userData.user?.role === "DOCTOR") {
-        api({
+    } else if (
+      item.category === "PAYBACK" &&
+      userData.user?.role === "DOCTOR"
+    ) {
+      api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
         sendToken: false,
@@ -158,25 +137,20 @@ const NotificationApp = () => {
       }).then((res) => {
         router.push("/ho-so");
       });
-    }else {
+    } else {
       api({
         type: TypeHTTP.POST,
         body: { _id: item._id, seen: true },
         sendToken: false,
         path: "/notices/update",
       }).then((res) => {
-        if (
-          item.title.toLowerCase().trim() === "lịch hẹn"
-        ) {
+        if (item.title.toLowerCase().trim() === "lịch hẹn") {
           api({
             sendToken: false,
             path: `/appointments/get-one/${item.attached}`,
             type: TypeHTTP.GET,
           }).then((res1) => {
-            appointmentHandler.showFormDetailAppointment(
-              res1,
-              false
-            );
+            appointmentHandler.showFormDetailAppointment(res1, false);
           });
         } else {
           router.push("/cuoc-hen");
@@ -207,17 +181,13 @@ const NotificationApp = () => {
       {/* Dropdown danh sách thông báo */}
       <div
         className={`z-50 w-[300px] shadow-lg overflow-hidden absolute top-[30px] right-0 bg-white rounded-md transition-all duration-500 ${
-          visibleUserInfo
-            ? "h-[315px] opacity-100"
-            : "h-0 opacity-0"
+          visibleUserInfo ? "h-[315px] opacity-100" : "h-0 opacity-0"
         }`}
       >
         <div className="w-full flex flex-col">
           {/* Tiêu đề */}
           <div className="px-4 py-2 border-b">
-            <span className="font-bold text-sm">
-              Danh sách thông báo
-            </span>
+            <span className="font-bold text-sm">Danh sách thông báo</span>
           </div>
 
           {/* Thông báo */}
@@ -242,8 +212,7 @@ const NotificationApp = () => {
                         {item.content}
                       </span>
                       <div className="text-[13px] text-gray-500">
-                        Ngày: {item.date.day}/
-                        {item.date.month}/{item.date.year}
+                        Ngày: {item.date.day}/{item.date.month}/{item.date.year}
                       </div>
                     </div>
                     {item.seen === false && (
@@ -265,9 +234,7 @@ const NotificationApp = () => {
               className="px-4 py-2 border-t text-center cursor-pointer hover:bg-gray-200"
               onClick={showMoreNotifications}
             >
-              <span className="text-blue-600">
-                Xem tất cả
-              </span>
+              <span className="text-blue-600">Xem tất cả</span>
             </div>
           )}
         </div>
