@@ -24,11 +24,7 @@ const HoSoSucKhoe = () => {
       }).then((res) => setMedicalRecords(res));
     }
   }, [userData.user]);
-  const revertDate = (dateString) => {
-    const [year, month, day] = dateString.split("-");
-    const formattedDate = `${day}-${month}-${year}`;
-    return formattedDate;
-  };
+
   return (
     <div className="w-full flex flex-col min-h-screen pt-[60px] pb-[3%] px-[5%] background-public">
       <Navbar />
@@ -93,7 +89,7 @@ const HoSoSucKhoe = () => {
                 Ngày sinh:{"   "}
               </span>
               <span className="text-[16px] font-semibold">
-                {revertDate(userData.user?.dateOfBirth)}
+                {userData.user?.dateOfBirth}
               </span>
             </div>
             <div className="w-full flex justify-start">
