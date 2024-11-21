@@ -1,42 +1,60 @@
 import { authContext } from "@/context/AuthContext";
 import { api, TypeHTTP } from "@/utils/api";
-import { adjustDisplayTime, convertDateToDayMonthYearTimeObject } from "@/utils/date";
+import {
+  adjustDisplayTime,
+  convertDateToDayMonthYearTimeObject,
+} from "@/utils/date";
 import { Chart } from "chart.js/auto";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { userContext } from "@/context/UserContext";
+import { utilsContext } from "@/context/UtilsContext";
+import { notifyType } from "@/context/GlobalContext";
 export default function BloodPressure({ logBook, setLogBook }) {
   const chartRef = useRef(null);
-  const [tamThu, setTamThu] = useState('')
-  const [tamTruong, setTamTruong] = useState('')
-  const [note, setNote] = useState('')
-  const [symptom, setSymptom] = useState('')
-  const [dsTamTruong, setDsTamTruong] = useState([])
-  const [dsTamThu, setDsTamThu] = useState([])
-  const [dsTimes, setDsTimes] = useState([])
-  const [dsTrieuChung, setDsTrieuChung] = useState([])
-  const [dsNote, setDsNote] = useState([])
-  const { authHandler } = useContext(authContext)
-  const { userData } = useContext(userContext)
+  const [tamThu, setTamThu] = useState("");
+  const [tamTruong, setTamTruong] = useState("");
+  const [note, setNote] = useState("");
+  const [symptom, setSymptom] = useState("");
+  const [dsTamTruong, setDsTamTruong] = useState([]);
+  const [dsTamThu, setDsTamThu] = useState([]);
+  const [dsTimes, setDsTimes] = useState([]);
+  const [dsTrieuChung, setDsTrieuChung] = useState([]);
+  const [dsNote, setDsNote] = useState([]);
+  const { authHandler } = useContext(authContext);
+  const { userData } = useContext(userContext);
+  const { utilsHandler } = useContext(utilsContext);
   const resetForm = () => {
-    setTamTruong('')
-    setTamThu('')
+    setTamTruong("");
+    setTamThu("");
     // setNote('')
     // setSymptom('')
-  }
+  };
 
   useEffect(() => {
     if (chartRef.current && logBook) {
       if (chartRef.current.chart) {
         chartRef.current.chart.destroy();
       }
-      const times = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`).slice(-10)
-      const dsTamTruong = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[1]).slice(-10)
-      const dsTamThu = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.vitalSign.bloodPressure.split('/')[0]).slice(-10)
+      const times = logBook.disMon
+        .filter((item) => item.vitalSign.bloodPressure !== "")
+        .map(
+          (item) =>
+            `(${item.date.time}) ${item.date.day}/${item.date.month}/${item.date.year}`
+        )
+        .slice(-10);
+      const dsTamTruong = logBook.disMon
+        .filter((item) => item.vitalSign.bloodPressure !== "")
+        .map((item) => item.vitalSign.bloodPressure.split("/")[1])
+        .slice(-10);
+      const dsTamThu = logBook.disMon
+        .filter((item) => item.vitalSign.bloodPressure !== "")
+        .map((item) => item.vitalSign.bloodPressure.split("/")[0])
+        .slice(-10);
       // const dsTrieuChung = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.symptom).slice(-10)
       // const dsNote = logBook.disMon.filter(item => item.vitalSign.bloodPressure !== '').map(item => item.note).slice(-10)
-      setDsTimes(times)
-      setDsTamTruong(dsTamTruong)
-      setDsTamThu(dsTamThu)
+      setDsTimes(times);
+      setDsTamTruong(dsTamTruong);
+      setDsTamThu(dsTamThu);
       // setDsTrieuChung(dsTrieuChung)
       // setDsNote(dsNote)
       const context = chartRef.current.getContext("2d");
@@ -98,79 +116,122 @@ export default function BloodPressure({ logBook, setLogBook }) {
   }, [logBook]);
 
   const handleSubmit = () => {
+    // show
 
-    // show 
-   
-
-    
+    if (tamThu === "" || tamTruong === "") {
+      utilsHandler.notify(notifyType.WARNING, "Hãy nhập đầy đủ thông tin");
+      return;
+    }
+    if (isNaN(Number(tamThu)) || isNaN(Number(tamTruong))) {
+      utilsHandler.notify(notifyType.WARNING, "Hãy nhập số");
+      return;
+    }
+    if (Number(tamThu) < 70 || Number(tamThu) > 150) {
+      utilsHandler.notify(notifyType.WARNING, "Tâm thu không hợp lệ");
+      return;
+    }
+    if (Number(tamTruong) < 70 || Number(tamTruong) > 150) {
+      utilsHandler.notify(notifyType.WARNING, "Tâm trương không hợp lệ");
+      return;
+    }
     // AI gợi ý
     const dataAI = {
       patient: {
         sex: userData.user?.sex,
-        dateOfBirth: userData.user?.dateOfBirth
+        dateOfBirth: userData.user?.dateOfBirth,
       },
       vitalSign: {
-        bloodPressure: tamThu + '/' + tamTruong
-      }
-    }
-    api({ sendToken: false, type: TypeHTTP.POST, path: '/chats/bloodPressure-warning', body: dataAI })
-      .then(resAI => {
-        authHandler.showHealthResponse({ message: `Huyết áp ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}` })
-        const body = {
-          _id: logBook._id,
-          disMonItem: {
-            vitalSign: {
-              bloodPressure: tamThu + '/' + tamTruong
-            },
-            date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        bloodPressure: tamThu + "/" + tamTruong,
+      },
+    };
+    api({
+      sendToken: false,
+      type: TypeHTTP.POST,
+      path: "/chats/bloodPressure-warning",
+      body: dataAI,
+    }).then((resAI) => {
+      authHandler.showHealthResponse({
+        message: `Huyết áp ngày hôm nay của bạn: ${resAI.comment} ${resAI.advice}`,
+      });
+      const body = {
+        _id: logBook._id,
+        disMonItem: {
+          vitalSign: {
+            bloodPressure: tamThu + "/" + tamTruong,
           },
-          status_bloodPressure: {
-            status_type: resAI.status,
-            message: resAI.comment,
-          }
-        }
-        api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/update-blood-pressure', body })
-          .then(res => {
-            setLogBook(res)
-          
+          date: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+        },
+        status_bloodPressure: {
+          status_type: resAI.status,
+          message: resAI.comment,
+        },
+      };
+      api({
+        type: TypeHTTP.POST,
+        sendToken: true,
+        path: "/healthLogBooks/update-blood-pressure",
+        body,
+      }).then((res) => {
+        setLogBook(res);
+
+        api({
+          type: TypeHTTP.POST,
+          sendToken: true,
+          path: "/rooms/get-patient-doctor",
+          body: {
+            patient_id: logBook.patient._id,
+            doctor_id: logBook.doctor._id,
+          },
+        }).then((res) => {
+          const newMessage = {
+            content:
+              symptom !== "" && note !== ""
+                ? symptom
+                : symptom !== ""
+                ? symptom
+                : note !== ""
+                ? note
+                : "",
+            vitals: {
+              bloodPressure: tamThu + "/" + tamTruong,
+            },
+            time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
+            author: "PATIENT",
+            type: "REPORT",
+          };
+          resetForm();
+          const newMessages = JSON.parse(JSON.stringify(res[0]));
+          newMessages.messages.push(newMessage);
+          api({
+            sendToken: true,
+            type: TypeHTTP.POST,
+            path: "/messages/update",
+            body: newMessages,
+          });
+          api({
+            sendToken: true,
+            type: TypeHTTP.GET,
+            path: `/rooms/get-one/${res[0].room}`,
+          }).then((room1) => {
+            const room = JSON.parse(JSON.stringify(room1));
+            room.lastMessage = {
+              author: "PATIENT",
+              content: "Đã gửi báo cáo huyết áp",
+              time: convertDateToDayMonthYearTimeObject(
+                new Date().toISOString()
+              ),
+            };
             api({
-              type: TypeHTTP.POST, sendToken: true, path: '/rooms/get-patient-doctor', body: {
-                patient_id: logBook.patient._id,
-                doctor_id: logBook.doctor._id
-              }
-            })
-              .then(res => {
-                const newMessage = {
-                  content: (symptom !== '' && note !== '') ? symptom : symptom !== '' ? symptom : note !== '' ? note : '',
-                  vitals: {
-                    bloodPressure: tamThu + '/' + tamTruong
-                  },
-                  time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-                  author: 'PATIENT',
-                  type: 'REPORT'
-                }
-                resetForm()
-                const newMessages = JSON.parse(JSON.stringify(res[0]))
-                newMessages.messages.push(newMessage)
-                api({ sendToken: true, type: TypeHTTP.POST, path: '/messages/update', body: newMessages })
-                api({ sendToken: true, type: TypeHTTP.GET, path: `/rooms/get-one/${res[0].room}` })
-                  .then(room1 => {
-                    const room = JSON.parse(JSON.stringify(room1))
-                    room.lastMessage = {
-                      author: 'PATIENT',
-                      content: 'Đã gửi báo cáo huyết áp',
-                      time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
-                    }
-                    api({ sendToken: true, type: TypeHTTP.POST, path: '/rooms/update', body: room })
-                  })
-                
-              })
-              
-            
-          })
-      })
-   
-  }
+              sendToken: true,
+              type: TypeHTTP.POST,
+              path: "/rooms/update",
+              body: room,
+            });
+          });
+        });
+      });
+    });
+  };
 
   return (
     <div className="flex flex-col">
@@ -184,7 +245,7 @@ export default function BloodPressure({ logBook, setLogBook }) {
               id="title"
               name="title"
               value={tamThu}
-              onChange={e => setTamThu(e.target.value)}
+              onChange={(e) => setTamThu(e.target.value)}
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Tâm thu..."
             />
@@ -196,7 +257,7 @@ export default function BloodPressure({ logBook, setLogBook }) {
               id="title"
               name="title"
               value={tamTruong}
-              onChange={e => setTamTruong(e.target.value)}
+              onChange={(e) => setTamTruong(e.target.value)}
               className="focus:outline-0 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Tâm trương..."
             />
@@ -265,7 +326,10 @@ export default function BloodPressure({ logBook, setLogBook }) {
           </thead>
           <tbody className=" w-[full] bg-black font-medium">
             {dsTimes.map((time, index) => (
-              <tr key={index} className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+              <tr
+                key={index}
+                className="odd:bg-white cursor-pointer hover:bg-[#eee] transition-all odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+              >
                 <td scope="row" className="px-6 py-2 text-center font-medium">
                   {index + 1}
                 </td>
