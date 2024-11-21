@@ -1,9 +1,6 @@
 import { appointmentContext } from "@/context/AppointmentContext";
 import { bookingContext } from "@/context/BookingContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, baseURL, TypeHTTP } from "@/utils/api";
 import {
@@ -17,14 +14,13 @@ import React, { useContext, useEffect } from "react";
 import { io } from "socket.io-client";
 const socket = io.connect(baseURL);
 const ChoosePayment = () => {
-  const { bookingData, bookingHandler } =
-    useContext(bookingContext);
+  const { bookingData, bookingHandler } = useContext(bookingContext);
   const { globalHandler } = useContext(globalContext);
   const { userData } = useContext(userContext);
   const { appointmentHandler, appointmentData } =
     useContext(appointmentContext);
   const router = useRouter();
-  const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}`;
+  const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}2b`;
 
   useEffect(() => {
     if (bookingData.doctorRecord) {
@@ -42,9 +38,7 @@ const ChoosePayment = () => {
             );
           })[0];
           const nestedFilter = filter.times.filter(
-            (item) =>
-              item.time ===
-              bookingData.booking.appointment_date.time
+            (item) => item.time === bookingData.booking.appointment_date.time
           )[0];
           if (nestedFilter.status !== "") {
             globalHandler.notify(
@@ -64,10 +58,7 @@ const ChoosePayment = () => {
 
   const handleSubmit = () => {
     if (userData.user) {
-      globalHandler.notify(
-        notifyType.LOADING,
-        "Đang Thanh Toán Lịch Hẹn"
-      );
+      globalHandler.notify(notifyType.LOADING, "Đang Thanh Toán Lịch Hẹn");
       const formData = new FormData();
       bookingData.images.forEach((item) => {
         formData.append("files", item.file);
@@ -88,19 +79,15 @@ const ChoosePayment = () => {
             images: listImage,
           },
         }).then((res) => {
-          let record = JSON.parse(
-            JSON.stringify(appointmentData.doctorRecord)
-          );
+          let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord));
           let schedule = record.schedules.filter(
             (item) =>
               item.date.day === res.appointment_date.day &&
-              item.date.month ===
-                res.appointment_date.month &&
+              item.date.month === res.appointment_date.month &&
               item.date.year === res.appointment_date.year
           )[0];
           let time = schedule.times.filter(
-            (item) =>
-              item.time === res.appointment_date.time
+            (item) => item.time === res.appointment_date.time
           )[0];
           time.status = "Queue";
           api({
@@ -111,12 +98,10 @@ const ChoosePayment = () => {
           }).then((resDoctor) => {
             const currentDate = new Date();
             const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
-            const localTimeOffset =
-              currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+            const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
             const vietnamTime = new Date(
               currentDate.getTime() +
-                (vietnamTimeOffset + localTimeOffset) *
-                  60000
+                (vietnamTimeOffset + localTimeOffset) * 60000
             );
             const time = {
               day: vietnamTime.getDate(),
@@ -126,8 +111,7 @@ const ChoosePayment = () => {
             };
             const payment = {
               patient_id: userData.user?._id,
-              doctor_id:
-                bookingData.doctorRecord?.doctor._id,
+              doctor_id: bookingData.doctorRecord?.doctor._id,
               category: res._id,
               namePayment: "APPOINTMENT",
               date: time,
@@ -150,10 +134,7 @@ const ChoosePayment = () => {
             }).then((pay) => {
               bookingHandler.setDoctorRecord();
               appointmentHandler.setDoctorRecord();
-              globalHandler.notify(
-                notifyType.SUCCESS,
-                "Thanh Toán Thành Công"
-              );
+              globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công");
               bookingHandler.setCurrentStep(3);
               // router.push('/bac-si-noi-bat')
               // globalHandler.reload()
@@ -162,10 +143,7 @@ const ChoosePayment = () => {
         });
       });
     } else {
-      globalHandler.notify(
-        notifyType.LOADING,
-        "Đang Thanh Toán Lịch Hẹn"
-      );
+      globalHandler.notify(notifyType.LOADING, "Đang Thanh Toán Lịch Hẹn");
       const formData = new FormData();
       bookingData.images.forEach((item) => {
         formData.append("files", item.file);
@@ -186,19 +164,15 @@ const ChoosePayment = () => {
             images: listImage,
           },
         }).then((res) => {
-          let record = JSON.parse(
-            JSON.stringify(appointmentData.doctorRecord)
-          );
+          let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord));
           let schedule = record.schedules.filter(
             (item) =>
               item.date.day === res.appointment_date.day &&
-              item.date.month ===
-                res.appointment_date.month &&
+              item.date.month === res.appointment_date.month &&
               item.date.year === res.appointment_date.year
           )[0];
           let time = schedule.times.filter(
-            (item) =>
-              item.time === res.appointment_date.time
+            (item) => item.time === res.appointment_date.time
           )[0];
           time.status = "Queue";
           api({
@@ -209,12 +183,10 @@ const ChoosePayment = () => {
           }).then((resDoctor) => {
             const currentDate = new Date();
             const vietnamTimeOffset = 7 * 60; // GMT+7 in minutes
-            const localTimeOffset =
-              currentDate.getTimezoneOffset(); // Local timezone offset in minutes
+            const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
             const vietnamTime = new Date(
               currentDate.getTime() +
-                (vietnamTimeOffset + localTimeOffset) *
-                  60000
+                (vietnamTimeOffset + localTimeOffset) * 60000
             );
             const time = {
               day: vietnamTime.getDate(),
@@ -225,8 +197,7 @@ const ChoosePayment = () => {
 
             const payment = {
               patient_id: res.patient._id,
-              doctor_id:
-                bookingData.doctorRecord?.doctor._id,
+              doctor_id: bookingData.doctorRecord?.doctor._id,
               category: res._id,
               namePayment: "APPOINTMENT",
               date: time,
@@ -249,10 +220,7 @@ const ChoosePayment = () => {
             }).then((pay) => {
               bookingHandler.setDoctorRecord();
               appointmentHandler.setDoctorRecord();
-              globalHandler.notify(
-                notifyType.SUCCESS,
-                "Thanh Toán Thành Công"
-              );
+              globalHandler.notify(notifyType.SUCCESS, "Thanh Toán Thành Công");
               bookingHandler.setCurrentStep(3);
               // globalHandler.reload()
             });
@@ -262,32 +230,22 @@ const ChoosePayment = () => {
     }
   };
   useEffect(() => {
-    socket.on(
-      `payment-appointment-online${userData.user?._id}`,
-      (data) => {
-        if (data) {
-          handleSubmit();
-        } else {
-          globalHandler.notify(
-            notifyType.WARNING,
-            "Thanh Toán Thất Bại"
-          );
-        }
+    socket.on(`payment-appointment-online${userData.user?._id}`, (data) => {
+      if (data) {
+        handleSubmit();
+      } else {
+        globalHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại");
       }
-    );
+    });
     return () => {
-      socket.off(
-        `payment-appointment-online${userData.user?._id}`
-      );
+      socket.off(`payment-appointment-online${userData.user?._id}`);
     };
   }, [userData.user?._id]);
   return (
     <>
       <div className="border-[#cfcfcf] overflow-hidden relative w-[60%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-center">
         <div className="flex gap-3 py-2 mt-1 items-center px-4 w-full text-[13px] font-medium">
-          <span className="text-[14px]">
-            Thanh Toán Qua Mã QR
-          </span>
+          <span className="text-[14px]">Thanh Toán Qua Mã QR</span>
         </div>
 
         <div className="flex flex-col gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]">
@@ -296,12 +254,9 @@ const ChoosePayment = () => {
             <span className="rounded-md text-[12px]">
               Tên chủ TK: THAI ANH THU
             </span>
-            <span className="font-medium">
-              Số TK: 0834885704{" "}
-            </span>
+            <span className="font-medium">Số TK: 0834885704 </span>
             <span className="rounded-md text-[12px]">
-              Sử dụng app Momo hoặc app Ngân hàng để thanh
-              toán{" "}
+              Sử dụng app Momo hoặc app Ngân hàng để thanh toán{" "}
             </span>
           </div>
         </div>
@@ -313,9 +268,7 @@ const ChoosePayment = () => {
             {bookingData.booking?.appointment_date.time}
           </span>
           <span className="px-2 py-1 bg-[#46e199] text-[white] rounded-md">
-            {convertDateToDayMonthYear(
-              bookingData.booking?.appointment_date
-            )}
+            {convertDateToDayMonthYear(bookingData.booking?.appointment_date)}
           </span>
         </div>
         <div className="pt-2 px-4 gap-3 flex items-start pb-6">
@@ -329,40 +282,26 @@ const ChoosePayment = () => {
               {bookingData.doctorRecord?.doctor.fullName}
             </span>
             <span className="mt-3 px-[0.5rem] py-1 rounded-md text-[13px] bg-[#e0eff6]">
-              Chuyên Khoa{" "}
-              {bookingData.doctorRecord?.doctor.specialize}
+              Chuyên Khoa {bookingData.doctorRecord?.doctor.specialize}
             </span>
             <span className="font-medium mt-1">
               BS {bookingData.doctorRecord?.doctor.fullName}
             </span>
           </div>
           <span className="absolute top-[60px] text-[14px] right-2 font-medium text-[blue]">
-            {formatMoney(
-              bookingData.booking?.priceList.price
-            )}{" "}
-            đ
+            {formatMoney(bookingData.booking?.priceList.price)} đ
           </span>
         </div>
       </div>
       <div className="border-[#cfcfcf] relative py-3 px-5 w-[70%] gap-2 mt-1 rounded-md border-[1px] flex flex-col items-start">
         <div className="flex justify-between w-full text-[14px] font-medium">
           <span className="">Giá dịch vụ</span>
-          <span>
-            {formatMoney(
-              bookingData.booking?.priceList.price
-            )}{" "}
-            đ
-          </span>
+          <span>{formatMoney(bookingData.booking?.priceList.price)} đ</span>
         </div>
         <div className="flex justify-between w-full text-[14px] font-medium">
-          <span className="text-[15px]">
-            Tổng Thanh Toán
-          </span>
+          <span className="text-[15px]">Tổng Thanh Toán</span>
           <span className="text-[red] text-[16px]">
-            {formatMoney(
-              bookingData.booking?.priceList.price
-            )}{" "}
-            đ
+            {formatMoney(bookingData.booking?.priceList.price)} đ
           </span>
         </div>
       </div>

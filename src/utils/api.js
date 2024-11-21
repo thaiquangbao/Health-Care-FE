@@ -1,8 +1,7 @@
 import axios from "axios";
 export let baseURL = "http://localhost:8999"; //https://shoeshop-backend.online
 axios.defaults.baseURL = `${baseURL}`;
-export const deploy =
-  "https://health-care-fe-two.vercel.app";
+export const deploy = "https://health-care-fe-two.vercel.app";
 
 export const TypeHTTP = {
   GET: "get",
@@ -11,13 +10,7 @@ export const TypeHTTP = {
   DELETE: "delete",
 };
 
-export const api = ({
-  path,
-  body,
-  type,
-  sendToken,
-  port,
-}) => {
+export const api = ({ path, body, type, sendToken, port }) => {
   if (port) {
     baseURL = "http://localhost:" + port;
     axios.defaults.baseURL = `${baseURL}`;
@@ -25,18 +18,14 @@ export const api = ({
     baseURL = "http://localhost:8999";
     axios.defaults.baseURL = `${baseURL}`;
   }
-  const accessToken =
-    globalThis.window.localStorage.getItem("accessToken");
-  const refreshToken =
-    globalThis.window.localStorage.getItem("refreshToken");
+  const accessToken = globalThis.window.localStorage.getItem("accessToken");
+  const refreshToken = globalThis.window.localStorage.getItem("refreshToken");
   return new Promise((rejects, resolve) => {
     switch (type) {
       case TypeHTTP.GET:
         axios
           .get(path, {
-            headers: sendToken
-              ? { accessToken, refreshToken }
-              : {},
+            headers: sendToken ? { accessToken, refreshToken } : {},
           })
           .then((res) => {
             if (sendToken) {
@@ -63,9 +52,7 @@ export const api = ({
       case TypeHTTP.POST:
         axios
           .post(path, body, {
-            headers: sendToken
-              ? { accessToken, refreshToken }
-              : {},
+            headers: sendToken ? { accessToken, refreshToken } : {},
           })
           .then((res) => {
             if (sendToken) {
@@ -92,9 +79,7 @@ export const api = ({
       case TypeHTTP.PUT:
         axios
           .put(path, body, {
-            headers: sendToken
-              ? { accessToken, refreshToken }
-              : {},
+            headers: sendToken ? { accessToken, refreshToken } : {},
           })
           .then((res) => {
             if (sendToken) {
@@ -121,9 +106,7 @@ export const api = ({
       case TypeHTTP.DELETE:
         axios
           .delete(path, {
-            headers: sendToken
-              ? { accessToken, refreshToken }
-              : {},
+            headers: sendToken ? { accessToken, refreshToken } : {},
           })
           .then((res) => {
             if (sendToken) {
