@@ -3,6 +3,7 @@ import { bookingContext } from "@/context/BookingContext";
 import { notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
+
 import {
   compare2Date,
   compareDate1GetterThanDate2,
@@ -12,20 +13,13 @@ import {
   sortTimes,
 } from "@/utils/date";
 import { useRouter } from "next/navigation";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 const FormBooking = ({ visible, hidden, sick, notify }) => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [display, setDisplay] = useState(0);
-  const { appointmentData } = useContext(
-    appointmentContext
-  );
+  const { appointmentData } = useContext(appointmentContext);
   const { userData } = useContext(userContext);
   const [schedules, setSchedules] = useState([]);
   const { bookingHandler } = useContext(bookingContext);
@@ -54,21 +48,13 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
     if (appointmentData.doctorRecord?.schedules) {
       setSchedules(() => {
         let schedules = JSON.parse(
-          JSON.stringify(
-            appointmentData.doctorRecord.schedules
-          )
+          JSON.stringify(appointmentData.doctorRecord.schedules)
         ).filter(
-          (item) =>
-            compareDate1GetterThanDate2(
-              item.date,
-              today
-            ) === true
+          (item) => compareDate1GetterThanDate2(item.date, today) === true
         );
         // là những cuộc hẹn có ngày sau ngày hôm nay trở đi
         schedules = schedules.map((item) => {
-          item.times = item.times.filter(
-            (item1) => item1.status === ""
-          );
+          item.times = item.times.filter((item1) => item1.status === "");
           return { ...item, times: item.times };
         });
         return schedules;
@@ -95,19 +81,14 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
     }).then((res) => {
       if (userData.user) {
         const result = res
-          .filter(
-            (item) => item.patient._id === userData.user._id
-          )
+          .filter((item) => item.patient._id === userData.user._id)
           .filter(
             (item) =>
-              item.appointment_date.day ===
-                appointmentDate.day &&
-              item.appointment_date.month ===
-                appointmentDate.month &&
-              item.appointment_date.year ===
-                appointmentDate.year &&
-              item.appointment_date.time ===
-                appointmentDate.time
+              item.appointment_date.day === appointmentDate.day &&
+              item.appointment_date.month === appointmentDate.month &&
+              item.appointment_date.year === appointmentDate.year &&
+              item.appointment_date.time === appointmentDate.time &&
+              item.status === "QUEUE" // mới thêm
           )[0];
         if (result) {
           notify(
@@ -116,11 +97,8 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
           );
         } else {
           const body = {
-            doctor_record_id:
-              appointmentData.doctorRecord._id,
-            patient: userData.user
-              ? userData.user._id
-              : null,
+            doctor_record_id: appointmentData.doctorRecord._id,
+            patient: userData.user ? userData.user._id : null,
             appointment_date: appointmentDate,
             status: "QUEUE",
             note: "",
@@ -129,16 +107,13 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
             sick,
           };
           bookingHandler.setBooking(body);
-          bookingHandler.setDoctorRecord(
-            appointmentData.doctorRecord
-          );
+          bookingHandler.setDoctorRecord(appointmentData.doctorRecord);
           hidden();
           router.push("/ho-so-dang-ky");
         }
       } else {
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
           patient: userData.user ? userData.user._id : null,
           appointment_date: appointmentDate,
           status: "QUEUE",
@@ -148,9 +123,7 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
           sick,
         };
         bookingHandler.setBooking(body);
-        bookingHandler.setDoctorRecord(
-          appointmentData.doctorRecord
-        );
+        bookingHandler.setDoctorRecord(appointmentData.doctorRecord);
         hidden();
         router.push("/ho-so-dang-ky");
       }
@@ -188,171 +161,142 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
         >
           <div className="min-w-[100%] px-[2.5rem] py-[1.5rem] flex justify-center">
             <div className="w-full h-full px-[0.25rem] flex flex-col gap-1">
-              {sortDates(schedules).map(
-                (schedule, index) => (
-                  <div
-                    key={index}
-                    className="w-full px-[1rem] cursor-pointer flex flex-col shadow-[#35a4ff2a] border-[1px] border-[#0890ff2a] bg-[white] shadow-xl py-2 text-[15px] font-semibold rounded-lg"
+              {sortDates(schedules).map((schedule, index) => (
+                <div
+                  key={index}
+                  className="w-full px-[1rem] cursor-pointer flex flex-col shadow-[#35a4ff2a] border-[1px] border-[#0890ff2a] bg-[white] shadow-xl py-2 text-[15px] font-semibold rounded-lg"
+                >
+                  <span
+                    onClick={() =>
+                      display === index + 1
+                        ? setDisplay(0)
+                        : setDisplay(index + 1)
+                    }
+                    className="text-[16px] "
                   >
-                    <span
-                      onClick={() =>
-                        display === index + 1
-                          ? setDisplay(0)
-                          : setDisplay(index + 1)
-                      }
-                      className="text-[16px] "
+                    {convertDateToDayMonthYearVietNam2(schedule.date)}
+                  </span>
+                  {compare2Date(
+                    schedule.date,
+                    convertDateToDayMonthYearObject(new Date().toISOString())
+                  ) ? (
+                    <div
+                      style={{
+                        height:
+                          display === index + 1
+                            ? `${
+                                40 +
+                                (timeRef.current
+                                  ? (timeRef.current.offsetHeight + 2) *
+                                    schedule.times.filter(
+                                      (time) =>
+                                        new Date(
+                                          new Date().getTime() + 120 * 60000
+                                        ).getHours() <
+                                        Number(time.time.split(":")[0])
+                                    ).length
+                                  : 0)
+                              }px`
+                            : 0,
+                        transition: "0.5s",
+                      }}
+                      className="overflow-hidden flex flex-col gap-1"
                     >
-                      {convertDateToDayMonthYearVietNam2(
-                        schedule.date
-                      )}
-                    </span>
-                    {compare2Date(
-                      schedule.date,
-                      convertDateToDayMonthYearObject(
-                        new Date().toISOString()
-                      )
-                    ) ? (
-                      <div
-                        style={{
-                          height:
-                            display === index + 1
-                              ? `${
-                                  40 +
-                                  (timeRef.current
-                                    ? (timeRef.current
-                                        .offsetHeight +
-                                        2) *
-                                      schedule.times.filter(
-                                        (time) =>
-                                          new Date(
-                                            new Date().getTime() +
-                                              120 * 60000
-                                          ).getHours() <
-                                          Number(
-                                            time.time.split(
-                                              ":"
-                                            )[0]
-                                          )
-                                      ).length
-                                    : 0)
-                                }px`
-                              : 0,
-                          transition: "0.5s",
-                        }}
-                        className="overflow-hidden flex flex-col gap-1"
-                      >
-                        <span className="mt-2 font-bold px-[1rem]">
-                          Giờ hẹn hiện có
-                        </span>
-                        {sortTimes(schedule.times)
-                          .filter(
-                            (time) =>
-                              new Date(
-                                new Date().getTime() +
-                                  120 * 60000
-                              ).getHours() <
-                              Number(
-                                time.time.split(":")[0]
-                              )
-                          )
-                          .map((time, indexTime) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  backgroundColor:
-                                    appointmentDate.time ===
-                                    time.time
-                                      ? "#35a4ff2a"
-                                      : "white",
-                                }}
-                                className="rounded-lg"
+                      <span className="mt-2 font-bold px-[1rem]">
+                        Giờ hẹn hiện có
+                      </span>
+                      {sortTimes(schedule.times)
+                        .filter(
+                          (time) =>
+                            new Date(
+                              new Date().getTime() + 120 * 60000
+                            ).getHours() < Number(time.time.split(":")[0])
+                        )
+                        .map((time, indexTime) => {
+                          return (
+                            <div
+                              key={index}
+                              style={{
+                                backgroundColor:
+                                  appointmentDate.time === time.time
+                                    ? "#35a4ff2a"
+                                    : "white",
+                              }}
+                              className="rounded-lg"
+                            >
+                              <button
+                                onClick={() =>
+                                  setAppointmentDate({
+                                    day: schedule.date.day,
+                                    month: schedule.date.month,
+                                    year: schedule.date.year,
+                                    time: time.time,
+                                  })
+                                }
+                                ref={timeRef}
+                                key={indexTime}
+                                className="hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]"
                               >
-                                <button
-                                  onClick={() =>
-                                    setAppointmentDate({
-                                      day: schedule.date
-                                        .day,
-                                      month:
-                                        schedule.date.month,
-                                      year: schedule.date
-                                        .year,
-                                      time: time.time,
-                                    })
-                                  }
-                                  ref={timeRef}
-                                  key={indexTime}
-                                  className="hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]"
-                                >
-                                  {time.time}
-                                </button>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          height:
-                            display === index + 1
-                              ? `${
-                                  40 +
-                                  (timeRef.current
-                                    ? (timeRef.current
-                                        .offsetHeight +
-                                        2) *
-                                      schedule.times.length
-                                    : 0)
-                                }px`
-                              : 0,
-                          transition: "0.5s",
-                        }}
-                        className="overflow-hidden flex flex-col gap-1"
-                      >
-                        <span className="mt-2 font-bold px-[1rem]">
-                          Giờ hẹn hiện có
-                        </span>
-                        {sortTimes(schedule.times).map(
-                          (time, indexTime) => {
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  backgroundColor:
-                                    appointmentDate.time ===
-                                    time.time
-                                      ? "#35a4ff2a"
-                                      : "white",
-                                }}
-                                className="rounded-lg"
-                              >
-                                <button
-                                  onClick={() =>
-                                    setAppointmentDate({
-                                      day: schedule.date
-                                        .day,
-                                      month:
-                                        schedule.date.month,
-                                      year: schedule.date
-                                        .year,
-                                      time: time.time,
-                                    })
-                                  }
-                                  ref={timeRef}
-                                  key={indexTime}
-                                  className="hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]"
-                                >
-                                  {time.time}
-                                </button>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )
-              )}
+                                {time.time}
+                              </button>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        height:
+                          display === index + 1
+                            ? `${
+                                40 +
+                                (timeRef.current
+                                  ? (timeRef.current.offsetHeight + 2) *
+                                    schedule.times.length
+                                  : 0)
+                              }px`
+                            : 0,
+                        transition: "0.5s",
+                      }}
+                      className="overflow-hidden flex flex-col gap-1"
+                    >
+                      <span className="mt-2 font-bold px-[1rem]">
+                        Giờ hẹn hiện có
+                      </span>
+                      {sortTimes(schedule.times).map((time, indexTime) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              backgroundColor:
+                                appointmentDate.time === time.time
+                                  ? "#35a4ff2a"
+                                  : "white",
+                            }}
+                            className="rounded-lg"
+                          >
+                            <button
+                              onClick={() =>
+                                setAppointmentDate({
+                                  day: schedule.date.day,
+                                  month: schedule.date.month,
+                                  year: schedule.date.year,
+                                  time: time.time,
+                                })
+                              }
+                              ref={timeRef}
+                              key={indexTime}
+                              className="hover:bg-[#35a4ff2a] transition-all px-[1rem] rounded-lg py-2 w-full text-start font-semibold text-[14px]"
+                            >
+                              {time.time}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -360,10 +304,8 @@ const FormBooking = ({ visible, hidden, sick, notify }) => {
       <button
         onClick={() => handleCreateAppointment()}
         style={{
-          right:
-            appointmentDate.day === 0 ? "-120%" : "4px",
-          background:
-            "linear-gradient(to right, #11998e, #38ef7d)",
+          right: appointmentDate.day === 0 ? "-120%" : "4px",
+          background: "linear-gradient(to right, #11998e, #38ef7d)",
         }}
         className="text-[white] z-[50] shadow-[#767676] absolute bottom-2 text-[16px] shadow-md rounded-xl px-6 py-2 transition-all cursor-pointer font-semibold"
       >

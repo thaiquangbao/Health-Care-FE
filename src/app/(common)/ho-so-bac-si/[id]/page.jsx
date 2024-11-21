@@ -4,26 +4,16 @@ import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { bookingContext } from "@/context/BookingContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
-import {
-  formatMoney,
-  formatTime,
-  formatTimeAndFind,
-} from "@/utils/other";
+import { formatMoney, formatTime, formatTimeAndFind } from "@/utils/other";
 import { Select, SelectItem } from "@nextui-org/select";
 import { set } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import React, {
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Calendar from "../../../../components/Calendar";
+import axios from "axios";
 const HoSoBacSi = () => {
   const param = useParams();
   const { id } = param;
@@ -38,9 +28,7 @@ const HoSoBacSi = () => {
   const [healthLogBooks, setHealthLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext);
   const [priceListHome, setPriceListHome] = useState(0);
-  const [appointmentHomes, setAppointmentHomes] = useState(
-    []
-  );
+  const [appointmentHomes, setAppointmentHomes] = useState([]);
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -54,6 +42,13 @@ const HoSoBacSi = () => {
       .catch((error) => {
         router.push("/bac-si-noi-bat");
       });
+    // axios
+    //   .post(
+    //     "https://prod.jiohealth.com:8443/jio-search/v1/search/retail/products-advance?offset=0&limit=315&sortName=PRICE&isDescending=false&categories=82&token=b161dc46-207d-11ee-aa37-02b973dc30b0&userID=1"
+    //   )
+    //   .then((res) => {
+    //     console.log(res.data.data.products);
+    //   });
   }, [id]);
   // check tồn tại health log book
 
@@ -82,12 +77,8 @@ const HoSoBacSi = () => {
       sendToken: false,
       type: TypeHTTP.GET,
     }).then((res) => {
-      setPriceList(
-        res.filter((item) => item.type === "Online")[0]
-      );
-      setPriceListHome(
-        res.filter((item) => item.type === "Home")[0]
-      );
+      setPriceList(res.filter((item) => item.type === "Online")[0]);
+      setPriceListHome(res.filter((item) => item.type === "Home")[0]);
     });
   }, [appointmentData.sicks]);
   // get assessments bằng doctor record id
@@ -115,9 +106,7 @@ const HoSoBacSi = () => {
   const extractFirstParagraphAndImage = (content) => {
     // Lấy đoạn nội dung đầu tiên
     const paragraphMatch = content.match(/<p>(.*?)<\/p>/);
-    const firstParagraph = paragraphMatch
-      ? paragraphMatch[1]
-      : "";
+    const firstParagraph = paragraphMatch ? paragraphMatch[1] : "";
 
     // Lấy URL của hình ảnh đầu tiên
     const imgMatch = content.match(/<img\s+src="([^"]+)"/);
@@ -135,9 +124,7 @@ const HoSoBacSi = () => {
           <svg
             key={star}
             className={`w-6 h-6 ${
-              star <= rating
-                ? "text-yellow-500"
-                : "text-gray-300"
+              star <= rating ? "text-yellow-500" : "text-gray-300"
             }`}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -179,9 +166,7 @@ const HoSoBacSi = () => {
 
             <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
               <div className="flex flex-col text-[#333333]">
-                <span className="text-[14px]">
-                  GIÁ TƯ VẤN TRỰC TUYẾN
-                </span>
+                <span className="text-[14px]">GIÁ TƯ VẤN TRỰC TUYẾN</span>
                 <span className="text-[17px]">
                   {formatMoney(priceList?.price)} đ
                 </span>
@@ -198,16 +183,11 @@ const HoSoBacSi = () => {
                         return;
                       }
                     }
-                    appointmentHandler.setPriceList(
-                      priceList
-                    );
-                    appointmentHandler.showFormBooking(
-                      "Tư Vấn Trực Tuyến"
-                    );
+                    appointmentHandler.setPriceList(priceList);
+                    appointmentHandler.showFormBooking("Tư Vấn Trực Tuyến");
                   }}
                   style={{
-                    background:
-                      "linear-gradient(to right, #11998e, #38ef7d)",
+                    background: "linear-gradient(to right, #11998e, #38ef7d)",
                   }}
                   className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
                 >
@@ -226,9 +206,7 @@ const HoSoBacSi = () => {
             ).length > 0 && (
               <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                 <div className="flex flex-col text-[#333333]">
-                  <span className="text-[14px]">
-                    SỐ ĐIỆN THOẠI
-                  </span>
+                  <span className="text-[14px]">SỐ ĐIỆN THOẠI</span>
                   <span className="text-[17px]">
                     {doctorRecord?.doctor?.phone}
                   </span>
@@ -251,13 +229,10 @@ const HoSoBacSi = () => {
                         );
                         return;
                       }
-                      appointmentHandler.showFormSignUpHealth(
-                        doctorRecord
-                      );
+                      appointmentHandler.showFormSignUpHealth(doctorRecord);
                     }}
                     style={{
-                      background:
-                        "linear-gradient(to right, #6cd2c5, #2089e5)",
+                      background: "linear-gradient(to right, #6cd2c5, #2089e5)",
                     }}
                     className="text-[16px] scale-[0.95] hover:scale-[1] transition-all flex items-center rounded-3xl px-4 gap-1 py-3 cursor-pointer text-[white]"
                   >
@@ -269,21 +244,16 @@ const HoSoBacSi = () => {
             {(appointmentHomes.length === 0 ||
               appointmentHomes
                 .filter((item) =>
-                  ["QUEUE", "ACCEPTED"].includes(
-                    item.status.status_type
-                  )
+                  ["QUEUE", "ACCEPTED"].includes(item.status.status_type)
                 )
                 .filter(
                   (item) =>
-                    item.doctor_record_id ===
-                      doctorRecord?._id &&
+                    item.doctor_record_id === doctorRecord?._id &&
                     item.patient._id === userData.user?._id
                 ).length === 0) && (
               <div className="bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex items-center justify-between">
                 <div className="flex flex-col text-[#333333]">
-                  <span className="text-[14px]">
-                    GIÁ TƯ VẤN TẠI NHÀ
-                  </span>
+                  <span className="text-[14px]">GIÁ TƯ VẤN TẠI NHÀ</span>
                   <span className="text-[17px]">
                     {formatMoney(priceListHome?.price)} đ
                   </span>
@@ -306,16 +276,11 @@ const HoSoBacSi = () => {
                         );
                         return;
                       }
-                      appointmentHandler.setPriceList(
-                        priceListHome
-                      );
-                      appointmentHandler.showFormBookingHome(
-                        doctorRecord
-                      );
+                      appointmentHandler.setPriceList(priceListHome);
+                      appointmentHandler.showFormBookingHome(doctorRecord);
                     }}
                     style={{
-                      background:
-                        "linear-gradient(to right, #11998e, #38ef7d)",
+                      background: "linear-gradient(to right, #11998e, #38ef7d)",
                     }}
                     className="text-[16px] scale-[0.95] hover:scale-[1] transition-all rounded-3xl px-6 py-3 cursor-pointer text-[white]"
                   >
@@ -340,9 +305,7 @@ const HoSoBacSi = () => {
                   src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/icons/specialties-icon.svg"
                 />
               </div>
-              <span className="text-[22px] font-semibold">
-                Chuyên Khoa
-              </span>
+              <span className="text-[22px] font-semibold">Chuyên Khoa</span>
               <span className="font-medium">
                 {doctorRecord?.doctor.specialize}
               </span>
@@ -354,12 +317,8 @@ const HoSoBacSi = () => {
                   src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/icons/school-icon.svg?v=1"
                 />
               </div>
-              <span className="text-[22px] font-semibold">
-                Nơi đào tạo
-              </span>
-              <span className="font-medium">
-                {doctorRecord?.trainingPlace}
-              </span>
+              <span className="text-[22px] font-semibold">Nơi đào tạo</span>
+              <span className="font-medium">{doctorRecord?.trainingPlace}</span>
             </div>
             <div className="flex gap-2 border-[1px] border-[#4646ff1b] flex-col bg-[white] shadow-2xl shadow-[#4646ff4d] rounded-2xl w-[300px] h-[230px] items-center justify-center">
               <div className="flex items-center justify-center bg-[white] p-4 rounded-full shadow-lg shadow-[#4646ff5f]">
@@ -368,9 +327,7 @@ const HoSoBacSi = () => {
                   src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/icons/degree-icon.svg?v=1"
                 />
               </div>
-              <span className="text-[22px] font-semibold">
-                Bằng Cấp
-              </span>
+              <span className="text-[22px] font-semibold">Bằng Cấp</span>
               <span className="font-medium">
                 {doctorRecord?.certificate.join(", ")}
               </span>
@@ -382,9 +339,7 @@ const HoSoBacSi = () => {
                   src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/icons/languages-icon.svg?v=1"
                 />
               </div>
-              <span className="text-[22px] font-semibold">
-                Ngôn Ngữ
-              </span>
+              <span className="text-[22px] font-semibold">Ngôn Ngữ</span>
               <span className="font-medium">
                 {doctorRecord?.language.join("/")}
               </span>
@@ -396,27 +351,19 @@ const HoSoBacSi = () => {
                   src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/icons/location.svg?v=1"
                 />
               </div>
-              <span className="text-[22px] font-semibold">
-                Khu vực
-              </span>
-              <span className="font-medium">
-                {doctorRecord?.area}
-              </span>
+              <span className="text-[22px] font-semibold">Khu vực</span>
+              <span className="font-medium">{doctorRecord?.area}</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col z-0 overflow-hidden relative text-[30px] px-[5%] text-[#171717] w-[100%] items-start mb-8">
-          <span className="font-bold">
-            Học vấn và kinh nghiệm
-          </span>
+          <span className="font-bold">Học vấn và kinh nghiệm</span>
           <div className="flex flex-col gap-3 mt-2">
-            {doctorRecord?.experience_work
-              .split("\n")
-              .map((item, index) => (
-                <span key={index} className="text-[15px]">
-                  {item}
-                </span>
-              ))}
+            {doctorRecord?.experience_work.split("\n").map((item, index) => (
+              <span key={index} className="text-[15px]">
+                {item}
+              </span>
+            ))}
           </div>
         </div>
         {/* Đánh giá từ người bệnh */}
@@ -426,10 +373,7 @@ const HoSoBacSi = () => {
           </span>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {assessments.map((assessment, index) => (
-              <div
-                key={index}
-                className="p-4 rounded w-[100%] mt-4"
-              >
+              <div key={index} className="p-4 rounded w-[100%] mt-4">
                 <div className="flex items-center gap-4">
                   <img
                     src={assessment.assessment_list.image}
@@ -452,12 +396,10 @@ const HoSoBacSi = () => {
                   </div>
                 </div>
                 <p className="mt-4 text-[18px] ml-20">
-                  Nội dung:{" "}
-                  {assessment.assessment_list.content}
+                  Nội dung: {assessment.assessment_list.content}
                 </p>
                 <p className="mt-4 text-[16px] text-gray-500 ml-20">
-                  Ngày:{" "}
-                  {assessment.assessment_list.date.day}/
+                  Ngày: {assessment.assessment_list.date.day}/
                   {assessment.assessment_list.date.month}/
                   {assessment.assessment_list.date.year}
                 </p>
@@ -473,9 +415,7 @@ const HoSoBacSi = () => {
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
             {forums.map((forum, index) => {
               const { firstParagraph, firstImageUrl } =
-                extractFirstParagraphAndImage(
-                  forum.content
-                );
+                extractFirstParagraphAndImage(forum.content);
               return (
                 <div
                   key={index}
@@ -502,8 +442,7 @@ const HoSoBacSi = () => {
                     </div>
                     <div className="flex items-center text-gray-500 text-[13px] mt-1">
                       <span>
-                        {forum.date.day}/{forum.date.month}/
-                        {forum.date.year}
+                        {forum.date.day}/{forum.date.month}/{forum.date.year}
                       </span>
                       <span className="ml-4">
                         <i className="fas fa-eye mr-1"></i>

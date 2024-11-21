@@ -10,39 +10,65 @@ const BacSiNoiBat = () => {
   const [doctorRecords, setDoctorRecords] = useState([]);
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredDoctors, setFilteredDoctors] = useState(
-    []
-  );
-  const { authData } = useContext(authContext)
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const { authData } = useContext(authContext);
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
       path: "/doctorRecords/getAll",
       sendToken: false,
     }).then((res) => {
-      setDoctorRecords(res.map(doctorRecord => {
-        const filter = authData.assessment.filter(item => item.doctor_record_id === doctorRecord._id)
-        return {
-          ...doctorRecord,
-          assessment: filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length === NaN ? 0 : filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length
-        }
-      }));
-      setFilteredDoctors(res.map(doctorRecord => {
-        const filter = authData.assessment.filter(item => item.doctor_record_id === doctorRecord._id)
-        return {
-          ...doctorRecord,
-          assessment: filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length === NaN ? 0 : filter.reduce((total, item) => total += item.assessment_list.star, 0) / filter.length
-        }
-      }));
+      setDoctorRecords(
+        res.map((doctorRecord) => {
+          const filter = authData.assessment.filter(
+            (item) => item.doctor_record_id === doctorRecord._id
+          );
+          return {
+            ...doctorRecord,
+            assessment:
+              filter.reduce(
+                (total, item) => (total += item.assessment_list.star),
+                0
+              ) /
+                filter.length ===
+              NaN
+                ? 0
+                : filter.reduce(
+                    (total, item) => (total += item.assessment_list.star),
+                    0
+                  ) / filter.length,
+          };
+        })
+      );
+      setFilteredDoctors(
+        res.map((doctorRecord) => {
+          const filter = authData.assessment.filter(
+            (item) => item.doctor_record_id === doctorRecord._id
+          );
+          return {
+            ...doctorRecord,
+            assessment:
+              filter.reduce(
+                (total, item) => (total += item.assessment_list.star),
+                0
+              ) /
+                filter.length ===
+              NaN
+                ? 0
+                : filter.reduce(
+                    (total, item) => (total += item.assessment_list.star),
+                    0
+                  ) / filter.length,
+          };
+        })
+      );
     });
   }, [authData.assessment]);
   const handleFindDoctor = (e) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
     const filtered = doctorRecords.filter((item) =>
-      item.doctor.fullName
-        .toLowerCase()
-        .includes(searchValue.toLowerCase())
+      item.doctor.fullName.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredDoctors(filtered);
   };
@@ -55,8 +81,8 @@ const BacSiNoiBat = () => {
             Đặt khám trước qua HealthHaven - Bác sĩ nổi bật
           </h1>
           <span>
-            Để được tiếp đón ưu tiên viện hoặc được tư vấn
-            với bác sĩ giỏi ngay tại nhà
+            Để được tiếp đón ưu tiên viện hoặc được tư vấn với bác sĩ giỏi ngay
+            tại nhà
           </span>
           <div className="w-[60%] relative mt-[1rem]">
             <input
@@ -69,22 +95,16 @@ const BacSiNoiBat = () => {
           </div>
         </div>
         <div className="w-full mt-[2rem] flex flex-col">
-          <h2 className="font-semibold text-[17px]">
-            Chọn Bác Sĩ
-          </h2>
+          <h2 className="font-semibold text-[17px]">Chọn Bác Sĩ</h2>
           <div className="flex justify-end gap-[2rem]">
             <div className="flex gap-3 items-center text-[14px]">
-              <span className="font-medium text-[15px]">
-                Chuyên Khoa
-              </span>
+              <span className="font-medium text-[15px]">Chuyên Khoa</span>
               <select className="px-3 py-2 rounded-md focus:outline-none">
                 <option>Tất Cả Chuyên Khoa</option>
               </select>
             </div>
             <div className="flex gap-3 items-center text-[14px]">
-              <span className="font-medium text-[15px]">
-                Hình Thức Khám
-              </span>
+              <span className="font-medium text-[15px]">Hình Thức Khám</span>
               <select className="px-3 py-2 rounded-md focus:outline-none">
                 <option>Tất Cả</option>
                 <option>Khám Online</option>
@@ -112,26 +132,22 @@ const BacSiNoiBat = () => {
               <div className="px-[1rem] flex items-center gap-[1rem] mt-[0.5rem] font-medium">
                 <div className="flex items-center gap-1">
                   <i className="bx bxs-calendar-check text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
-                  <span className="text-[14px]">
-                    {item?.examination_call}
-                  </span>
+                  <span className="text-[14px]">{item?.examination_call}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <i className="bx bxs-star text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
                   <span className="text-[14px]">
-                    {item?.assessment + '' === 'NaN' ? 0 : item?.assessment.toFixed(1)}
+                    {item?.assessment + "" === "NaN"
+                      ? 0
+                      : item?.assessment.toFixed(1)}
                   </span>
                 </div>
               </div>
               <span className="px-[1rem] mt-[1rem] py-1 rounded-md text-[14px] bg-[#e0eff6]">
-                Chuyên {item?.doctor.specialize}
+                Chuyên khoa {item?.doctor.specialize}
               </span>
               <button
-                onClick={() =>
-                  router.push(
-                    `/ho-so-bac-si/${item.doctor?._id}`
-                  )
-                }
+                onClick={() => router.push(`/ho-so-bac-si/${item.doctor?._id}`)}
                 className="mt-[1rem] py-3 flex items-center justify-center gap-1 text-[white] bg-[#5050ff] font-medium text-[15px] w-full"
               >
                 {/* <i className='bx bxs-calendar text-[23px] py-3' ></i> */}
