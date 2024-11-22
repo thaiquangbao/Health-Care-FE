@@ -1,8 +1,5 @@
 import { appointmentContext } from "@/context/AppointmentContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
@@ -11,12 +8,7 @@ import {
 } from "@/utils/date";
 import { formatMoney, returnNumber } from "@/utils/other";
 import Link from "next/link";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 const PhieuTheoDoi = ({ type, setType }) => {
   const { userData } = useContext(userContext);
   const [logBooks, setLogBooks] = useState([]);
@@ -61,9 +53,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
         });
       } else if (type === "3") {
         const date = convertDateToDayMonthYearTimeObject(
-          new Date(
-            new Date().setDate(new Date().getDate() + 1)
-          ).toISOString()
+          new Date(new Date().setDate(new Date().getDate() + 1)).toISOString()
         );
         api({
           path: "/healthLogBooks/findByNextDay",
@@ -80,11 +70,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
       } else {
         api({
           path: `/healthLogBooks/findBy${
-            type === "4"
-              ? "Week"
-              : type === "5"
-              ? "Month"
-              : "NextMonth"
+            type === "4" ? "Week" : type === "5" ? "Month" : "NextMonth"
           }`,
           type: TypeHTTP.POST,
           sendToken: true,
@@ -100,10 +86,14 @@ const PhieuTheoDoi = ({ type, setType }) => {
   }, [type, userData.user]);
 
   const handleAcceptLogBook = (logBook) => {
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang thực hiện thao tác"
-    );
+    if (userData.user?.email === "" || userData.user?.email === null) {
+      globalHandler.notify(
+        notifyType.WARNING,
+        "Bác sĩ cần cập nhật email để chấp nhận phiếu đăng ký"
+      );
+      return;
+    }
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
     api({
       path: "/healthLogBooks/accepted",
       sendToken: true,
@@ -119,24 +109,15 @@ const PhieuTheoDoi = ({ type, setType }) => {
             return item;
           })
         );
-        globalHandler.notify(
-          notifyType.SUCCESS,
-          "Đã chấp nhận phiếu đăng ký"
-        );
+        globalHandler.notify(notifyType.SUCCESS, "Đã chấp nhận phiếu đăng ký");
       })
       .catch((err) => {
-        globalHandler.notify(
-          notifyType.WARNING,
-          err.message
-        );
+        globalHandler.notify(notifyType.WARNING, err.message);
       });
   };
 
   const handleRejectLogBook = (logBook) => {
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang thực hiện thao tác"
-    );
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
     api({
       path: "/healthLogBooks/rejected",
       sendToken: true,
@@ -152,16 +133,10 @@ const PhieuTheoDoi = ({ type, setType }) => {
             return item;
           })
         );
-        globalHandler.notify(
-          notifyType.SUCCESS,
-          "Đã từ chối phiếu đăng ký"
-        );
+        globalHandler.notify(notifyType.SUCCESS, "Đã từ chối phiếu đăng ký");
       })
       .catch((err) => {
-        globalHandler.notify(
-          notifyType.WARNING,
-          err.message
-        );
+        globalHandler.notify(notifyType.WARNING, err.message);
       });
   };
 
@@ -181,9 +156,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
               {returnNumber(logBooks.length)}
             </span>
           </div>
-          <span className="font-medium text-[15px]">
-            Tất cả phiếu đăng ký
-          </span>
+          <span className="font-medium text-[15px]">Tất cả phiếu đăng ký</span>
         </div>
         <div
           className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
@@ -196,9 +169,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
             <i className="text-[40px] bx bx-calendar-check"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                logBooks.filter(
-                  (item) => item.status === "ACCEPTED"
-                ).length
+                logBooks.filter((item) => item.status === "ACCEPTED").length
               )}
             </span>
           </div>
@@ -217,9 +188,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
             <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                logBooks.filter(
-                  (item) => item.status === "QUEUE"
-                ).length
+                logBooks.filter((item) => item.status === "QUEUE").length
               )}
             </span>
           </div>
@@ -238,9 +207,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
             <i className="text-[40px] bx bx-error"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                logBooks.filter(
-                  (item) => item.status === "REJECTED"
-                ).length
+                logBooks.filter((item) => item.status === "REJECTED").length
               )}
             </span>
           </div>
@@ -253,10 +220,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th
-                scope="col"
-                className="w-[5%] py-3 text-center"
-              >
+              <th scope="col" className="w-[5%] py-3 text-center">
                 #
               </th>
               <th scope="col" className="w-[15%] py-3">
@@ -271,10 +235,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
               <th scope="col" className="w-[20%] py-3">
                 Loại Phiếu
               </th>
-              <th
-                scope="col"
-                className="w-[17%] py-3 text-center"
-              >
+              <th scope="col" className="w-[17%] py-3 text-center">
                 Các Chức Năng
               </th>
             </tr>
@@ -286,10 +247,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
                   key={index}
                   className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
-                  <td
-                    scope="row"
-                    className="px-6 py-4 text-center font-medium"
-                  >
+                  <td scope="row" className="px-6 py-4 text-center font-medium">
                     {index + 1}
                   </td>
                   <td className="py-4 text-[15px]">
@@ -298,14 +256,11 @@ const PhieuTheoDoi = ({ type, setType }) => {
                   <td
                     style={{
                       color:
-                        logBook.status.status_type ===
-                        "QUEUE"
+                        logBook.status.status_type === "QUEUE"
                           ? "black"
-                          : logBook.status.status_type ===
-                            "ACCEPTED"
+                          : logBook.status.status_type === "ACCEPTED"
                           ? "green"
-                          : logBook?.status.status_type ===
-                            "COMPLETED"
+                          : logBook?.status.status_type === "COMPLETED"
                           ? "blue"
                           : "red",
                     }}
@@ -314,43 +269,33 @@ const PhieuTheoDoi = ({ type, setType }) => {
                     {logBook.status.message}
                   </td>
                   <td className="py-4">
-                    {`${convertDateToDayMonthYearVietNam(
-                      logBook.date
-                    )}`}
+                    {`${convertDateToDayMonthYearVietNam(logBook.date)}`}
                   </td>
                   <td className="py-4">
                     {formatMoney(logBook.priceList.price)}đ/
                     {logBook.priceList.type}
                   </td>
                   <td className="py-4 flex gap-2 items-center justify-center">
-                    {logBook.status.status_type ===
-                      "TRANSFER" && (
+                    {logBook.status.status_type === "TRANSFER" && (
                       <>
                         <button
-                          onClick={() =>
-                            handleAcceptLogBook(logBook)
-                          }
+                          onClick={() => handleAcceptLogBook(logBook)}
                           className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Chấp Nhận
                         </button>
                       </>
                     )}
-                    {logBook.status.status_type ===
-                      "QUEUE" && (
+                    {logBook.status.status_type === "QUEUE" && (
                       <>
                         <button
-                          onClick={() =>
-                            handleAcceptLogBook(logBook)
-                          }
+                          onClick={() => handleAcceptLogBook(logBook)}
                           className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Chấp Nhận
                         </button>
                         <button
-                          onClick={() =>
-                            handleRejectLogBook(logBook)
-                          }
+                          onClick={() => handleRejectLogBook(logBook)}
                           className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Từ Chối
@@ -364,8 +309,7 @@ const PhieuTheoDoi = ({ type, setType }) => {
         </table>
         {!loading && logBooks.length === 0 && (
           <div className="w-full flex items-center justify-center my-10 text-[18px] font-medium">
-            Không có phiếu theo dõi sức khỏe được đăng ký
-            trong {typeTime[type]}
+            Không có phiếu theo dõi sức khỏe được đăng ký trong {typeTime[type]}
           </div>
         )}
         {loading && (

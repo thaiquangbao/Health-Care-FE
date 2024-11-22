@@ -1,25 +1,20 @@
-'use client'
+"use client";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { authContext } from "@/context/AuthContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { userContext } from "@/context/UserContext";
 const FormAssessment = ({ visible, hidden }) => {
   const { globalHandler } = useContext(globalContext);
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState("");
   const [name, setName] = useState("");
+  const { userData } = useContext(userContext);
   const router = useRouter();
-  const { appointmentHandler, appointmentData } = useContext(appointmentContext);
+  const { appointmentHandler, appointmentData } =
+    useContext(appointmentContext);
   useEffect(() => {
     if (appointmentData.currentAppointment) {
       api({
@@ -59,6 +54,10 @@ const FormAssessment = ({ visible, hidden }) => {
         notifyType.SUCCESS,
         "Đánh giá thành công, Cảm ơn bạn đã đánh giá!!!"
       );
+      if (userData.user?.role === "CUSTOMER") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
       localStorage.removeItem("appointmentData");
       window.location.href = "/cuoc-hen-cua-ban";
     });
@@ -93,10 +92,9 @@ const FormAssessment = ({ visible, hidden }) => {
                 <svg
                   key={star}
                   onClick={() => handleRating(star)}
-                  className={`w-12 h-12 cursor-pointer ${star <= rating
-                    ? "text-yellow-500"
-                    : "text-gray-300"
-                    }`}
+                  className={`w-12 h-12 cursor-pointer ${
+                    star <= rating ? "text-yellow-500" : "text-gray-300"
+                  }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -118,15 +116,12 @@ const FormAssessment = ({ visible, hidden }) => {
                   required
                   style={{ height: "145px" }}
                   value={comments}
-                  onChange={(e) =>
-                    setComments(e.target.value)
-                  }
+                  onChange={(e) => setComments(e.target.value)}
                 ></textarea>
               </div>
               <button
                 style={{
-                  background:
-                    "linear-gradient(to right, #11998e, #38ef7d)",
+                  background: "linear-gradient(to right, #11998e, #38ef7d)",
                 }}
                 onClick={() => submit()}
                 className="bg-blue-500 text-white p-2 rounded mt-4 cursor-pointer font-semibold text-[16px] shadow-md shadow-[#767676]"
