@@ -180,7 +180,8 @@ const BacSiNoiBat = () => {
               <select className="px-3 py-2 rounded-md focus:outline-none">
                 <option>Tất Cả</option>
                 <option>Khám Online</option>
-                <option>Khám Tại Trung Tâm Y Tế</option>
+                <option>Khám Tại Nhà</option>
+                <option>Đăng Ký Theo Dõi Sức Khỏe</option>
               </select>
             </div>
           </div>
