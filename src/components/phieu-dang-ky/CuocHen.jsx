@@ -1,8 +1,5 @@
 import { appointmentContext } from "@/context/AppointmentContext";
-import {
-  globalContext,
-  notifyType,
-} from "@/context/GlobalContext";
+import { globalContext, notifyType } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import {
@@ -18,14 +15,9 @@ import {
 } from "@/utils/date";
 import { returnNumber } from "@/utils/other";
 import Link from "next/link";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FormReason from "../appointment/FormReason";
-const CuocHen = ({ type, setType }) => {
+const CuocHen = ({ type, setType, typeStatus }) => {
   const { userData } = useContext(userContext);
   const [appointments, setAppointments] = useState([]);
   const { appointmentData, appointmentHandler } =
@@ -35,11 +27,9 @@ const CuocHen = ({ type, setType }) => {
   const [time, setTime] = useState(
     new Date().getHours() + ":" + new Date().getMinutes()
   );
-  const [displayConnect, setDisplayConnect] =
-    useState(false);
+  const [displayConnect, setDisplayConnect] = useState(false);
   const intervalRef = useRef();
-  const [visibleFormReason, setVisibleFormReason] =
-    useState(false);
+  const [visibleFormReason, setVisibleFormReason] = useState(false);
   const [dataSelected, setDataSelected] = useState();
   const [reason, setReason] = useState("");
   const typeTime = {
@@ -50,36 +40,34 @@ const CuocHen = ({ type, setType }) => {
     5: "Tháng Này",
     6: "Tháng Sau",
   };
+  // const statusType = {
+  //   1: "Tất cả",
+  //   2: "Hôm Nay",
+  //   3: "Ngày Mai",
+  //   4: "Tuần Này",
+  //   5: "Tháng Này",
+  //   6: "Tháng Sau",
+  // };
   useEffect(() => {
     intervalRef.current = setInterval(() => {
-      setTime(
-        new Date().getHours() +
-          ":" +
-          new Date().getMinutes()
-      );
+      setTime(new Date().getHours() + ":" + new Date().getMinutes());
     }, 60000);
   }, []);
 
   useEffect(() => {
     if (appointments.length > 0) {
       const theFirstAppointment = sortByAppointmentDate(
-        appointments.filter(
-          (item) => item.status === "ACCEPTED"
-        )
+        appointments.filter((item) => item.status === "ACCEPTED")
       ).filter((item) =>
         compareTimeDate1GreaterThanDate2(
           item.appointment_date,
-          convertDateToDayMonthYearTimeObject(
-            new Date().toISOString()
-          )
+          convertDateToDayMonthYearTimeObject(new Date().toISOString())
         )
       )[0];
       if (theFirstAppointment) {
         if (
           compare2Date(
-            convertDateToDayMonthYearTimeObject(
-              new Date().toISOString()
-            ),
+            convertDateToDayMonthYearTimeObject(new Date().toISOString()),
             theFirstAppointment.appointment_date
           )
         ) {
@@ -105,8 +93,7 @@ const CuocHen = ({ type, setType }) => {
       if (type === "1") {
         setLoading(true);
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
         };
         api({
           type: TypeHTTP.POST,
@@ -121,12 +108,9 @@ const CuocHen = ({ type, setType }) => {
         let date = new Date();
         date.setDate(date.getDate() + (Number(type) - 1));
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
           time: {
-            ...convertDateToDayMonthYearObject(
-              date.toISOString()
-            ),
+            ...convertDateToDayMonthYearObject(date.toISOString()),
           },
         };
         api({
@@ -140,8 +124,7 @@ const CuocHen = ({ type, setType }) => {
         });
       } else if (type === "4") {
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
         };
         api({
           type: TypeHTTP.POST,
@@ -154,8 +137,7 @@ const CuocHen = ({ type, setType }) => {
         });
       } else if (type === "5") {
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
         };
         api({
           type: TypeHTTP.POST,
@@ -168,8 +150,7 @@ const CuocHen = ({ type, setType }) => {
         });
       } else if (type === "6") {
         const body = {
-          doctor_record_id:
-            appointmentData.doctorRecord._id,
+          doctor_record_id: appointmentData.doctorRecord._id,
         };
         api({
           type: TypeHTTP.POST,
@@ -181,8 +162,23 @@ const CuocHen = ({ type, setType }) => {
           setLoading(false);
         });
       }
+      // else if (typeStatus === "1") {
+      //   const body = {
+      //     doctor_record_id: appointmentData.doctorRecord._id,
+      //     status: "QUEUE",
+      //   };
+      //   api({
+      //     type: TypeHTTP.POST,
+      //     path: "/appointments/findByStatus",
+      //     body,
+      //     sendToken: false,
+      //   }).then((res) => {
+      //     setAppointments(res);
+      //     setLoading(false);
+      //   });
+      // }
     }
-  }, [type, appointmentData.doctorRecord]);
+  }, [type, appointmentData.doctorRecord, typeStatus]);
 
   const handleAcceptAppointment = (appointment) => {
     const body = {
@@ -190,10 +186,7 @@ const CuocHen = ({ type, setType }) => {
       status: "ACCEPTED",
       status_message: "Đã chấp nhận",
     };
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang thực hiện thao tác"
-    );
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
     api({
       sendToken: true,
       path: "/appointments/doctor-accept",
@@ -201,21 +194,15 @@ const CuocHen = ({ type, setType }) => {
       body: body,
     })
       .then((res) => {
-        let record = JSON.parse(
-          JSON.stringify(appointmentData.doctorRecord)
-        );
+        let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord));
         let schedule = record.schedules.filter(
           (item) =>
-            item.date.day ===
-              appointment.appointment_date.day &&
-            item.date.month ===
-              appointment.appointment_date.month &&
-            item.date.year ===
-              appointment.appointment_date.year
+            item.date.day === appointment.appointment_date.day &&
+            item.date.month === appointment.appointment_date.month &&
+            item.date.year === appointment.appointment_date.year
         )[0];
         let time = schedule.times.filter(
-          (item) =>
-            item.time === appointment.appointment_date.time
+          (item) => item.time === appointment.appointment_date.time
         )[0];
         time.status = "Booked";
         api({
@@ -232,17 +219,11 @@ const CuocHen = ({ type, setType }) => {
               return item;
             })
           );
-          globalHandler.notify(
-            notifyType.SUCCESS,
-            "Đã chấp nhận cuộc hẹn"
-          );
+          globalHandler.notify(notifyType.SUCCESS, "Đã chấp nhận cuộc hẹn");
         });
       })
       .catch((err) => {
-        globalHandler.notify(
-          notifyType.WARNING,
-          err.message
-        );
+        globalHandler.notify(notifyType.WARNING, err.message);
         globalHandler.reload();
       });
   };
@@ -258,10 +239,7 @@ const CuocHen = ({ type, setType }) => {
       status: "REJECTED",
       status_message: "Đã từ chối",
     };
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang thực hiện thao tác"
-    );
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
     api({
       sendToken: true,
       path: "/appointments/doctor-reject",
@@ -269,21 +247,15 @@ const CuocHen = ({ type, setType }) => {
       body: body,
     })
       .then((res) => {
-        let record = JSON.parse(
-          JSON.stringify(appointmentData.doctorRecord)
-        );
+        let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord));
         let schedule = record.schedules.filter(
           (item) =>
-            item.date.day ===
-              appointment.appointment_date.day &&
-            item.date.month ===
-              appointment.appointment_date.month &&
-            item.date.year ===
-              appointment.appointment_date.year
+            item.date.day === appointment.appointment_date.day &&
+            item.date.month === appointment.appointment_date.month &&
+            item.date.year === appointment.appointment_date.year
         )[0];
         let time = schedule.times.filter(
-          (item) =>
-            item.time === appointment.appointment_date.time
+          (item) => item.time === appointment.appointment_date.time
         )[0];
         time.status = "";
         api({
@@ -300,17 +272,11 @@ const CuocHen = ({ type, setType }) => {
               return item;
             })
           );
-          globalHandler.notify(
-            notifyType.SUCCESS,
-            "Đã từ chối cuộc hẹn"
-          );
+          globalHandler.notify(notifyType.SUCCESS, "Đã từ chối cuộc hẹn");
         });
       })
       .catch((err) => {
-        globalHandler.notify(
-          notifyType.WARNING,
-          err.message
-        );
+        globalHandler.notify(notifyType.WARNING, err.message);
         globalHandler.reload();
       });
   };
@@ -329,10 +295,7 @@ const CuocHen = ({ type, setType }) => {
       note: "",
       reason: reason,
     };
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang thực hiện thao tác"
-    );
+    globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
     api({
       sendToken: true,
       path: "/appointments/doctor-cancel",
@@ -340,21 +303,15 @@ const CuocHen = ({ type, setType }) => {
       body: body,
     })
       .then((res) => {
-        let record = JSON.parse(
-          JSON.stringify(appointmentData.doctorRecord)
-        );
+        let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord));
         let schedule = record.schedules.filter(
           (item) =>
-            item.date.day ===
-              dataSelected.appointment_date.day &&
-            item.date.month ===
-              dataSelected.appointment_date.month &&
-            item.date.year ===
-              dataSelected.appointment_date.year
+            item.date.day === dataSelected.appointment_date.day &&
+            item.date.month === dataSelected.appointment_date.month &&
+            item.date.year === dataSelected.appointment_date.year
         )[0];
         let time = schedule.times.filter(
-          (item) =>
-            item.time === dataSelected.appointment_date.time
+          (item) => item.time === dataSelected.appointment_date.time
         )[0];
         time.status = "";
         api({
@@ -374,18 +331,12 @@ const CuocHen = ({ type, setType }) => {
           );
           setReason("");
 
-          globalHandler.notify(
-            notifyType.SUCCESS,
-            "Đã hủy cuộc hẹn"
-          );
+          globalHandler.notify(notifyType.SUCCESS, "Đã hủy cuộc hẹn");
           setVisibleFormReason(false);
         });
       })
       .catch((err) => {
-        globalHandler.notify(
-          notifyType.WARNING,
-          err.message
-        );
+        globalHandler.notify(notifyType.WARNING, err.message);
         globalHandler.reload();
       });
   };
@@ -405,9 +356,7 @@ const CuocHen = ({ type, setType }) => {
               {returnNumber(appointments.length)}
             </span>
           </div>
-          <span className="font-medium text-[15px]">
-            Tất cả cuộc hẹn
-          </span>
+          <span className="font-medium text-[15px]">Tất cả cuộc hẹn</span>
         </div>
         <div
           className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
@@ -420,15 +369,11 @@ const CuocHen = ({ type, setType }) => {
             <i className="text-[40px] bx bx-calendar-check"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                appointments.filter(
-                  (item) => item.status === "ACCEPTED"
-                ).length
+                appointments.filter((item) => item.status === "ACCEPTED").length
               )}
             </span>
           </div>
-          <span className="font-medium text-[15px]">
-            Cuộc hẹn đã chấp nhận
-          </span>
+          <span className="font-medium text-[15px]">Cuộc hẹn đã chấp nhận</span>
         </div>
         <div
           className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
@@ -441,15 +386,11 @@ const CuocHen = ({ type, setType }) => {
             <i className="text-[30px] translate-y-[-5px] fa-regular fa-hourglass"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                appointments.filter(
-                  (item) => item.status === "QUEUE"
-                ).length
+                appointments.filter((item) => item.status === "QUEUE").length
               )}
             </span>
           </div>
-          <span className="font-medium text-[15px]">
-            Cuộc hẹn đang chờ
-          </span>
+          <span className="font-medium text-[15px]">Cuộc hẹn đang chờ</span>
         </div>
         <div
           className="h-[120px] gap-2 justify-center p-4 text-[white] rounded-lg flex flex-col"
@@ -462,25 +403,19 @@ const CuocHen = ({ type, setType }) => {
             <i className="text-[40px] bx bx-error"></i>
             <span className="text-[25px] font-semibold">
               {returnNumber(
-                appointments.filter(
-                  (item) => item.status === "REJECTED"
-                ).length
+                appointments.filter((item) => item.status === "REJECTED").length
               )}
             </span>
           </div>
-          <span className="font-medium text-[15px]">
-            Cuộc hẹn đã từ chối
-          </span>
+          <span className="font-medium text-[15px]">Cuộc hẹn đã từ chối</span>
         </div>
       </div>
+
       <div className="w-full max-h-[500px] mt-4 overflow-y-auto relative">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th
-                scope="col"
-                className="w-[5%] py-3 text-center"
-              >
+              <th scope="col" className="w-[5%] py-3 text-center">
                 #
               </th>
               <th scope="col" className="w-[15%] py-3">
@@ -495,10 +430,7 @@ const CuocHen = ({ type, setType }) => {
               <th scope="col" className="w-[20%] py-3">
                 Ghi Chú
               </th>
-              <th
-                scope="col"
-                className="w-[17%] py-3 text-center"
-              >
+              <th scope="col" className="w-[17%] py-3 text-center">
                 Các Chức Năng
               </th>
             </tr>
@@ -514,9 +446,7 @@ const CuocHen = ({ type, setType }) => {
                     onClick={() =>
                       appointmentHandler.showFormDetailAppointment(
                         appointment,
-                        displayConnect === appointment._id
-                          ? true
-                          : false
+                        displayConnect === appointment._id ? true : false
                       )
                     }
                     scope="row"
@@ -528,9 +458,7 @@ const CuocHen = ({ type, setType }) => {
                     onClick={() =>
                       appointmentHandler.showFormDetailAppointment(
                         appointment,
-                        displayConnect === appointment._id
-                          ? true
-                          : false
+                        displayConnect === appointment._id ? true : false
                       )
                     }
                     className="py-4 text-[15px]"
@@ -541,20 +469,16 @@ const CuocHen = ({ type, setType }) => {
                     onClick={() =>
                       appointmentHandler.showFormDetailAppointment(
                         appointment,
-                        displayConnect === appointment._id
-                          ? true
-                          : false
+                        displayConnect === appointment._id ? true : false
                       )
                     }
                     style={{
                       color:
                         appointment.status === "QUEUE"
                           ? "black"
-                          : appointment.status ===
-                            "ACCEPTED"
+                          : appointment.status === "ACCEPTED"
                           ? "green"
-                          : appointment?.status ===
-                            "COMPLETED"
+                          : appointment?.status === "COMPLETED"
                           ? "blue"
                           : "red",
                     }}
@@ -566,9 +490,7 @@ const CuocHen = ({ type, setType }) => {
                     onClick={() =>
                       appointmentHandler.showFormDetailAppointment(
                         appointment,
-                        displayConnect === appointment._id
-                          ? true
-                          : false
+                        displayConnect === appointment._id ? true : false
                       )
                     }
                     className="py-4"
@@ -581,9 +503,7 @@ const CuocHen = ({ type, setType }) => {
                     onClick={() =>
                       appointmentHandler.showFormDetailAppointment(
                         appointment,
-                        displayConnect === appointment._id
-                          ? true
-                          : false
+                        displayConnect === appointment._id ? true : false
                       )
                     }
                     className="py-4"
@@ -594,21 +514,13 @@ const CuocHen = ({ type, setType }) => {
                     {appointment.status === "QUEUE" ? (
                       <>
                         <button
-                          onClick={() =>
-                            handleAcceptAppointment(
-                              appointment
-                            )
-                          }
+                          onClick={() => handleAcceptAppointment(appointment)}
                           className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Chấp Nhận
                         </button>
                         <button
-                          onClick={() =>
-                            handleRejectAppointment(
-                              appointment
-                            )
-                          }
+                          onClick={() => handleRejectAppointment(appointment)}
                           className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Từ Chối
@@ -617,11 +529,7 @@ const CuocHen = ({ type, setType }) => {
                     ) : (
                       appointment.status === "ACCEPTED" && (
                         <button
-                          onClick={() =>
-                            handleCancelAppointment(
-                              appointment
-                            )
-                          }
+                          onClick={() => handleCancelAppointment(appointment)}
                           className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                         >
                           Hủy
@@ -630,12 +538,8 @@ const CuocHen = ({ type, setType }) => {
                     )}
                     {displayConnect === appointment._id && (
                       <Link
-                        href={`http://127.0.0.1:3000/zero/${
-                          appointment._id
-                        }/${
-                          userData.user?.role === "USER"
-                            ? "patient"
-                            : "doctor"
+                        href={`http://127.0.0.1:3000/zero/${appointment._id}/${
+                          userData.user?.role === "USER" ? "patient" : "doctor"
                         }`}
                       >
                         <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
@@ -673,8 +577,7 @@ const CuocHen = ({ type, setType }) => {
                 </span>
                 <div className="flex flex-row justify-between">
                   <span className="font-space text-[14px]">
-                    Bệnh nhân:{" "}
-                    {dataSelected.patient?.fullName}
+                    Bệnh nhân: {dataSelected.patient?.fullName}
                   </span>
                   <span className="font-space text-[14px]">
                     Thời gian hẹn:{" "}
@@ -687,9 +590,7 @@ const CuocHen = ({ type, setType }) => {
                 <div className="flex items-center justify-evenly">
                   <input
                     value={reason}
-                    onChange={(e) =>
-                      setReason(e.target.value)
-                    }
+                    onChange={(e) => setReason(e.target.value)}
                     placeholder="Lý do..."
                     className="text-[13px] mt-1 w-[100%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
                   />
@@ -700,17 +601,14 @@ const CuocHen = ({ type, setType }) => {
               <button
                 onClick={() => handleCancel()}
                 style={{
-                  background:
-                    "linear-gradient(to right, #11998e, #38ef7d)",
+                  background: "linear-gradient(to right, #11998e, #38ef7d)",
                 }}
                 className="text-[white] z-[50] shadow-[#767676] absolute bottom-2 text-[15px] shadow-md rounded-xl px-[200px] py-2 transition-all cursor-pointer font-semibold"
               >
                 Xác nhận hủy
               </button>
             </div>
-            <button
-              onClick={() => setVisibleFormReason(false)}
-            >
+            <button onClick={() => setVisibleFormReason(false)}>
               <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
             </button>
           </div>

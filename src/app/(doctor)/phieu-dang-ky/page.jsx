@@ -9,8 +9,8 @@ import { useContext, useState } from "react";
 const Appointment = () => {
   const { userData } = useContext(userContext);
   const [type, setType] = useState("1");
-  const [ticketType, setTicketType] = useState('1')
-
+  const [ticketType, setTicketType] = useState("1");
+  const [typeStatus, setTypeStatus] = useState("1");
   return (
     <div className="w-full min-h-screen flex flex-col pt-[60px] px-[5%] background-public">
       <Navbar />
@@ -21,24 +21,34 @@ const Appointment = () => {
               Chào Mừng Bác Sĩ{" "}
               {
                 userData.user?.fullName.split(" ")[
-                userData.user?.fullName.split(" ")
-                  .length - 1
+                  userData.user?.fullName.split(" ").length - 1
                 ]
               }{" "}
               <img src="/hand.png" width={"30px"} />
             </h2>
             <span className="font-medium text-[16px]">
-              {ticketType === '1' ? 'Bắt đầu ngày mới với những cuộc hẹn mới.' : 'Các cuộc theo dõi sức khỏe đang chờ bác sĩ xác nhận'}
+              {ticketType === "1"
+                ? "Bắt đầu ngày mới với những cuộc hẹn mới."
+                : "Các cuộc theo dõi sức khỏe đang chờ bác sĩ xác nhận"}
             </span>
           </div>
           <div className="flex gap-3">
             <select
-              onChange={e => setTicketType(e.target.value)}
+              onChange={(e) => setTicketType(e.target.value)}
               className="px-2 py-2 text-[15px] shadow-lg text-center focus:outline-0 rounded-md font-medium"
             >
               <option value={1}>Phiếu Đăng Ký Hẹn Khám</option>
               <option value={2}>Phiếu Theo Dõi Sức Khỏe</option>
               <option value={3}>Phiếu Hẹn Khám Tại Nhà</option>
+            </select>
+            <select
+              onChange={(e) => setTypeStatus(e.target.value)}
+              className="px-2 py-2 text-[15px] shadow-lg focus:outline-0 rounded-md font-medium"
+            >
+              <option value={1}>Đang chờ chấp nhận</option>
+              <option value={2}>Đã chấp nhận</option>
+              <option value={3}>Đã từ chối</option>
+              <option value={4}>Đã hủy</option>
             </select>
             <select
               onChange={(e) => setType(e.target.value)}
@@ -53,9 +63,9 @@ const Appointment = () => {
             </select>
           </div>
         </div>
-        {ticketType === '1' ? (
-          <CuocHen type={type} setType={setType} />
-        ) : ticketType === '2' ?  (
+        {ticketType === "1" ? (
+          <CuocHen type={type} setType={setType} typeStatus={typeStatus} />
+        ) : ticketType === "2" ? (
           <PhieuTheoDoi type={type} setType={setType} />
         ) : (
           <KhamTaiNha type={type} setType={setType} />

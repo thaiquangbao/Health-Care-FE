@@ -3,15 +3,18 @@
 import Navbar from "@/components/navbar";
 import { authContext } from "@/context/AuthContext";
 import { api, TypeHTTP } from "@/utils/api";
+import { set } from "date-fns";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
-
+import { dsKhoa } from "@/utils/chuyenKhoa";
 const BacSiNoiBat = () => {
   const [doctorRecords, setDoctorRecords] = useState([]);
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [doctorSuggest, setDoctorSuggest] = useState([]);
   const { authData } = useContext(authContext);
+  const [display, setDisplay] = useState(true);
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -62,6 +65,20 @@ const BacSiNoiBat = () => {
           };
         })
       );
+      api({
+        sendToken: false,
+        type: TypeHTTP.GET,
+        path: "/doctorSuggests/get-all",
+      }).then((suggest) => {
+        const filteredDoctors = res.filter((itemDoctor) => {
+          return suggest.some(
+            (item) => item.doctor_record_id === itemDoctor.doctor._id
+          );
+        });
+
+        setDoctorSuggest(filteredDoctors);
+      });
+      // setDoctorSuggest(res.);
     });
   }, [authData.assessment]);
   const handleFindDoctor = (e) => {
@@ -70,6 +87,7 @@ const BacSiNoiBat = () => {
     const filtered = doctorRecords.filter((item) =>
       item.doctor.fullName.toLowerCase().includes(searchValue.toLowerCase())
     );
+    setDisplay(false);
     setFilteredDoctors(filtered);
   };
   return (
@@ -101,6 +119,9 @@ const BacSiNoiBat = () => {
               <span className="font-medium text-[15px]">Chuyên Khoa</span>
               <select className="px-3 py-2 rounded-md focus:outline-none">
                 <option>Tất Cả Chuyên Khoa</option>
+                {dsKhoa.map((item, index) => (
+                  <option key={index}>{item}</option>
+                ))}
               </select>
             </div>
             <div className="flex gap-3 items-center text-[14px]">
@@ -113,48 +134,109 @@ const BacSiNoiBat = () => {
             </div>
           </div>
         </div>
-        <div className="w-full mt-[2rem] grid grid-cols-4 gap-5 pb-[2rem]">
-          {filteredDoctors.map((item, index) => (
-            <div
-              key={index}
-              className="bg-[white] shadow-xl shadow-[#35a4ff2a] pt-[1rem] overflow-hidden rounded-lg justify-center items-center flex flex-col"
-            >
-              <div
-                style={{
-                  backgroundImage: `url(${item?.doctor?.image})`,
-                  backgroundSize: "cover",
-                }}
-                className="px-[1rem] w-[70%] aspect-square rounded-full"
-              ></div>
-              <span className="px-[1rem] font-medium mt-[1rem]">
-                BS {item?.doctor?.fullName}
-              </span>
-              <div className="px-[1rem] flex items-center gap-[1rem] mt-[0.5rem] font-medium">
-                <div className="flex items-center gap-1">
-                  <i className="bx bxs-calendar-check text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
-                  <span className="text-[14px]">{item?.examination_call}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <i className="bx bxs-star text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
-                  <span className="text-[14px]">
-                    {item?.assessment + "" === "NaN"
-                      ? 0
-                      : item?.assessment.toFixed(1)}
+        {display && (
+          <div className="flex flex-col">
+            <h2 className="font-semibold text-[17px]">Đề Xuất</h2>
+            <div className="w-full mt-[2rem] grid grid-cols-4 gap-5 pb-[2rem]">
+              {doctorSuggest.map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-[white] shadow-xl shadow-[#35a4ff2a] pt-[1rem] overflow-hidden rounded-lg justify-center items-center flex flex-col"
+                >
+                  <div
+                    style={{
+                      backgroundImage: `url(${item?.doctor?.image})`,
+                      backgroundSize: "cover",
+                    }}
+                    className="px-[1rem] w-[70%] aspect-square rounded-full"
+                  ></div>
+                  <span className="px-[1rem] font-medium mt-[1rem]">
+                    BS {item?.doctor?.fullName}
                   </span>
+                  <div className="px-[1rem] flex items-center gap-[1rem] mt-[0.5rem] font-medium">
+                    <div className="flex items-center gap-1">
+                      <i className="bx bxs-calendar-check text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
+                      <span className="text-[14px]">
+                        {item?.examination_call}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <i className="bx bxs-star text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
+                      <span className="text-[14px]">
+                        {item?.assessment + "" === "NaN"
+                          ? 0
+                          : item?.assessment.toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-[1rem] mt-[1rem] py-1 rounded-md text-[14px] bg-[#e0eff6]">
+                    Chuyên khoa {item?.doctor.specialize}
+                  </span>
+                  <button
+                    onClick={() =>
+                      router.push(`/ho-so-bac-si/${item.doctor?._id}`)
+                    }
+                    className="mt-[1rem] py-3 flex items-center justify-center gap-1 text-[white] bg-[#5050ff] font-medium text-[15px] w-full"
+                  >
+                    {/* <i className='bx bxs-calendar text-[23px] py-3' ></i> */}
+                    <span>Xem Hồ Sơ</span>
+                  </button>
                 </div>
-              </div>
-              <span className="px-[1rem] mt-[1rem] py-1 rounded-md text-[14px] bg-[#e0eff6]">
-                Chuyên khoa {item?.doctor.specialize}
-              </span>
-              <button
-                onClick={() => router.push(`/ho-so-bac-si/${item.doctor?._id}`)}
-                className="mt-[1rem] py-3 flex items-center justify-center gap-1 text-[white] bg-[#5050ff] font-medium text-[15px] w-full"
-              >
-                {/* <i className='bx bxs-calendar text-[23px] py-3' ></i> */}
-                <span>Xem Hồ Sơ</span>
-              </button>
+              ))}
             </div>
-          ))}
+          </div>
+        )}
+
+        <div className="flex flex-col">
+          <h2 className="font-semibold text-[17px]">Tất Cả</h2>
+
+          <div className="w-full mt-[2rem] grid grid-cols-4 gap-5 pb-[2rem]">
+            {filteredDoctors.map((item, index) => (
+              <div
+                key={index}
+                className="bg-[white] shadow-xl shadow-[#35a4ff2a] pt-[1rem] overflow-hidden rounded-lg justify-center items-center flex flex-col"
+              >
+                <div
+                  style={{
+                    backgroundImage: `url(${item?.doctor?.image})`,
+                    backgroundSize: "cover",
+                  }}
+                  className="px-[1rem] w-[70%] aspect-square rounded-full"
+                ></div>
+                <span className="px-[1rem] font-medium mt-[1rem]">
+                  BS {item?.doctor?.fullName}
+                </span>
+                <div className="px-[1rem] flex items-center gap-[1rem] mt-[0.5rem] font-medium">
+                  <div className="flex items-center gap-1">
+                    <i className="bx bxs-calendar-check text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
+                    <span className="text-[14px]">
+                      {item?.examination_call}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <i className="bx bxs-star text-[18px] text-[#5050ff] translate-y-[-1px]"></i>
+                    <span className="text-[14px]">
+                      {item?.assessment + "" === "NaN"
+                        ? 0
+                        : item?.assessment.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+                <span className="px-[1rem] mt-[1rem] py-1 rounded-md text-[14px] bg-[#e0eff6]">
+                  Chuyên khoa {item?.doctor.specialize}
+                </span>
+                <button
+                  onClick={() =>
+                    router.push(`/ho-so-bac-si/${item.doctor?._id}`)
+                  }
+                  className="mt-[1rem] py-3 flex items-center justify-center gap-1 text-[white] bg-[#5050ff] font-medium text-[15px] w-full"
+                >
+                  {/* <i className='bx bxs-calendar text-[23px] py-3' ></i> */}
+                  <span>Xem Hồ Sơ</span>
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
