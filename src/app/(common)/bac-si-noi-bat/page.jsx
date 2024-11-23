@@ -15,6 +15,7 @@ const BacSiNoiBat = () => {
   const [doctorSuggest, setDoctorSuggest] = useState([]);
   const { authData } = useContext(authContext);
   const [display, setDisplay] = useState(true);
+  const [selectKhoa, setSelectKhoa] = useState("");
   useEffect(() => {
     api({
       type: TypeHTTP.GET,
@@ -84,11 +85,37 @@ const BacSiNoiBat = () => {
   const handleFindDoctor = (e) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
-    const filtered = doctorRecords.filter((item) =>
-      item.doctor.fullName.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setDisplay(false);
-    setFilteredDoctors(filtered);
+
+    if (searchValue.trim() === "") {
+      const filtered = doctorRecords.filter((item) =>
+        item.doctor.fullName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setDisplay(true);
+      setFilteredDoctors(filtered);
+    } else {
+      const filtered = doctorRecords.filter((item) =>
+        item.doctor.fullName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setDisplay(false);
+      setFilteredDoctors(filtered);
+    }
+  };
+  const handleSelect = (e) => {
+    const selectedKhoa = e.target.value;
+    setSelectKhoa(selectedKhoa);
+
+    if (selectedKhoa === "Tất Cả Chuyên Khoa") {
+      setFilteredDoctors(doctorRecords);
+      setDisplay(true);
+    } else {
+      const filtered = doctorRecords.filter((item) =>
+        item.doctor.specialize
+          .toLowerCase()
+          .includes(selectedKhoa.toLowerCase())
+      );
+      setDisplay(false);
+      setFilteredDoctors(filtered);
+    }
   };
   return (
     <div className="w-full pt-[60px] min-h-screen flex flex-col px-[5%] background-public">
@@ -117,7 +144,10 @@ const BacSiNoiBat = () => {
           <div className="flex justify-end gap-[2rem]">
             <div className="flex gap-3 items-center text-[14px]">
               <span className="font-medium text-[15px]">Chuyên Khoa</span>
-              <select className="px-3 py-2 rounded-md focus:outline-none">
+              <select
+                className="px-3 py-2 rounded-md focus:outline-none"
+                onChange={(e) => handleSelect(e)}
+              >
                 <option>Tất Cả Chuyên Khoa</option>
                 {dsKhoa.map((item, index) => (
                   <option key={index}>{item}</option>

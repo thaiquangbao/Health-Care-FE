@@ -162,24 +162,84 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           setLoading(false);
         });
       }
-      // else if (typeStatus === "1") {
-      //   const body = {
-      //     doctor_record_id: appointmentData.doctorRecord._id,
-      //     status: "QUEUE",
-      //   };
-      //   api({
-      //     type: TypeHTTP.POST,
-      //     path: "/appointments/findByStatus",
-      //     body,
-      //     sendToken: false,
-      //   }).then((res) => {
-      //     setAppointments(res);
-      //     setLoading(false);
-      //   });
-      // }
     }
   }, [type, appointmentData.doctorRecord, typeStatus]);
-
+  // useEffect(() => {
+  //   if (appointmentData.doctorRecord) {
+  //     if (typeStatus === "1") {
+  //       setLoading(true);
+  //       const body = {
+  //         doctor_record_id: appointmentData.doctorRecord._id,
+  //       };
+  //       api({
+  //         type: TypeHTTP.POST,
+  //         path: "/appointments/findByRecords",
+  //         body,
+  //         sendToken: false,
+  //       }).then((res) => {
+  //         setAppointments(res);
+  //         setLoading(false);
+  //       });
+  //     } else if (typeStatus === "2") {
+  //       setLoading(true);
+  //       const body = {
+  //         doctor_record_id: appointmentData.doctorRecord._id,
+  //         status: "QUEUE",
+  //       };
+  //       api({
+  //         type: TypeHTTP.POST,
+  //         path: "/appointments/findByStatus",
+  //         body,
+  //         sendToken: false,
+  //       }).then((res) => {
+  //         setAppointments(res);
+  //         setLoading(false);
+  //       });
+  //     } else if (typeStatus === "3") {
+  //       const body = {
+  //         doctor_record_id: appointmentData.doctorRecord._id,
+  //         status: "ACCEPTED",
+  //       };
+  //       api({
+  //         type: TypeHTTP.POST,
+  //         path: "/appointments/findByStatus",
+  //         body,
+  //         sendToken: false,
+  //       }).then((res) => {
+  //         setAppointments(res);
+  //         setLoading(false);
+  //       });
+  //     } else if (typeStatus === "4") {
+  //       const body = {
+  //         doctor_record_id: appointmentData.doctorRecord._id,
+  //         status: "REJECTED",
+  //       };
+  //       api({
+  //         type: TypeHTTP.POST,
+  //         path: "/appointments/findByStatus",
+  //         body,
+  //         sendToken: false,
+  //       }).then((res) => {
+  //         setAppointments(res);
+  //         setLoading(false);
+  //       });
+  //     } else if (typeStatus === "5") {
+  //       const body = {
+  //         doctor_record_id: appointmentData.doctorRecord._id,
+  //         status: "CANCELED",
+  //       };
+  //       api({
+  //         type: TypeHTTP.POST,
+  //         path: "/appointments/findByStatus",
+  //         body,
+  //         sendToken: false,
+  //       }).then((res) => {
+  //         setAppointments(res);
+  //         setLoading(false);
+  //       });
+  //     }
+  //   }
+  // }, [appointmentData.doctorRecord, typeStatus]);
   const handleAcceptAppointment = (appointment) => {
     const body = {
       _id: appointment._id,

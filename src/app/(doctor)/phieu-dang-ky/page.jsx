@@ -45,10 +45,11 @@ const Appointment = () => {
               onChange={(e) => setTypeStatus(e.target.value)}
               className="px-2 py-2 text-[15px] shadow-lg focus:outline-0 rounded-md font-medium"
             >
-              <option value={1}>Đang chờ chấp nhận</option>
-              <option value={2}>Đã chấp nhận</option>
-              <option value={3}>Đã từ chối</option>
-              <option value={4}>Đã hủy</option>
+              <option value={1}>Tất cả</option>
+              <option value={2}>Đang chờ chấp nhận</option>
+              <option value={3}>Đã chấp nhận</option>
+              <option value={4}>Đã từ chối</option>
+              <option value={5}>Đã hủy</option>
             </select>
             <select
               onChange={(e) => setType(e.target.value)}
