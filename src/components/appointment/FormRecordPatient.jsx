@@ -366,7 +366,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 value={reAppointmentYear}
               />
             </div> */}
-          <div className="w-[50%] flex justify-end">
+          <div className="flex justify-end">
             <button
               onClick={() => updateMedicalRecord()}
               className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
