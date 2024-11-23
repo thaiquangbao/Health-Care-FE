@@ -76,8 +76,29 @@ const BacSiNoiBat = () => {
             (item) => item.doctor_record_id === itemDoctor.doctor._id
           );
         });
-
-        setDoctorSuggest(filteredDoctors);
+        setDoctorSuggest(
+          filteredDoctors.map((doctorRecord) => {
+            const filter = authData.assessment.filter(
+              (item) => item.doctor_record_id === doctorRecord._id
+            );
+            return {
+              ...doctorRecord,
+              assessment:
+                filter.reduce(
+                  (total, item) => (total += item.assessment_list.star),
+                  0
+                ) /
+                  filter.length ===
+                NaN
+                  ? 0
+                  : filter.reduce(
+                      (total, item) => (total += item.assessment_list.star),
+                      0
+                    ) / filter.length,
+            };
+          })
+        );
+        // setDoctorSuggest((prev) => prev filteredDoctors);
       });
       // setDoctorSuggest(res.);
     });
