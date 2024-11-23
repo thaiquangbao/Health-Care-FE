@@ -342,9 +342,9 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
               </table>
             </div>
           </div>
-          <span className="font-semibold px-2 mt-[1rem]">Ngày tái khám</span>
-          <div className="w-full flex mt-3 px-2">
-            {/* <div className="w-[50%] flex items-center justify-between">
+          {/* <span className="font-semibold px-2 mt-[1rem]">Ngày tái khám</span>
+          <div className="w-full flex mt-3 px-2"> */}
+          {/* <div className="w-[50%] flex items-center justify-between">
               
               <input
                 placeholder="Ngày (DD)"
@@ -366,16 +366,16 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 value={reAppointmentYear}
               />
             </div> */}
-            <div className="w-[50%] flex justify-end">
-              <button
-                onClick={() => updateMedicalRecord()}
-                className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
-              >
-                Cập Nhật Hồ Sơ
-              </button>
-            </div>
+          <div className="w-[50%] flex justify-end">
+            <button
+              onClick={() => updateMedicalRecord()}
+              className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"
+            >
+              Cập Nhật Hồ Sơ
+            </button>
           </div>
         </div>
+        // </div>
       )}
       <button onClick={() => hidden()}>
         <i className="bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]"></i>
