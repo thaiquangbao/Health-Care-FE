@@ -68,42 +68,42 @@ const Zero = () => {
       appointmentHandler.setCurrentAppointment(res);
     });
     const access = globalThis.localStorage.getItem(
-                "accessToken"
-              );
-          const refresh = globalThis.localStorage.getItem(
-                "refreshToken"
-              );
+      "accessToken"
+    );
+    const refresh = globalThis.localStorage.getItem(
+      "refreshToken"
+    );
 
-    if(!access && !refresh) {
+    if (!access && !refresh) {
 
 
-      api({type: TypeHTTP.GET, path: `/appointments/get-one/${id}`, sendToken: false})
-      .then(res => {
+      api({ type: TypeHTTP.GET, path: `/appointments/get-one/${id}`, sendToken: false })
+        .then(res => {
           const customer = res.patient;
-          api({type: TypeHTTP.POST, path: `/customers/generate-token-zego`, sendToken: false, body: customer})
-          .then((token) => {
-            console.log(token);
-            
-           globalThis.localStorage.setItem(
+          api({ type: TypeHTTP.POST, path: `/customers/generate-token-zego`, sendToken: false, body: customer })
+            .then((token) => {
+              console.log(token);
+
+              globalThis.localStorage.setItem(
                 "accessToken",
                 token.accessToken
               );
-          globalThis.localStorage.setItem(
+              globalThis.localStorage.setItem(
                 "refreshToken",
                 token.refreshToken
               );
-          globalThis.window.location.reload()
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-      })  
+              globalThis.window.location.reload()
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        })
     }
   }, [id]);
 
   const endMeet = async () => {
-    const appId = 1613583576;
-    const server = "16501249a2c1edce3c8e713cc2a7e441";
+    const appId = 562167596;
+    const server = "859015aa2014d3064603245297b0afe4";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,
