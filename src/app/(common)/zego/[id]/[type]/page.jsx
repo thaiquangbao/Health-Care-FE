@@ -123,7 +123,7 @@ const Zego = () => {
 
       onLeaveRoom: () => {
         // khi rời muốn lamf j đó thì ở đây
-        // endMeet();
+        endMeet();
       },
     });
   };
@@ -172,7 +172,7 @@ const Zego = () => {
               top: offset.top + "px",
               left: offset.left + "px",
             }}
-            className="fixed z-[1]"
+            className="fixed z-30"
           ></button>
         )}
       {userData.user?.role === "DOCTOR" && (

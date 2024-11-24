@@ -123,7 +123,7 @@ const Zero = () => {
         body: { appointment: id },
         sendToken: false,
       });
-      await api({
+      api({
         path: `/medicalRecords/send-mail/${res._id}`,
         type: TypeHTTP.POST,
         sendToken: false,
@@ -222,9 +222,10 @@ const Zero = () => {
               top: offset.top + "px",
               left: offset.left + "px",
             }}
-            className="fixed z-[1]"
+            className="fixed z-30"
           ></button>
         )}
+
       {userData.user?.role === "DOCTOR" && (
         <button
           onClick={() => authHandler.showMedicalRecord()}
@@ -235,7 +236,7 @@ const Zero = () => {
               className="font-bold"
               style={{ color: "green" }}
             >
-              ✔️
+              {/* ✔️ */}
             </span>
           )}
           Hồ Sơ Bệnh Nhân
