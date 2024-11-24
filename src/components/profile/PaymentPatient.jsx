@@ -82,7 +82,7 @@ const PaymentPatient = ({ user, setUser }) => {
           Lịch sử thanh toán
         </span>
       </div>
-      <div className="w-full max-h-[500px] mt-4 overflow-y-auto relative">
+      <div className="w-full max-h-[500px] overflow-y-auto relative">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -133,7 +133,7 @@ const PaymentPatient = ({ user, setUser }) => {
                 </td>
                 <td className="py-4 text-[13px]">
                   {payment?.beneficiaryAccount?.bankName ===
-                  ""
+                    ""
                     ? "Đang xử lý"
                     : `${payment.beneficiaryAccount?.bankName}
                       ${payment.beneficiaryAccount?.accountNumber} -
@@ -144,8 +144,8 @@ const PaymentPatient = ({ user, setUser }) => {
                     ? "Tư vấn trực tuyến"
                     : payment.namePayment ===
                       "APPOINTMENTHOME"
-                    ? "Tư vấn sức khỏe tại nhà"
-                    : "Theo dõi sức khỏe"}
+                      ? "Tư vấn sức khỏe tại nhà"
+                      : "Theo dõi sức khỏe"}
                 </td>
                 <td className="py-4 text-[13px]">
                   {payment.date?.time}-{payment.date?.day}/
@@ -162,12 +162,12 @@ const PaymentPatient = ({ user, setUser }) => {
                   style={{
                     color:
                       payment.status_payment?.type ===
-                      "SUCCESS"
+                        "SUCCESS"
                         ? "green"
                         : payment.status_payment?.type ===
                           "RESOLVED"
-                        ? "blue"
-                        : "black",
+                          ? "blue"
+                          : "black",
                   }}
                 >
                   {payment.status_payment?.messages}

@@ -38,6 +38,14 @@ const AuthContext = ({ children }) => {
   const [assessment, setAssessments] = useState([])
 
   useEffect(() => {
+    if (visibleSignUp === false && userData.user && userData.user.processSignup !== 3) {
+      setTimeout(() => {
+        showSignUp()
+      }, 500);
+    }
+  }, [visibleSignUp, userData.user])
+
+  useEffect(() => {
     api({ type: TypeHTTP.GET, sendToken: false, path: '/assessments/getAll' })
       .then(res => setAssessments(res))
   }, [])

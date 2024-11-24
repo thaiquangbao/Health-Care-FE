@@ -35,7 +35,7 @@ const Notification = ({ status, message, setInfomation }) => {
                 <span className='text-[14px] font-semibold'>{info.status === notifyType.HEALTH ? 'Thông Tin Sức Khỏe' : info.status === notifyType.SUCCESS ? 'Thành Công' : info.status === notifyType.FAIL ? 'Thất Bại' : info.status === notifyType.WARNING ? 'Cảnh báo' : 'Đang Tải'}</span>
                 <span className='text-[12px]'>{info.message}</span>
             </div>
-            <i style={{ color: (info.status === notifyType.SUCCESS || info.status === notifyType.LOADING || info.status === notifyType.HEALTH) ? '#999' : 'white' }} onClick={() => setInfo({ status: 'none', message: '' })} className='bx bx-x absolute top-1 right-1 text-[21px] cursor-pointer' ></i>
+            <i style={{ color: (info.status === notifyType.SUCCESS || info.status === notifyType.LOADING || info.status === notifyType.HEALTH) ? '#999' : info.status === notifyType.WARNING ? '#6b6b6b' : 'white' }} onClick={() => setInfo({ status: 'none', message: '' })} className='bx bx-x absolute top-1 right-1 text-[21px] cursor-pointer' ></i>
         </div>
     )
 }

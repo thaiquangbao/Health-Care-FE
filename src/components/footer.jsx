@@ -11,7 +11,7 @@ const Footer = () => {
                 <div className='flex flex-col gap-2'>
                     <span className='flex gap-2 items-center'><span className='font-bold text-[15px]'>Hotline</span> 0902491471</span>
                     <span className='flex gap-2 items-center'><span className='font-bold text-[15px]'>Hỗ Trợ</span> vutienduc26122002@gmail.com</span>
-                    <span className='w-[400px]'>Copyright © 2017-2024 Rai and Rohl Technologies, Inc. All rights reserved.</span>
+                    <span className='w-[400px]'>Copyright © 2024 Ton Long Phuoc, Inc. All rights reserved.</span>
                 </div>
             </div>
         </div>

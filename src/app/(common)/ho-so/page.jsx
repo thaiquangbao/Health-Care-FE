@@ -69,16 +69,62 @@ const HoSo = () => {
   }, [choose]);
 
   const handleUpdateUser = () => {
-    globalHandler.notify(
-      notifyType.LOADING,
-      "Đang Cập Nhật Thông Tin"
-    );
+    if (choose === 1) {
+      const name = user?.fullName.trim().replace(/\s+/g, ' ');
+      if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]*(\s[A-ZÀ-Ỹ][a-zà-ỹ]*)*$/.test(name)) {
+        globalHandler.notify(notifyType.WARNING, "Họ Tên Không Hợp Lệ");
+        return;
+      }
+      if (
+        !user?.dateOfBirth ||
+        new Date().getFullYear() -
+        new Date(user?.dateOfBirth).getFullYear() -
+        (new Date().getMonth() < new Date(user?.dateOfBirth).getMonth() ||
+          (new Date().getMonth() ===
+            new Date(user?.dateOfBirth).getMonth() &&
+            new Date().getDate() <
+            new Date(user?.dateOfBirth).getDate())) <
+        18
+      ) {
+        globalHandler.notify(notifyType.WARNING, "Phải trên 18 tuổi");
+        return;
+      }
+      if (user?.sex !== true && user?.sex !== false) {
+        globalHandler.notify(notifyType.WARNING, "Vui lòng chọn giới tính");
+        return;
+      }
+      if (!/^[0-9]{9}$/.test(user?.cccd) && !/^[0-9]{12}$/.test(user?.cccd)) {
+        globalHandler.notify(notifyType.WARNING, "Căn cước công dân phải chứa 9 hoặc 12 số");
+        return;
+      }
+      if (user?.address === '') {
+        globalHandler.notify(notifyType.WARNING, "Vui lòng nhập địa chỉ");
+        return;
+      }
+
+      globalHandler.notify(
+        notifyType.LOADING,
+        "Đang Cập Nhật Thông Tin"
+      );
+    } else {
+      if (!/^[A-Za-z]+/.test(user?.bank?.bankName)) {
+        globalHandler.notify(notifyType.WARNING, "Tên ngân hàng không hợp lệ");
+        return;
+      }
+      if (!/^[A-Z]+$/.test(user?.bank?.accountName)) {
+        globalHandler.notify(notifyType.WARNING, "Tên tài khoản phải là chữ in hoa");
+        return;
+      }
+      if (!/^[0-9]+$/.test(user?.bank?.accountNumber)) {
+        globalHandler.notify(notifyType.WARNING, "Tên tài khoản phải là ký tự số");
+        return;
+      }
+    }
     api({
       type: TypeHTTP.POST,
       body: { ...user },
-      path: `/auth/update/${
-        userData.user?.role === "DOCTOR" ? "doctor" : "User"
-      }`,
+      path: `/auth/update/${userData.user?.role === "DOCTOR" ? "doctor" : "User"
+        }`,
       sendToken: true,
     })
       .then((res) => {
@@ -108,11 +154,10 @@ const HoSo = () => {
     api({
       sendToken: true,
       type: TypeHTTP.POST,
-      path: `/auth/update-information/${
-        userData.user?.role === "DOCTOR"
-          ? "doctors"
-          : "patients"
-      }`,
+      path: `/auth/update-information/${userData.user?.role === "DOCTOR"
+        ? "doctors"
+        : "patients"
+        }`,
       body: formData,
     })
       .then((data) => {

@@ -186,3 +186,14 @@ export const sicks = [
 export function removeDiacritics(str) {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
 }
+
+export function shuffleArray(array) {
+    // Duyệt qua các phần tử từ cuối đến đầu
+    for (let i = array.length - 1; i > 0; i--) {
+        // Chọn một chỉ số ngẫu nhiên từ 0 đến i
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        // Hoán đổi phần tử tại i và randomIndex
+        [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+    }
+    return array;
+}

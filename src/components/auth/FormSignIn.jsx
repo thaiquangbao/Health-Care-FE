@@ -60,7 +60,7 @@ const FormSignIn = ({ visible, hidden }) => {
             .then(res => {
                 if (res.data?.processSignup === 3) {
                     if (res.data?.role === 'ADMIN') {
-                        globalHandler.notify(notifyType.FAIL, "Vui Lòng đăng nhập bằng tài khoản User")
+                        globalHandler.notify(notifyType.FAIL, "Vui Lòng đăng nhập bằng tài khoản người dùng")
                     } else {
                         userHandler.setUser(res.data)
                         globalThis.localStorage.setItem('accessToken', res.token.accessToken)

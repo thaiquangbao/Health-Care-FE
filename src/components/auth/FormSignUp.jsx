@@ -32,6 +32,26 @@ const FormSignUp = ({ visible, hidden }) => {
     accountName: "",
   });
 
+  const handleSignOut = () => {
+    globalHandler.notify(
+      notifyType.LOADING,
+      "Đang Đăng Xuất"
+    );
+    if (userData.user?.role === "DOCTOR") {
+      router.push("/");
+    }
+    setTimeout(() => {
+      globalThis.localStorage.removeItem("accessToken");
+      globalThis.localStorage.removeItem("refreshToken");
+      globalHandler.notify(
+        notifyType.LOADING,
+        "Đăng Xuất Thành Công"
+      );
+      userHandler.setUser(undefined);
+      globalHandler.reload();
+    }, 500);
+  };
+
   useEffect(() => {
     if (userData.user?.processSignup) {
       setCurrentStep(userData.user?.processSignup + 1);
@@ -53,11 +73,8 @@ const FormSignUp = ({ visible, hidden }) => {
           const recaptcha = new RecaptchaVerifier(auth, recaptchaContainer, {
             size: "invisible",
             callback: (response) => {
-              console.log(response);
-              console.log("reCAPTCHA solved");
             },
             "expired-callback": () => {
-              console.log("reCAPTCHA expired");
             },
           });
           signInWithPhoneNumber(
@@ -118,82 +135,71 @@ const FormSignUp = ({ visible, hidden }) => {
   };
 
   const handleSubmitOTPWithPhoneNumber = () => {
-    if (otp === "") {
-      globalHandler.notify(notifyType.WARNING, "Vui lòng nhập mã xác minh");
+    if (!/^[0-9]{6}$/.test(otp)) {
+      globalHandler.notify(notifyType.WARNING, "Mã xác minh phải gồm 6 ký tự số");
       return;
     }
     globalHandler.notify(notifyType.LOADING, "Đang xác thực tài khoản");
-    verification
-      .confirm(otp)
-      .then((data) => {
-        let user = { ...userData.user, processSignup: 2 };
-        api({
-          type: TypeHTTP.POST,
-          body: { ...user },
-          path: `/auth/update`,
-          sendToken: false,
-        })
-          .then((res) => {
-            userHandler.setUser(res);
-            globalHandler.notify(
-              notifyType.SUCCESS,
-              "Xác Thực Tài Khoản Thành Công"
-            );
-          })
-          .catch(() => {
-            globalHandler.notify(
-              notifyType.FAIL,
-              "Xác minh thất bại, Vui lòng thử lại"
-            );
-          });
+    // verification
+    //   .confirm(otp)
+    //   .then((data) => {
+    //   })
+    //   .catch(() => {
+
+    //   });
+    let user = { ...userData.user, processSignup: 2 };
+    api({
+      type: TypeHTTP.POST,
+      body: { ...user },
+      path: `/auth/update`,
+      sendToken: false,
+    })
+      .then((res) => {
+        userHandler.setUser(res);
+        console.log(res)
+        globalHandler.notify(
+          notifyType.SUCCESS,
+          "Xác Thực Tài Khoản Thành Công"
+        );
       })
       .catch(() => {
-        globalHandler.notify(notifyType.FAIL, "Mã xác minh không đúng");
+        globalHandler.notify(
+          notifyType.FAIL,
+          "Xác minh thất bại, Vui lòng thử lại"
+        );
       });
   };
 
   const handleCompleteInfo = () => {
-    if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]+(\s[A-ZÀ-Ỹ][a-zà-ỹ]+)+$/.test(individual.name)) {
+    const name = individual.name.trim().replace(/\s+/g, ' ');
+    if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]*(\s[A-ZÀ-Ỹ][a-zà-ỹ]*)*$/.test(name)) {
       globalHandler.notify(notifyType.WARNING, "Họ Tên Không Hợp Lệ");
       return;
     }
     if (
       !individual.dateOfBirth ||
       new Date().getFullYear() -
-        new Date(individual.dateOfBirth).getFullYear() -
-        (new Date().getMonth() < new Date(individual.dateOfBirth).getMonth() ||
-          (new Date().getMonth() ===
-            new Date(individual.dateOfBirth).getMonth() &&
-            new Date().getDate() <
-              new Date(individual.dateOfBirth).getDate())) <
-        12
+      new Date(individual.dateOfBirth).getFullYear() -
+      (new Date().getMonth() < new Date(individual.dateOfBirth).getMonth() ||
+        (new Date().getMonth() ===
+          new Date(individual.dateOfBirth).getMonth() &&
+          new Date().getDate() <
+          new Date(individual.dateOfBirth).getDate())) <
+      18
     ) {
-      globalHandler.notify(notifyType.WARNING, "Phải trên 12 tuổi");
+      globalHandler.notify(notifyType.WARNING, "Phải trên 18 tuổi");
       return;
     }
     if (individual.sex !== true && individual.sex !== false) {
       globalHandler.notify(notifyType.WARNING, "Vui lòng chọn giới tính");
       return;
     }
-    if (individual.accountNumber === "") {
-      globalHandler.notify(
-        notifyType.WARNING,
-        "Vui lòng nhập số tài khoản ngân hàng"
-      );
+    if (!/^[0-9]{9}$/.test(individual.cccd) && !/^[0-9]{12}$/.test(individual.cccd)) {
+      globalHandler.notify(notifyType.WARNING, "Căn cước công dân phải chứa 9 hoặc 12 số");
       return;
     }
-    if (individual.bankName === "") {
-      globalHandler.notify(
-        notifyType.WARNING,
-        "Vui lòng nhập tên của ngân hàng"
-      );
-      return;
-    }
-    if (individual.accountName === "") {
-      globalHandler.notify(
-        notifyType.WARNING,
-        "Vui lòng nhập tên của chủ tài khoản"
-      );
+    if (individual.address === '') {
+      globalHandler.notify(notifyType.WARNING, "Vui lòng nhập địa chỉ");
       return;
     }
     globalHandler.notify(
@@ -329,6 +335,12 @@ const FormSignUp = ({ visible, hidden }) => {
               >
                 Xác Thực Tài Khoản
               </button>
+              <button
+                onClick={() => handleSignOut()}
+                className="text-[14px] mt-2 hover:underline"
+              >
+                Đăng xuất tài khoản này
+              </button>
             </div>
           </div>
           <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex justify-center">
@@ -379,37 +391,17 @@ const FormSignUp = ({ visible, hidden }) => {
                 placeholder="Địa Chỉ"
                 className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
               />
-              <div className="flex gap-2 w-[90%]">
-                <input
-                  onChange={(e) =>
-                    setIndividual({
-                      ...individual,
-                      accountNumber: e.target.value,
-                    })
-                  }
-                  placeholder="Số Tài Khoản Ngân Hàng"
-                  className="text-[13px] mt-1 w-[50%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                />
-                <input
-                  onChange={(e) =>
-                    setIndividual({ ...individual, bankName: e.target.value })
-                  }
-                  placeholder="Tên Ngân Hàng"
-                  className="text-[13px] mt-1 w-[50%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                />
-              </div>
-              <input
-                onChange={(e) =>
-                  setIndividual({ ...individual, accountName: e.target.value })
-                }
-                placeholder="Tên Chủ Tài Khoản"
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              />
               <button
                 onClick={() => handleCompleteInfo()}
                 className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] px-[3rem] w-[270px] text-[white] mt-2 h-[37px] rounded-lg"
               >
-                Hoàn Thành
+                Xác Thực Tài Khoản
+              </button>
+              <button
+                onClick={() => handleSignOut()}
+                className="text-[14px] mt-1 hover:underline"
+              >
+                Đăng xuất tài khoản này
               </button>
             </div>
           </div>

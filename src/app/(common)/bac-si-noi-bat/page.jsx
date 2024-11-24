@@ -7,6 +7,7 @@ import { set } from "date-fns";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { dsKhoa } from "@/utils/chuyenKhoa";
+import { shuffleArray } from "@/utils/other";
 const BacSiNoiBat = () => {
   const [doctorRecords, setDoctorRecords] = useState([]);
   const router = useRouter();
@@ -35,12 +36,12 @@ const BacSiNoiBat = () => {
                 0
               ) /
                 filter.length ===
-              NaN
+                NaN
                 ? 0
                 : filter.reduce(
-                    (total, item) => (total += item.assessment_list.star),
-                    0
-                  ) / filter.length,
+                  (total, item) => (total += item.assessment_list.star),
+                  0
+                ) / filter.length,
           };
         })
       );
@@ -57,12 +58,12 @@ const BacSiNoiBat = () => {
                 0
               ) /
                 filter.length ===
-              NaN
+                NaN
                 ? 0
                 : filter.reduce(
-                    (total, item) => (total += item.assessment_list.star),
-                    0
-                  ) / filter.length,
+                  (total, item) => (total += item.assessment_list.star),
+                  0
+                ) / filter.length,
           };
         })
       );
@@ -89,12 +90,12 @@ const BacSiNoiBat = () => {
                   0
                 ) /
                   filter.length ===
-                NaN
+                  NaN
                   ? 0
                   : filter.reduce(
-                      (total, item) => (total += item.assessment_list.star),
-                      0
-                    ) / filter.length,
+                    (total, item) => (total += item.assessment_list.star),
+                    0
+                  ) / filter.length,
             };
           })
         );
@@ -243,7 +244,7 @@ const BacSiNoiBat = () => {
           <h2 className="font-semibold text-[17px]">Tất Cả</h2>
 
           <div className="w-full mt-[2rem] grid grid-cols-4 gap-5 pb-[2rem]">
-            {filteredDoctors.map((item, index) => (
+            {shuffleArray(filteredDoctors).map((item, index) => (
               <div
                 key={index}
                 className="bg-[white] shadow-xl shadow-[#35a4ff2a] pt-[1rem] overflow-hidden rounded-lg justify-center items-center flex flex-col"

@@ -22,9 +22,8 @@ const UserInformation = ({ user, setUser }) => {
         api({
           type: TypeHTTP.POST,
           body: { ...user },
-          path: `/auth/update-email/${
-            userData.user?.role === "DOCTOR" ? "doctor" : "User"
-          }`,
+          path: `/auth/update-email/${userData.user?.role === "DOCTOR" ? "doctor" : "User"
+            }`,
           sendToken: true,
         })
           .then((res) => {
@@ -68,6 +67,11 @@ const UserInformation = ({ user, setUser }) => {
           name={"Giới Tính"}
           list={["Nam", "Nữ"]}
           value={user?.sex === true ? "Nam" : "Nữ"}
+        />
+        <Input
+          onChange={(e) => setUser({ ...user, cccd: e.target.value })}
+          name={"Căn cước công dân"}
+          value={user?.cccd}
         />
         {userData.user?.role === "DOCTOR" && (
           <Select

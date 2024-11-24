@@ -189,20 +189,22 @@ const Navbar = () => {
                   Các Dịch Vụ
                 </span>
               </li>
-              <li
-                onClick={() => {
-                  authHandler.setVisibleMore(false);
-                  setTimeout(() => {
-                    authHandler.showSmartSearching();
-                  }, 1000);
-                }}
-                className="flex gap-3 cursor-pointer mt-5"
-              >
-                <i className="text-[#5dade2] bx bx-search text-[23px]"></i>
-                <span className="text-[16px] font-medium">
-                  Tìm Kiếm Thông Minh
-                </span>
-              </li>
+              {userData.user?.statusSignUp === 3 && (
+                <li
+                  onClick={() => {
+                    authHandler.setVisibleMore(false);
+                    setTimeout(() => {
+                      authHandler.showSmartSearching();
+                    }, 1000);
+                  }}
+                  className="flex gap-3 cursor-pointer mt-5"
+                >
+                  <i className="text-[#5dade2] bx bx-search text-[23px]"></i>
+                  <span className="text-[16px] font-medium">
+                    Tìm Kiếm Thông Minh
+                  </span>
+                </li>
+              )}
               <li
                 onClick={() => {
                   router.push("/bac-si-noi-bat");
