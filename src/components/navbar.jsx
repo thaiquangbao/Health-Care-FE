@@ -291,7 +291,7 @@ const Navbar = () => {
                     >
                       <i className="text-[#ebd400] fa-solid fa-calendar-check text-[23px]"></i>
                       <span className="text-[16px] font-medium">
-                        Cuộc Hẹn Của Bạn
+                        Khám sức khỏe trực tuyến
                       </span>
                     </li>
                     <li

@@ -159,9 +159,9 @@ const ChoosePayment = () => {
           </span>
         </div>
       </div>
-      {/* <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
-                <button onClick={() => bookingHomeHandler.setCurrentStep(3)} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
-            </div> */}
+      <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
+        <button onClick={() => handleSubmit()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
+      </div>
     </>
   );
 };

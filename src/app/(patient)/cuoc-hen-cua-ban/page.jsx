@@ -6,7 +6,7 @@ import {
   notifyType,
 } from "@/context/GlobalContext";
 import { userContext } from "@/context/UserContext";
-import { api, TypeHTTP } from "@/utils/api";
+import { api, deploy, TypeHTTP } from "@/utils/api";
 import {
   compare2Date,
   compareDate1GetterThanDate2,
@@ -49,8 +49,8 @@ const CuocHenCuaBan = () => {
     intervalRef.current = setInterval(() => {
       setTime(
         new Date().getHours() +
-          ":" +
-          new Date().getMinutes()
+        ":" +
+        new Date().getMinutes()
       );
     }, 60000);
   }, []);
@@ -155,11 +155,11 @@ const CuocHenCuaBan = () => {
         let schedule = record.schedules.filter(
           (item) =>
             item.date.day ===
-              appointment.appointment_date.day &&
+            appointment.appointment_date.day &&
             item.date.month ===
-              appointment.appointment_date.month &&
+            appointment.appointment_date.month &&
             item.date.year ===
-              appointment.appointment_date.year
+            appointment.appointment_date.year
         )[0];
         let time = schedule.times.filter(
           (item) =>
@@ -306,11 +306,11 @@ const CuocHenCuaBan = () => {
                             ? "black"
                             : appointment.status ===
                               "ACCEPTED"
-                            ? "green"
-                            : appointment.status ===
-                              "COMPLETED"
-                            ? "blue"
-                            : "red",
+                              ? "green"
+                              : appointment.status ===
+                                "COMPLETED"
+                                ? "blue"
+                                : "red",
                       }}
                       className="py-4"
                     >
@@ -351,27 +351,24 @@ const CuocHenCuaBan = () => {
                         "REJECTED",
                         "COMPLETED",
                       ].includes(appointment.status) && (
-                        <button
-                          onClick={() =>
-                            handleCancelAppointment(
-                              appointment
-                            )
-                          }
-                          className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-                        >
-                          Hủy Cuộc Hẹn
-                        </button>
-                      )}
-                      {displayConnect ===
-                        appointment._id && (
+                          <button
+                            onClick={() =>
+                              handleCancelAppointment(
+                                appointment
+                              )
+                            }
+                            className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                          >
+                            Hủy Cuộc Hẹn
+                          </button>
+                        )}
+                      {displayConnect !== appointment._id && (
                         <Link
-                          href={`http://127.0.0.1:3000/zero/${
-                            appointment._id
-                          }/${
-                            userData.user?.role === "USER"
+                          href={`${deploy}/zero/${appointment._id
+                            }/${userData.user?.role === "USER"
                               ? "patient"
                               : "doctor"
-                          }`}
+                            }`}
                         >
                           <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
                             Tham Gia Cuộc Hẹn

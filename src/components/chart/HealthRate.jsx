@@ -66,8 +66,8 @@ export default function HeartRate({ logBook, setLogBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 40,
-              max: 150,
+              min: 0,
+              max: 300,
               title: {
                 display: true,
                 text: "Nhịp tim",
@@ -105,7 +105,7 @@ export default function HeartRate({ logBook, setLogBook }) {
       utilsHandler.notify(notifyType.WARNING, "Hãy nhập số");
       return;
     }
-    if (Number(value) < 40 || Number(value) > 150) {
+    if (Number(value) <= 0 || Number(value) >= 300) {
       utilsHandler.notify(notifyType.WARNING, "Nhịp tim không hợp lệ");
       return;
     }
@@ -160,10 +160,10 @@ export default function HeartRate({ logBook, setLogBook }) {
               symptom !== "" && note !== ""
                 ? symptom
                 : symptom !== ""
-                ? symptom
-                : note !== ""
-                ? note
-                : "",
+                  ? symptom
+                  : note !== ""
+                    ? note
+                    : "",
             vitals: {
               heartRate: value,
             },

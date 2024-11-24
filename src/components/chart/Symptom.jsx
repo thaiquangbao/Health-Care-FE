@@ -73,10 +73,10 @@ export default function Symptom({ logBook, setLogBook }) {
             symptom !== "" && note !== ""
               ? symptom
               : symptom !== ""
-              ? symptom
-              : note !== ""
-              ? note
-              : "",
+                ? symptom
+                : note !== ""
+                  ? note
+                  : "",
           time: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
           author: "PATIENT",
           type: "REPORT",
@@ -158,13 +158,13 @@ export default function Symptom({ logBook, setLogBook }) {
               <th scope="col" className="w-[8%] py-2 text-center">
                 #
               </th>
-              <th scope="col" className="w-[35%] py-2">
+              <th scope="col" className="w-[35%] text-center py-2">
                 Triệu chứng
               </th>
-              <th scope="col" className="w-[35%] py-2">
+              <th scope="col" className="w-[35%] text-center py-2">
                 Ghi chú
               </th>
-              <th scope="col" className="w-[20%] py-2">
+              <th scope="col" className="w-[20%] text-center py-2">
                 Thời gian
               </th>
             </tr>
@@ -178,9 +178,9 @@ export default function Symptom({ logBook, setLogBook }) {
                 <td scope="row" className="px-6 py-2 text-center font-medium">
                   {index + 1}
                 </td>
-                <td className="py-2">{dsTrieuChung[index]}</td>
-                <td className="py-2">{dsNote[index]}</td>
-                <td className="py-2">{time}</td>
+                <td className="py-2 text-center border-none">{dsTrieuChung[index]}</td>
+                <td className="py-2 text-center border-none">{dsNote[index]}</td>
+                <td className="py-2 text-center border-none">{time}</td>
               </tr>
             ))}
           </tbody>

@@ -107,7 +107,7 @@ const HoSo = () => {
         "Đang Cập Nhật Thông Tin"
       );
     } else {
-      if (!/^[A-Za-z]+/.test(user?.bank?.bankName)) {
+      if (!/^[A-Za-z]+$/.test(user?.bank?.bankName)) {
         globalHandler.notify(notifyType.WARNING, "Tên ngân hàng không hợp lệ");
         return;
       }

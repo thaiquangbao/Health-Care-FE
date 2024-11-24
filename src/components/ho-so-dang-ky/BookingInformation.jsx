@@ -47,6 +47,64 @@ const BookingInformation = () => {
   };
 
   const handleNextStep = () => {
+    console.log(bookingData.booking, userData.user)
+    if (!userData.user) {
+      const name = bookingData.booking?.patient?.fullName.trim().replace(/\s+/g, ' ');
+      if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]*(\s[A-ZÀ-Ỹ][a-zà-ỹ]*)*$/.test(name)) {
+        globalHandler.notify(notifyType.WARNING, "Họ Tên Không Hợp Lệ");
+        return;
+      }
+      if (!/^0[0-9]{9}$/.test(bookingData.booking?.patient?.phone)) {
+        globalHandler.notify(notifyType.WARNING, "Số điện thoại không hợp lệ");
+        return;
+      }
+      if (!bookingData.booking?.patient?.email) {
+        globalHandler.notify(notifyType.WARNING, "Email không hợp lệ");
+        return;
+      }
+      if (
+        !bookingData.booking?.patient?.dateOfBirth ||
+        new Date().getFullYear() -
+        new Date(bookingData.booking?.patient?.dateOfBirth).getFullYear() -
+        (new Date().getMonth() < new Date(bookingData.booking?.patient?.dateOfBirth).getMonth() ||
+          (new Date().getMonth() ===
+            new Date(bookingData.booking?.patient?.dateOfBirth).getMonth() &&
+            new Date().getDate() <
+            new Date(bookingData.booking?.patient?.dateOfBirth).getDate())) <
+        18
+      ) {
+        globalHandler.notify(notifyType.WARNING, "Phải trên 18 tuổi");
+        return;
+      }
+      if (!bookingData.booking?.patient?.sex) {
+        globalHandler.notify(notifyType.WARNING, "Vui lòng chọn giới tính");
+        return;
+      }
+      if (!bookingData.booking?.patient?.sex) {
+        globalHandler.notify(notifyType.WARNING, "Vui lòng chọn giới tính");
+        return;
+      }
+      if (!/^[0-9]{9}$/.test(bookingData.booking?.patient?.cccd) && !/^[0-9]{12}$/.test(bookingData.booking?.patient?.cccd)) {
+        globalHandler.notify(notifyType.WARNING, "Căn cước công dân phải chứa 9 hoặc 12 số");
+        return;
+      }
+      if (!bookingData.booking?.patient?.address) {
+        globalHandler.notify(notifyType.WARNING, "Địa chỉ không hợp lệ");
+        return;
+      }
+      if (!bookingData.booking?.patient?.bank?.bankName || !/^[A-Za-z]+$/.test(bookingData.booking?.patient?.bank?.bankName)) {
+        globalHandler.notify(notifyType.WARNING, "Tên ngân hàng không hợp lệ");
+        return;
+      }
+      if (!/^[A-Z]+$/.test(bookingData.booking?.patient?.bank?.accountName)) {
+        globalHandler.notify(notifyType.WARNING, "Tên tài khoản phải là chữ in hoa");
+        return;
+      }
+      if (!/^[0-9]+$/.test(bookingData.booking?.patient?.bank?.accountNumber)) {
+        globalHandler.notify(notifyType.WARNING, "Số tài khoản phải là ký tự số");
+        return;
+      }
+    }
     if (
       bookingData.booking?.weight !== "" &&
       bookingData.booking.weight
@@ -145,8 +203,6 @@ const BookingInformation = () => {
           return;
         });
     }
-
-    // bookingHandler.setCurrentStep(2);
   };
 
   return (
@@ -279,12 +335,12 @@ const BookingInformation = () => {
                       bank: {
                         ...bookingData.booking?.patient
                           ?.bank,
-                        accountNumber: e.target.value,
+                        bankName: e.target.value,
                       },
                     },
                   })
                 }
-                placeholder="Số Tài Khoản"
+                placeholder="Tên Ngân Hàng"
                 className="w-full text-[13px] mt-1 h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
               />
               <input
@@ -313,12 +369,12 @@ const BookingInformation = () => {
                       bank: {
                         ...bookingData.booking?.patient
                           ?.bank,
-                        bankName: e.target.value,
+                        accountNumber: e.target.value,
                       },
                     },
                   })
                 }
-                placeholder="Tên Ngân Hàng"
+                placeholder="Số Tài Khoản"
                 className="w-full text-[13px] mt-1 h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
               />
             </div>

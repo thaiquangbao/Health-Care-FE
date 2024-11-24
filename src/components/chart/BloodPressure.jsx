@@ -85,8 +85,8 @@ export default function BloodPressure({ logBook, setLogBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 70,
-              max: 150,
+              min: 0,
+              max: 200,
               title: {
                 display: true,
                 text: "Huyết áp",
@@ -126,11 +126,11 @@ export default function BloodPressure({ logBook, setLogBook }) {
       utilsHandler.notify(notifyType.WARNING, "Hãy nhập số");
       return;
     }
-    if (Number(tamThu) < 70 || Number(tamThu) > 150) {
+    if (Number(tamThu) <= 0 || Number(tamThu) >= 200) {
       utilsHandler.notify(notifyType.WARNING, "Tâm thu không hợp lệ");
       return;
     }
-    if (Number(tamTruong) < 70 || Number(tamTruong) > 150) {
+    if (Number(tamTruong) <= 0 || Number(tamTruong) >= 200) {
       utilsHandler.notify(notifyType.WARNING, "Tâm trương không hợp lệ");
       return;
     }
@@ -188,10 +188,10 @@ export default function BloodPressure({ logBook, setLogBook }) {
               symptom !== "" && note !== ""
                 ? symptom
                 : symptom !== ""
-                ? symptom
-                : note !== ""
-                ? note
-                : "",
+                  ? symptom
+                  : note !== ""
+                    ? note
+                    : "",
             vitals: {
               bloodPressure: tamThu + "/" + tamTruong,
             },

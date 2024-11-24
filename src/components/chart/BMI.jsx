@@ -86,7 +86,7 @@ export default function BMI({ logBook, setLogBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 10,
+              min: 0,
               max: 40,
               title: {
                 display: true,

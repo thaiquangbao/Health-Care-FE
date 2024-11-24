@@ -66,8 +66,8 @@ export default function Temperature({ logBook, setLogBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 35,
-              max: 42,
+              min: 25,
+              max: 50,
               title: {
                 display: true,
                 text: "Nhiệt độ (°C)",
@@ -105,7 +105,7 @@ export default function Temperature({ logBook, setLogBook }) {
       utilsHandler.notify(notifyType.WARNING, "Hãy nhập số");
       return;
     }
-    if (Number(temperature) < 35 || Number(temperature) > 42) {
+    if (Number(temperature) <= 25 || Number(temperature) >= 50) {
       utilsHandler.notify(notifyType.WARNING, "Nhiệt độ cơ thể không hợp lệ");
       return;
     }
@@ -160,10 +160,10 @@ export default function Temperature({ logBook, setLogBook }) {
               symptom !== "" && note !== ""
                 ? symptom
                 : symptom !== ""
-                ? symptom
-                : note !== ""
-                ? note
-                : "",
+                  ? symptom
+                  : note !== ""
+                    ? note
+                    : "",
             vitals: {
               temperature,
             },
