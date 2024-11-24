@@ -24,7 +24,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-const KhamTaiNha = ({ type, setType }) => {
+const KhamTaiNha = ({ type, setType, typeStatus }) => {
   const { userData } = useContext(userContext);
   const { appointmentData, appointmentHandler } =
     useContext(appointmentContext);
@@ -48,8 +48,8 @@ const KhamTaiNha = ({ type, setType }) => {
     intervalRef.current = setInterval(() => {
       setTime(
         new Date().getHours() +
-          ":" +
-          new Date().getMinutes()
+        ":" +
+        new Date().getMinutes()
       );
     }, 60000);
   }, []);
@@ -104,14 +104,26 @@ const KhamTaiNha = ({ type, setType }) => {
           path: `/appointmentHomes/findByRecord/${appointmentData.doctorRecord?._id}`,
           sendToken: true,
         }).then((res) => {
-          appointmentHandler.setAppointmentHomes(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "2" || type === "3") {
         let date = new Date();
         date.setDate(date.getDate() + (Number(type) - 1));
-        console.log(date);
-
         const body = {
           doctor_record_id:
             appointmentData.doctorRecord._id,
@@ -127,8 +139,22 @@ const KhamTaiNha = ({ type, setType }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          appointmentHandler.setAppointmentHomes(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "4") {
         const body = {
@@ -141,8 +167,22 @@ const KhamTaiNha = ({ type, setType }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          appointmentHandler.setAppointmentHomes(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "5") {
         const body = {
@@ -155,8 +195,22 @@ const KhamTaiNha = ({ type, setType }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          appointmentHandler.setAppointmentHomes(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "6") {
         const body = {
@@ -169,12 +223,26 @@ const KhamTaiNha = ({ type, setType }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          appointmentHandler.setAppointmentHomes(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       }
     }
-  }, [type, appointmentData.doctorRecord]);
+  }, [type, appointmentData.doctorRecord, typeStatus]);
 
   const handleAcceptAppointmentHome = (appointment) => {
     const body = {
@@ -505,12 +573,12 @@ const KhamTaiNha = ({ type, setType }) => {
                             ?.status_type === "QUEUE"
                             ? "black"
                             : appointmentHome.status
-                                ?.status_type === "ACCEPTED"
-                            ? "green"
-                            : appointmentHome?.status
+                              ?.status_type === "ACCEPTED"
+                              ? "green"
+                              : appointmentHome?.status
                                 .status_type === "COMPLETED"
-                            ? "blue"
-                            : "red",
+                                ? "blue"
+                                : "red",
                       }}
                       className="py-4"
                     >
@@ -530,10 +598,10 @@ const KhamTaiNha = ({ type, setType }) => {
                     >
                       {(appointmentHome.status
                         ?.status_type === "ACCEPTED" || appointmentHome.status
-                        ?.status_type === "COMPLETED")
+                          ?.status_type === "COMPLETED")
                         ? `${convertDateToDayMonthYearVietNam(
-                            appointmentHome.appointment_date
-                          )}`
+                          appointmentHome.appointment_date
+                        )}`
                         : "Chưa rõ thời gian"}
                     </td>
                     <td
@@ -553,48 +621,46 @@ const KhamTaiNha = ({ type, setType }) => {
                     <td className="py-4 flex gap-2 items-center justify-center">
                       {appointmentHome.status
                         ?.status_type === "QUEUE" && (
-                        <>
-                          <button
-                            onClick={() =>
-                              // handleAcceptAppointmentHome(
-                              //     appointmentHome
-                              // )
-                              appointmentHandler.showFormAppointmentHomeCalendar(
-                                appointmentHome
-                              )
-                            }
-                            className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-                          >
-                            Chấp Nhận
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleRejectAppointmentHome(
-                                appointmentHome
-                              )
-                            }
-                            className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
-                          >
-                            Từ Chối
-                          </button>
-                        </>
-                      )}
+                          <>
+                            <button
+                              onClick={() =>
+                                // handleAcceptAppointmentHome(
+                                //     appointmentHome
+                                // )
+                                appointmentHandler.showFormAppointmentHomeCalendar(
+                                  appointmentHome
+                                )
+                              }
+                              className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                            >
+                              Chấp Nhận
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleRejectAppointmentHome(
+                                  appointmentHome
+                                )
+                              }
+                              className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
+                            >
+                              Từ Chối
+                            </button>
+                          </>
+                        )}
                       {displayConnect ===
                         appointmentHome._id && (
-                        <Link
-                          href={`http://127.0.0.1:3000/zero/${
-                            appointmentHome._id
-                          }/${
-                            userData.user?.role === "USER"
-                              ? "patient"
-                              : "doctor"
-                          }`}
-                        >
-                          <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
-                            Tham Gia Cuộc Hẹn
-                          </button>
-                        </Link>
-                      )}
+                          <Link
+                            href={`http://127.0.0.1:3000/zero/${appointmentHome._id
+                              }/${userData.user?.role === "USER"
+                                ? "patient"
+                                : "doctor"
+                              }`}
+                          >
+                            <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
+                              Tham Gia Cuộc Hẹn
+                            </button>
+                          </Link>
+                        )}
                     </td>
                   </tr>
                 )

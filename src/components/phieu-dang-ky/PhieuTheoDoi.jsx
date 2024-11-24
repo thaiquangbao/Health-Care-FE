@@ -9,7 +9,7 @@ import {
 import { formatMoney, returnNumber } from "@/utils/other";
 import Link from "next/link";
 import React, { useContext, useEffect, useRef, useState } from "react";
-const PhieuTheoDoi = ({ type, setType }) => {
+const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
   const { userData } = useContext(userContext);
   const [logBooks, setLogBooks] = useState([]);
   const { globalHandler } = useContext(globalContext);
@@ -32,8 +32,23 @@ const PhieuTheoDoi = ({ type, setType }) => {
           type: TypeHTTP.GET,
           sendToken: true,
         }).then((logBooks) => {
-          setLogBooks(logBooks);
-          setLoading(false);
+          console.log(logBooks)
+          setLoading(false)
+          if (typeStatus === '1') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "2") {
         const date = convertDateToDayMonthYearTimeObject(
@@ -48,8 +63,22 @@ const PhieuTheoDoi = ({ type, setType }) => {
             date,
           },
         }).then((logBooks) => {
-          setLogBooks(logBooks);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else if (type === "3") {
         const date = convertDateToDayMonthYearTimeObject(
@@ -64,26 +93,53 @@ const PhieuTheoDoi = ({ type, setType }) => {
             date,
           },
         }).then((logBooks) => {
-          setLogBooks(logBooks);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       } else {
         api({
-          path: `/healthLogBooks/findBy${
-            type === "4" ? "Week" : type === "5" ? "Month" : "NextMonth"
-          }`,
+          path: `/healthLogBooks/findBy${type === "4" ? "Week" : type === "5" ? "Month" : "NextMonth"
+            }`,
           type: TypeHTTP.POST,
           sendToken: true,
           body: {
             doctor: userData.user._id,
           },
         }).then((logBooks) => {
-          setLogBooks(logBooks);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+          }
         });
       }
     }
-  }, [type, userData.user]);
+  }, [type, userData.user, typeStatus]);
 
   const handleAcceptLogBook = (logBook) => {
     if (userData.user?.email === "" || userData.user?.email === null) {
@@ -259,10 +315,10 @@ const PhieuTheoDoi = ({ type, setType }) => {
                         logBook.status.status_type === "QUEUE"
                           ? "black"
                           : logBook.status.status_type === "ACCEPTED"
-                          ? "green"
-                          : logBook?.status.status_type === "COMPLETED"
-                          ? "blue"
-                          : "red",
+                            ? "green"
+                            : logBook?.status.status_type === "COMPLETED"
+                              ? "blue"
+                              : "red",
                     }}
                     className="py-4"
                   >

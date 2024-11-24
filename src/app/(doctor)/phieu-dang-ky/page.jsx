@@ -21,7 +21,7 @@ const Appointment = () => {
               Chào Mừng Bác Sĩ{" "}
               {
                 userData.user?.fullName.split(" ")[
-                  userData.user?.fullName.split(" ").length - 1
+                userData.user?.fullName.split(" ").length - 1
                 ]
               }{" "}
               <img src="/hand.png" width={"30px"} />
@@ -45,10 +45,10 @@ const Appointment = () => {
               onChange={(e) => setTypeStatus(e.target.value)}
               className="px-2 py-2 text-[15px] shadow-lg focus:outline-0 rounded-md font-medium"
             >
-              <option value={1}>Tất cả</option>
-              <option value={2}>Đang chờ chấp nhận</option>
-              <option value={3}>Đã chấp nhận</option>
-              <option value={4}>Đã từ chối</option>
+              <option value={1}>Đang chờ chấp nhận</option>
+              <option value={2}>Đã chấp nhận</option>
+              <option value={3}>Đã từ chối</option>
+              <option value={4}>Đã hoàn thành</option>
               <option value={5}>Đã hủy</option>
             </select>
             <select
@@ -67,9 +67,9 @@ const Appointment = () => {
         {ticketType === "1" ? (
           <CuocHen type={type} setType={setType} typeStatus={typeStatus} />
         ) : ticketType === "2" ? (
-          <PhieuTheoDoi type={type} setType={setType} />
+          <PhieuTheoDoi type={type} setType={setType} typeStatus={typeStatus} />
         ) : (
-          <KhamTaiNha type={type} setType={setType} />
+          <KhamTaiNha type={type} setType={setType} typeStatus={typeStatus} />
         )}
       </div>
     </div>

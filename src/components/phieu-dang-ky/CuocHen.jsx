@@ -101,8 +101,22 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          setAppointments(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setAppointments(res.filter(item => item.status === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setAppointments(res.filter(item => item.status === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setAppointments(res.filter(item => item.status === 'CANCELED'))
+          }
         });
       } else if (type === "2" || type === "3") {
         let date = new Date();
@@ -119,8 +133,22 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          setAppointments(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setAppointments(res.filter(item => item.status === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setAppointments(res.filter(item => item.status === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setAppointments(res.filter(item => item.status === 'CANCELED'))
+          }
         });
       } else if (type === "4") {
         const body = {
@@ -132,8 +160,22 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          setAppointments(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setAppointments(res.filter(item => item.status === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setAppointments(res.filter(item => item.status === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setAppointments(res.filter(item => item.status === 'CANCELED'))
+          }
         });
       } else if (type === "5") {
         const body = {
@@ -145,8 +187,22 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          setAppointments(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setAppointments(res.filter(item => item.status === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setAppointments(res.filter(item => item.status === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setAppointments(res.filter(item => item.status === 'CANCELED'))
+          }
         });
       } else if (type === "6") {
         const body = {
@@ -158,88 +214,28 @@ const CuocHen = ({ type, setType, typeStatus }) => {
           body,
           sendToken: false,
         }).then((res) => {
-          setAppointments(res);
-          setLoading(false);
+          setLoading(false)
+          if (typeStatus === '1') {
+            setAppointments(res.filter(item => item.status === 'QUEUE'))
+          }
+          else if (typeStatus === '2') {
+            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+          }
+          else if (typeStatus === '3') {
+            setAppointments(res.filter(item => item.status === 'REJECTED'))
+          }
+          else if (typeStatus === '4') {
+            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+          }
+          else if (typeStatus === '5') {
+            setAppointments(res.filter(item => item.status === 'CANCELED'))
+          }
         });
       }
     }
   }, [type, appointmentData.doctorRecord, typeStatus]);
-  // useEffect(() => {
-  //   if (appointmentData.doctorRecord) {
-  //     if (typeStatus === "1") {
-  //       setLoading(true);
-  //       const body = {
-  //         doctor_record_id: appointmentData.doctorRecord._id,
-  //       };
-  //       api({
-  //         type: TypeHTTP.POST,
-  //         path: "/appointments/findByRecords",
-  //         body,
-  //         sendToken: false,
-  //       }).then((res) => {
-  //         setAppointments(res);
-  //         setLoading(false);
-  //       });
-  //     } else if (typeStatus === "2") {
-  //       setLoading(true);
-  //       const body = {
-  //         doctor_record_id: appointmentData.doctorRecord._id,
-  //         status: "QUEUE",
-  //       };
-  //       api({
-  //         type: TypeHTTP.POST,
-  //         path: "/appointments/findByStatus",
-  //         body,
-  //         sendToken: false,
-  //       }).then((res) => {
-  //         setAppointments(res);
-  //         setLoading(false);
-  //       });
-  //     } else if (typeStatus === "3") {
-  //       const body = {
-  //         doctor_record_id: appointmentData.doctorRecord._id,
-  //         status: "ACCEPTED",
-  //       };
-  //       api({
-  //         type: TypeHTTP.POST,
-  //         path: "/appointments/findByStatus",
-  //         body,
-  //         sendToken: false,
-  //       }).then((res) => {
-  //         setAppointments(res);
-  //         setLoading(false);
-  //       });
-  //     } else if (typeStatus === "4") {
-  //       const body = {
-  //         doctor_record_id: appointmentData.doctorRecord._id,
-  //         status: "REJECTED",
-  //       };
-  //       api({
-  //         type: TypeHTTP.POST,
-  //         path: "/appointments/findByStatus",
-  //         body,
-  //         sendToken: false,
-  //       }).then((res) => {
-  //         setAppointments(res);
-  //         setLoading(false);
-  //       });
-  //     } else if (typeStatus === "5") {
-  //       const body = {
-  //         doctor_record_id: appointmentData.doctorRecord._id,
-  //         status: "CANCELED",
-  //       };
-  //       api({
-  //         type: TypeHTTP.POST,
-  //         path: "/appointments/findByStatus",
-  //         body,
-  //         sendToken: false,
-  //       }).then((res) => {
-  //         setAppointments(res);
-  //         setLoading(false);
-  //       });
-  //     }
-  //   }
-  // }, [appointmentData.doctorRecord, typeStatus]);
+
+
   const handleAcceptAppointment = (appointment) => {
     const body = {
       _id: appointment._id,
@@ -537,10 +533,10 @@ const CuocHen = ({ type, setType, typeStatus }) => {
                         appointment.status === "QUEUE"
                           ? "black"
                           : appointment.status === "ACCEPTED"
-                          ? "green"
-                          : appointment?.status === "COMPLETED"
-                          ? "blue"
-                          : "red",
+                            ? "green"
+                            : appointment?.status === "COMPLETED"
+                              ? "blue"
+                              : "red",
                     }}
                     className="py-4"
                   >
@@ -598,9 +594,8 @@ const CuocHen = ({ type, setType, typeStatus }) => {
                     )}
                     {displayConnect === appointment._id && (
                       <Link
-                        href={`http://127.0.0.1:3000/zero/${appointment._id}/${
-                          userData.user?.role === "USER" ? "patient" : "doctor"
-                        }`}
+                        href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === "USER" ? "patient" : "doctor"
+                          }`}
                       >
                         <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
                           Tham Gia Cuộc Hẹn
