@@ -87,7 +87,7 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                             if (message.type === 'TEXT') {
                                 return <div key={index} className='w-full flex items-center justify-start'>
                                     <div className='flex w-[60%] items-center gap-2'>
-                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[40px] aspect-square rounded-full' />
                                         <div className='flex flex-col w-auto px-3 py-1 bg-[#eee] rounded-2xl'>
                                             <span className='text-[15px]'>{message.content}</span>
                                             <span className='text-[12px]'>{message.time.time}</span>
@@ -98,7 +98,7 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                             else if (message.type === 'IMAGE') {
                                 return <div key={index} className='w-full flex items-center justify-start'>
                                     <div className='flex items-center gap-2'>
-                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[40px] aspect-square rounded-full' />
                                         <div className='flex flex-col w-auto px-3 py-1 bg-[#eee] rounded-2xl'>
                                             <img src={message.content} width={'400px'} className='rounded-lg my-2' />
                                             <span className='text-[12px]'>{message.time.time}</span>
@@ -109,7 +109,7 @@ const MessageArea = ({ messageRef, wrapperRef, messages, currentUser, currentRoo
                             else {
                                 return <div key={index} className='w-full flex items-center justify-start'>
                                     <div className='flex w-[60%] items-center gap-2'>
-                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[60px] aspect-square rounded-full' />
+                                        <div style={{ backgroundImage: `url(${currentUser === 'PATIENT' ? currentRoom?.doctor?.image : currentRoom?.patient?.image})` }} className='bg-cover w-[40px] aspect-square rounded-full' />
                                         <div className='flex flex-col w-auto px-3 py-2 gap-2 bg-[#eee] rounded-2xl'>
                                             <div className='text-[15px] flex gap-4'>
                                                 {message.vitals.height !== 0 && (

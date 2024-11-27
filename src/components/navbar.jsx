@@ -104,17 +104,21 @@ const Navbar = () => {
             userData.user?.processSignup === 3 && (
               <NotificationApp />
             )}
-          <Link href={"/bac-si-noi-bat"}>
-            <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
-              Đặt Lịch Khám
-            </button>
-          </Link>
-          <button
-            onClick={() => authHandler.showQR()}
-            className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all"
-          >
-            Tải Ứng Dụng Ngay
-          </button>
+          {userData.user?.role !== 'DOCTOR' && (
+            <>
+              <Link href={"/bac-si-noi-bat"}>
+                <button className="text-[white] bg-[#1dcbb6] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all">
+                  Đặt Lịch Khám
+                </button>
+              </Link>
+              <button
+                onClick={() => authHandler.showQR()}
+                className="text-[white] bg-[blue] px-3 py-2 rounded-xl hover:scale-[1.05] transition-all"
+              >
+                Tải Ứng Dụng Ngay
+              </button>
+            </>
+          )}
           <button
             onClick={() =>
               authHandler.setVisibleMore(
@@ -189,22 +193,20 @@ const Navbar = () => {
                   Các Dịch Vụ
                 </span>
               </li>
-              {userData.user?.statusSignUp === 3 && (
-                <li
-                  onClick={() => {
-                    authHandler.setVisibleMore(false);
-                    setTimeout(() => {
-                      authHandler.showSmartSearching();
-                    }, 1000);
-                  }}
-                  className="flex gap-3 cursor-pointer mt-5"
-                >
-                  <i className="text-[#5dade2] bx bx-search text-[23px]"></i>
-                  <span className="text-[16px] font-medium">
-                    Tìm Kiếm Thông Minh
-                  </span>
-                </li>
-              )}
+              <li
+                onClick={() => {
+                  authHandler.setVisibleMore(false);
+                  setTimeout(() => {
+                    authHandler.showSmartSearching();
+                  }, 1000);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i className="text-[#5dade2] bx bx-search text-[23px]"></i>
+                <span className="text-[16px] font-medium">
+                  Tìm Kiếm Thông Minh
+                </span>
+              </li>
               <li
                 onClick={() => {
                   router.push("/bac-si-noi-bat");

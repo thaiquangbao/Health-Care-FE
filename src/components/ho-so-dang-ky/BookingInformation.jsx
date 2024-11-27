@@ -11,7 +11,7 @@ import {
 } from "@/utils/date";
 import { formatMoney } from "@/utils/other";
 import React, { useContext, useRef, useState } from "react";
-const BookingInformation = () => {
+const BookingInformation = ({ setCustomer }) => {
   const { globalHandler } = useContext(globalContext);
   const { bookingData, bookingHandler } =
     useContext(bookingContext);
@@ -187,13 +187,8 @@ const BookingInformation = () => {
         sendToken: false,
       })
         .then((res) => {
-          if (res.role === "USER") {
-            bookingHandler.setCurrentStep(2);
-          } else if (res.role === "CUSTOMER") {
-            bookingHandler.setCurrentStep(2);
-          } else {
-            bookingHandler.setCurrentStep(2);
-          }
+          bookingHandler.setCurrentStep(2);
+          setCustomer(res)
         })
         .catch((err) => {
           globalHandler.notify(

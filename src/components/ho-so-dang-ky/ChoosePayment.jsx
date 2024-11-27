@@ -10,17 +10,27 @@ import {
 } from "@/utils/date";
 import { formatMoney } from "@/utils/other";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 const socket = io.connect(baseURL);
-const ChoosePayment = () => {
+const ChoosePayment = ({ customer }) => {
   const { bookingData, bookingHandler } = useContext(bookingContext);
   const { globalHandler } = useContext(globalContext);
   const { userData } = useContext(userContext);
   const { appointmentHandler, appointmentData } =
     useContext(appointmentContext);
   const router = useRouter();
-  const qrUrl = `https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}2b`;
+  const [url, setUrl] = useState('')
+
+  useEffect(() => {
+    if (customer) {
+      setUrl(`https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${customer.user._id}2b`)
+    } else {
+      if (bookingData.booking && step === 1) {
+        setUrl(`https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}2b`)
+      }
+    }
+  }, [bookingData.booking, userData.user?._id, bookingData.currentStep, customer])
 
   useEffect(() => {
     if (bookingData.doctorRecord) {
@@ -101,7 +111,7 @@ const ChoosePayment = () => {
             const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
             const vietnamTime = new Date(
               currentDate.getTime() +
-                (vietnamTimeOffset + localTimeOffset) * 60000
+              (vietnamTimeOffset + localTimeOffset) * 60000
             );
             const time = {
               day: vietnamTime.getDate(),
@@ -154,6 +164,11 @@ const ChoosePayment = () => {
         body: formData,
         path: "/upload-image/save",
       }).then((listImage) => {
+        console.log({
+          ...bookingData.booking,
+          price_list: bookingData.booking.priceList._id,
+          images: listImage,
+        })
         api({
           type: TypeHTTP.POST,
           sendToken: false,
@@ -186,7 +201,7 @@ const ChoosePayment = () => {
             const localTimeOffset = currentDate.getTimezoneOffset(); // Local timezone offset in minutes
             const vietnamTime = new Date(
               currentDate.getTime() +
-                (vietnamTimeOffset + localTimeOffset) * 60000
+              (vietnamTimeOffset + localTimeOffset) * 60000
             );
             const time = {
               day: vietnamTime.getDate(),
@@ -230,17 +245,34 @@ const ChoosePayment = () => {
     }
   };
   useEffect(() => {
-    socket.on(`payment-appointment-online${userData.user?._id}`, (data) => {
-      if (data) {
-        handleSubmit();
-      } else {
-        globalHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại");
-      }
-    });
+    if (customer) {
+      socket.on(`payment-appointment-online${customer.user._id}`, (data) => {
+        if (data) {
+          handleSubmit()
+        } else {
+          utilsHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại")
+        }
+
+      })
+    } else {
+      socket.on(`payment-appointment-online${userData.user?._id}`, (data) => {
+        if (data) {
+          handleSubmit()
+        } else {
+          utilsHandler.notify(notifyType.WARNING, "Thanh Toán Thất Bại")
+        }
+
+      })
+    }
     return () => {
-      socket.off(`payment-appointment-online${userData.user?._id}`);
-    };
-  }, [userData.user?._id]);
+      if (customer) {
+        socket.off(`payment-appointment-online${customer.user._id}`);
+      } else {
+        socket.off(`payment-appointment-online${userData.user?._id}`);
+      }
+    }
+  }, [userData.user?._id, customer])
+
   return (
     <>
       <div className="border-[#cfcfcf] overflow-hidden relative w-[60%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-center">
@@ -249,7 +281,7 @@ const ChoosePayment = () => {
         </div>
 
         <div className="flex flex-col gap-2 p-3 text-[14px] items-center border-[#cfcfcf] border-[1px]">
-          <img className="w-[50%]" src={qrUrl} />
+          <img className="w-[50%]" src={url} />
           <div className="flex flex-col items-center">
             <span className="rounded-md text-[12px]">
               Tên chủ TK: THAI ANH THU

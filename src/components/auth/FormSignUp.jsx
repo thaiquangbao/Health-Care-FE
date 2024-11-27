@@ -156,7 +156,6 @@ const FormSignUp = ({ visible, hidden }) => {
     })
       .then((res) => {
         userHandler.setUser(res);
-        console.log(res)
         globalHandler.notify(
           notifyType.SUCCESS,
           "Xác Thực Tài Khoản Thành Công"
@@ -200,6 +199,18 @@ const FormSignUp = ({ visible, hidden }) => {
     }
     if (individual.address === '') {
       globalHandler.notify(notifyType.WARNING, "Vui lòng nhập địa chỉ");
+      return;
+    }
+    if (!/^[A-Za-z]+$/.test(individual?.bankName)) {
+      globalHandler.notify(notifyType.WARNING, "Tên ngân hàng không hợp lệ");
+      return;
+    }
+    if (!/^[A-Z]+$/.test(individual?.accountName)) {
+      globalHandler.notify(notifyType.WARNING, "Tên tài khoản phải là chữ in hoa");
+      return;
+    }
+    if (!/^[0-9]+$/.test(individual?.accountNumber)) {
+      globalHandler.notify(notifyType.WARNING, "Tên tài khoản phải là ký tự số");
       return;
     }
     globalHandler.notify(
@@ -250,7 +261,7 @@ const FormSignUp = ({ visible, hidden }) => {
     <div
       style={
         visible
-          ? { height: "auto", width: "70%", transition: "0.3s" }
+          ? { height: "450px", width: "70%", transition: "0.3s" }
           : { height: 0, width: 0, transition: "0.3s" }
       }
       className="z-50 w-[70%] min-h-[100px] flex items-center overflow-hidden bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
@@ -263,7 +274,7 @@ const FormSignUp = ({ visible, hidden }) => {
           }}
           className="w-[100%] flex"
         >
-          <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex justify-center">
+          <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex items-center justify-center">
             <img src="/sign.png" width={"40%"} />
             <div className="w-[53%] flex flex-col items-start justify-center pl-[3rem] gap-3">
               <h2 className="text-[20px] font-medium mb-1">
@@ -312,7 +323,7 @@ const FormSignUp = ({ visible, hidden }) => {
               </button>
             </div>
           </div>
-          <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex justify-center">
+          <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex justify-center items-center">
             <img src="/sign.png" width={"40%"} />
             <div className="w-[53%] flex flex-col items-start justify-center pl-[3rem] gap-1">
               <h2 className="text-[20px] font-medium ">
@@ -343,7 +354,7 @@ const FormSignUp = ({ visible, hidden }) => {
               </button>
             </div>
           </div>
-          <div className="min-w-[100%] h-full px-[2rem] py-[3rem] flex justify-center">
+          <div className="min-w-[100%] h-[100%] overflow-y-auto overflow-x-hidden px-[2rem] py-[3rem] flex justify-center items-center">
             <img src="/sign.png" width={"40%"} />
             <div className="w-[53%] flex flex-col items-start justify-center pl-[3rem] gap-1">
               <h2 className="text-[20px] font-medium ">
@@ -352,45 +363,77 @@ const FormSignUp = ({ visible, hidden }) => {
               <span className="text-[13px]">
                 Hãy bổ sung thông tin cá nhân của bạn ở bên dưới.
               </span>
-              <input
-                onChange={(e) =>
-                  setIndividual({ ...individual, name: e.target.value })
-                }
-                placeholder="Họ Và Tên"
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              />
-              <input
-                type="date"
-                onChange={(e) =>
-                  setIndividual({ ...individual, dateOfBirth: e.target.value })
-                }
-                placeholder="Ngày Sinh"
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              />
-              <select
-                onChange={(e) =>
-                  setIndividual({ ...individual, sex: Boolean(e.target.value) })
-                }
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-3"
-              >
-                <option value={null}>Giới Tính</option>
-                <option value={true}>Nam</option>
-                <option value={false}>Nữ</option>
-              </select>
-              <input
-                onChange={(e) =>
-                  setIndividual({ ...individual, cccd: e.target.value })
-                }
-                placeholder="Căn Cước Công Dân"
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              />
-              <input
-                onChange={(e) =>
-                  setIndividual({ ...individual, address: e.target.value })
-                }
-                placeholder="Địa Chỉ"
-                className="text-[13px] mt-1 w-[90%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              />
+              <div className="flex items-center justify-between w-[90%]">
+                <input
+                  onChange={(e) =>
+                    setIndividual({ ...individual, name: e.target.value })
+                  }
+                  placeholder="Họ Và Tên"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+                <input
+                  type="date"
+                  onChange={(e) =>
+                    setIndividual({ ...individual, dateOfBirth: e.target.value })
+                  }
+                  placeholder="Ngày Sinh"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+              </div>
+              <div className="flex items-center justify-between w-[90%]">
+                <select
+                  onChange={(e) =>
+                    setIndividual({ ...individual, sex: Boolean(e.target.value) })
+                  }
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-3"
+                >
+                  <option value={null}>Giới Tính</option>
+                  <option value={true}>Nam</option>
+                  <option value={false}>Nữ</option>
+                </select>
+                <input
+                  onChange={(e) =>
+                    setIndividual({ ...individual, cccd: e.target.value })
+                  }
+                  placeholder="Căn Cước Công Dân"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+              </div>
+              <div className="flex items-center justify-between w-[90%]">
+                <input
+                  onChange={(e) =>
+                    setIndividual({ ...individual, address: e.target.value })
+                  }
+                  placeholder="Địa Chỉ"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+                <input
+                  onChange={(e) =>
+                    setIndividual({ ...individual, bankName: e.target.value })
+                  }
+                  placeholder="Tên Ngân Hàng"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+              </div>
+              <div className="flex items-center justify-between w-[90%]">
+                <input
+                  onChange={(e) =>
+                    setIndividual({
+                      ...individual,
+                      accountNumber: e.target.value,
+                    })
+                  }
+                  placeholder="Số Tài Khoản"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+                <input
+                  onChange={(e) =>
+                    setIndividual({ ...individual, accountName: e.target.value })
+                  }
+                  placeholder="Tên Chủ Tài Khoản"
+                  className="text-[13px] mt-1 w-[49%] h-[38px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                />
+              </div>
               <button
                 onClick={() => handleCompleteInfo()}
                 className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] px-[3rem] w-[270px] text-[white] mt-2 h-[37px] rounded-lg"

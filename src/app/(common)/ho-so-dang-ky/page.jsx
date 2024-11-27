@@ -18,6 +18,7 @@ const HoSoDangKy = () => {
 
     const { bookingData, bookingHandler } = useContext(bookingContext)
     const router = useRouter()
+    const [customer, setCustomer] = useState()
 
     useEffect(() => {
         if (bookingData.booking) {
@@ -58,10 +59,10 @@ const HoSoDangKy = () => {
                 {bookingData.booking && (
                     <>
                         {bookingData.currentStep === 1 ?
-                            (<BookingInformation />)
+                            (<BookingInformation setCustomer={setCustomer} />)
                             :
                             bookingData.currentStep === 2 ?
-                                (<ChoosePayment />)
+                                (<ChoosePayment customer={customer} />)
                                 :
                                 (<ResultBooking />)
                         }

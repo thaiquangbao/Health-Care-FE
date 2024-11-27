@@ -86,11 +86,12 @@ const Form = ({ visible, hidden }) => {
     } else {
       utilsHandler.notify(
         notifyType.WARNING,
-        "Không có bác sĩ nào phù hợp với lịch hẹn của bạn"
+        "Không có bác sĩ nào phù hợp với triệu chứng của bạn"
       );
     }
   };
   const handleSearchingAI = () => {
+    utilsHandler.notify(notifyType.LOADING, 'Đang gợi ý các bác sĩ')
     api({
       type: TypeHTTP.POST,
       path: "/ai/search",
@@ -100,6 +101,7 @@ const Form = ({ visible, hidden }) => {
       },
     })
       .then((res) => {
+        utilsHandler.notify(notifyType.SUCCESS, 'Đã gợi ý cho bạn các bác sĩ phù hợp')
         setDoctorRecordAIs(res.data);
         setAnswerAI(res.ai);
         setDes("");
@@ -119,14 +121,14 @@ const Form = ({ visible, hidden }) => {
       sendToken: false,
     }).then((res) => {
       const result = res
-        .filter((item) => item.patient._id === userData.user._id)
+        .filter((item) => item.patient._id === userData.user?._id)
         .filter(
           (item) =>
             item.appointment_date.day === convertDateInputToObject(date).day &&
             item.appointment_date.month ===
-              convertDateInputToObject(date).month &&
+            convertDateInputToObject(date).month &&
             item.appointment_date.year ===
-              convertDateInputToObject(date).year &&
+            convertDateInputToObject(date).year &&
             item.appointment_date.time === time
         )[0];
       if (result) {
@@ -168,19 +170,19 @@ const Form = ({ visible, hidden }) => {
       style={
         visible
           ? {
-              height: "400px",
-              width: "800px",
-              transition: "0.3s",
-              backgroundImage: "url(/bg.png)",
-              backgroundSize: "cover",
-              overflow: "hidden",
-            }
+            height: "400px",
+            width: "800px",
+            transition: "0.3s",
+            backgroundImage: "url(/bg.png)",
+            backgroundSize: "cover",
+            overflow: "hidden",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="z-50 w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -199,21 +201,19 @@ const Form = ({ visible, hidden }) => {
               </span>
               <div className="flex space-x-2">
                 <button
-                  className={`border border-gray-300 rounded-full px-4 py-1 text-black ${
-                    activeMetric === "thoigian"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white"
-                  }`}
+                  className={`border border-gray-300 rounded-full px-4 py-1 text-black ${activeMetric === "thoigian"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white"
+                    }`}
                   onClick={() => setActiveMetric("thoigian")}
                 >
                   Tìm kiếm theo thời gian
                 </button>
                 <button
-                  className={`border border-gray-300 rounded-full px-4 text-black ${
-                    activeMetric === "hethong"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white"
-                  }`}
+                  className={`border border-gray-300 rounded-full px-4 text-black ${activeMetric === "hethong"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white"
+                    }`}
                   onClick={() => setActiveMetric("hethong")}
                 >
                   Gợi ý của hệ thống
@@ -376,8 +376,8 @@ const Form = ({ visible, hidden }) => {
                           </span>
                         </div>
                       </div>
-                      <span className="px-[1rem] mt-[0.25rem] py-1 rounded-md text-[12px] bg-[#e0eff6]">
-                        Chuyên khoa {item?.doctor.specialize}
+                      <span className="px-[1rem] mt-[0.25rem] py-1 w-[90%] rounded-md text-[12px] text-center bg-[#e0eff6]">
+                        {item?.doctor.specialize}
                       </span>
                     </div>
                   ))}

@@ -74,7 +74,7 @@ const Calendar = ({ data, hidden }) => {
                                         {compareDate1GetterThanDate2(convertDateToDayMonthYearObject(day + ''), convertDateToDayMonthYearObject(new Date().toISOString())) ? (
                                             <button style={{ backgroundColor: compareDateIsHaveInSchedule(convertDateToDayMonthYearObject(day + ''), appointmentData.doctorRecord?.schedules) === 0 ? 'white' : '#ffffee' }} onClick={() => {
                                                 if (userData.user?.email === null) {
-                                                    globalHandler.notify(notifyType.WARNING, "Bác sĩ hãy cập nhật địa chỉ email trước khi đăng k1y lịch khám !!!")
+                                                    globalHandler.notify(notifyType.WARNING, "Bác sĩ hãy cập nhật địa chỉ email trước khi đăng ký lịch khám !!!")
                                                 } else {
                                                     setCurrentStep(2)
                                                     setDay(day)

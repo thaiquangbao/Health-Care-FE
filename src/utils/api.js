@@ -1,7 +1,7 @@
 import axios from "axios";
 export let baseURL = "https://shoeshop-backend.online"; //https://shoeshop-backend.online
 axios.defaults.baseURL = `${baseURL}`;
-export const deploy = "https://health-care-fe-two.vercel.app";
+export const deploy = "https://health-haven-iuh.vercel.app";
 
 export const TypeHTTP = {
   GET: "get",
@@ -16,6 +16,7 @@ export const api = ({ path, body, type, sendToken, port }) => {
     axios.defaults.baseURL = `${baseURL}`;
   } else {
     baseURL = "https://shoeshop-backend.online";
+    // baseURL = "http://localhost:8999";
     axios.defaults.baseURL = `${baseURL}`;
   }
   const accessToken = globalThis.window.localStorage.getItem("accessToken");

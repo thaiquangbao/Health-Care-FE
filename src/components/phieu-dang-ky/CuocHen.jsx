@@ -594,7 +594,7 @@ const CuocHen = ({ type, setType, typeStatus }) => {
                     )}
                     {displayConnect === appointment._id && (
                       <Link
-                        href={`http://127.0.0.1:3000/zero/${appointment._id}/${userData.user?.role === "USER" ? "patient" : "doctor"
+                        href={`https://health-haven-iuh.vercel.app/zero/${appointment._id}/${userData.user?.role === "USER" ? "patient" : "doctor"
                           }`}
                       >
                         <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">

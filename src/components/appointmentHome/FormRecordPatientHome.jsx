@@ -92,11 +92,11 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
         ? reAppointmentDate.split("-")
         : [];
       // chổ này cần check xem có nhập đủ thông tin không
-      if (diagnosisDisease === "") {
-        utilsHandler.notify(notifyType.WARNING, "Chưa nhập chẩn đoán bệnh")
-      }
       if (symptoms === "") {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập triệu chứng")
+      }
+      if (diagnosisDisease === "") {
+        utilsHandler.notify(notifyType.WARNING, "Chưa nhập chẩn đoán bệnh")
       }
       if (note === "") {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập ghi chú")

@@ -39,8 +39,8 @@ export default function NhietDo({ logBook }) {
           scales: {
             y: {
               beginAtZero: false,
-              min: 35,
-              max: 42,
+              min: 25,
+              max: 50,
               title: {
                 display: true,
                 text: "Nhiệt độ (°C)",
