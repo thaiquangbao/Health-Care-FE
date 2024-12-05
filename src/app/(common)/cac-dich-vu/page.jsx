@@ -113,7 +113,7 @@ const CacDichVu = () => {
             {appointmentData.sicks.map((sick, index) => (
               <Link
                 key={index}
-                href={`/${removeDiacritics(sick.title)
+                href={`/dich-vu/${removeDiacritics(sick.title)
                   .toLowerCase()
                   .split(" ")
                   .join("-")}`}

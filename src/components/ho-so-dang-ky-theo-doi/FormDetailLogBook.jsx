@@ -141,7 +141,7 @@ const FormDetailLogBook = ({ data, onClose }) => {
             className="font-semibold text-[18px]"
           >
             Thông tin bệnh nhân (
-            {logBook?.status?.status_type !== "STOPPED"
+            {logBook?.status?.status_type !== "CANCELED"
               ? "Đang theo dõi sức khỏe"
               : "Đã dừng theo dõi sức khỏe"}
             )

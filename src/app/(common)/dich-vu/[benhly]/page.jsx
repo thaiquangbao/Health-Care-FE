@@ -65,14 +65,8 @@ const BenhLy = () => {
                     </h2>
                     <span></span>
                     <p className='text-[17px] font-medium text-[#404040]'>{pathname.includes('kham-tong-quat') ? tongQuat.description : sick?.description}</p>
-                    <div className='bg-[white] shadow-xl w-[90%] mt-2 px-3 py-2 rounded-lg flex justify-between'>
-                        <div className='flex flex-col text-[#333333]'>
-                            <span className='text-[14px]'>GIÁ TƯ VẤN TRỰC TUYẾN</span>
-                            <span className='text-[19px]'>{formatMoney(priceList?.price)}</span>
-                        </div>
-                        <div>
-                            <button onClick={() => scrollToTarget()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] scale-[0.95] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
-                        </div>
+                    <div className='w-[90%] mt-2 rounded-lg flex justify-between'>
+                        <button onClick={() => scrollToTarget()} style={{ background: 'linear-gradient(to right, #11998e, #38ef7d)' }} className='text-[16px] scale-[0.95] rounded-3xl px-6 py-3 cursor-pointer text-[white]'>Đặt Khám Ngay</button>
                     </div>
                 </div>
             </div>

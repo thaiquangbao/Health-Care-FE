@@ -314,8 +314,8 @@ const Form = ({ visible, hidden }) => {
                           </span>
                         </div>
                       </div>
-                      <span className="px-[1rem] mt-[0.25rem] py-1 rounded-md text-[12px] bg-[#e0eff6]">
-                        Chuyên khoa {item?.doctor.specialize}
+                      <span className="px-[1rem] mt-[0.25rem] w-[90%] text-center mx-2 py-1 rounded-md text-[12px] bg-[#e0eff6]">
+                        {item?.doctor.specialize}
                       </span>
                     </div>
                   ))}
@@ -376,7 +376,7 @@ const Form = ({ visible, hidden }) => {
                           </span>
                         </div>
                       </div>
-                      <span className="px-[1rem] mt-[0.25rem] py-1 w-[90%] rounded-md text-[12px] text-center bg-[#e0eff6]">
+                      <span className="px-[1rem] mt-[0.25rem] py-1 w-[90%] mx-2 rounded-md text-[12px] text-center bg-[#e0eff6]">
                         {item?.doctor.specialize}
                       </span>
                     </div>

@@ -150,11 +150,21 @@ const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
       return;
     }
     globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác");
+    const body = {
+      _id: logBook._id,
+      dateStop: logBook.priceList.type === '3 Tháng' ?
+        convertDateToDayMonthYearTimeObject(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).setDate(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).getDate() + 91))
+        :
+        logBook.priceList.type === '6 Tháng' ?
+          convertDateToDayMonthYearTimeObject(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).setDate(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).getDate() + 183))
+          :
+          convertDateToDayMonthYearTimeObject(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).setDate(new Date(`${logBook.date.year}-${logBook.date.month}-${logBook.date.day}`).getDate() + 365))
+    }
     api({
       path: "/healthLogBooks/accepted",
       sendToken: true,
       type: TypeHTTP.POST,
-      body: { _id: logBook._id },
+      body,
     })
       .then((logBookAccepted) => {
         setLogBooks((prev) =>

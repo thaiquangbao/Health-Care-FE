@@ -16,40 +16,29 @@ const ResultBooking = () => {
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
     const router = useRouter()
 
-    const handleSubmit = () => {
-        if (userData.user) {
-            // const body = {
-            //     _id: bookingHomeData.booking._id,
-            //     processAppointment: 2,
-            //     status: {
-            //         status_type: "ACCEPTED",
-            //         message: "Bệnh nhân đã thanh toán",
-            //     },
-            // }
-            // globalHandler.notify(notifyType.LOADING, "Đang thực hiện thao tác")
-            // api({ path: '/appointmentHomes/payment', body, sendToken: true, type: TypeHTTP.POST })
-            //     .then((res => {
-            //         globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
-            //         globalHandler.reload()
-            //     }))
-            globalHandler.notify(notifyType.SUCCESS, 'Đã thanh toán thành công')
-            globalHandler.reload()
-        }
-
+    const handleGoBack = () => {
+        router.push('/bac-si-noi-bat')
+        globalHandler.reload()
     }
+
+    const handleGoManage = () => {
+        router.push('/cuoc-hen-cua-ban')
+        globalHandler.reload()
+    }
+
 
     return (
         <>
-            <div className='border-[#cfcfcf] overflow-hidden relative w-[70%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-start'>
-                <div className='flex gap-3 py-2 mt-1 border-[#cfcfcf] border-b-[1px] items-center px-4 w-full text-[13px] font-medium'>
-                    <span className='text-[14px]'>Trạng Thái Thanh Toán</span>
+            <div className='w-[70%] flex justify-between items-center mt-2'>
+                <div className='flex flex-col gap-2 w-[60%]'>
+                    <span className='text-[15px] font-space font-semibold'>Thanh Toán Thành Công</span>
+                    <span className='text-[14px] font-space'>Cảm ơn bạn đã hoản tất thủ tục đăng ký khám tại nhà với bác sĩ {bookingHomeData.booking?.doctor?.fullName}, hãy chờ bác sĩ chấp nhận cuộc hẹn và khám đúng giờ</span>
+                    <div className='relative w-[100%] gap-2 rounded-md flex mt-1'>
+                        <button onClick={() => handleGoManage()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[35px] rounded-lg'>Quản lý cuộc hẹn khám</button>
+                        <button onClick={() => handleGoBack()} className='hover:scale-[1.05] transition-all text-[14px] font-medium] px-[1.5rem] text-[#1dcbb6] font-semibold border-[2px] border-[#1dcbb6] h-[35px] rounded-lg'>Trở về trang chủ</button>
+                    </div>
                 </div>
-                <div className='grid grid-cols-2'>
-                    Thanh Toán Thành Công
-                </div>
-            </div>
-            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
-                <button onClick={() => handleSubmit()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Hoàn Tất</button>
+                <img src='/payment-successfully.png' className='w-[40%]' />
             </div>
         </>
     )

@@ -624,12 +624,7 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
                           <>
                             <button
                               onClick={() =>
-                                // handleAcceptAppointmentHome(
-                                //     appointmentHome
-                                // )
-                                appointmentHandler.showFormAppointmentHomeCalendar(
-                                  appointmentHome
-                                )
+                                appointmentHandler.showFormAppointmentHomeCalendar(appointmentHome)
                               }
                               className="hover:scale-[1.05] transition-all bg-[green] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                             >
@@ -637,29 +632,13 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
                             </button>
                             <button
                               onClick={() =>
-                                handleRejectAppointmentHome(
-                                  appointmentHome
-                                )
+                                handleRejectAppointmentHome(appointmentHome)
                               }
                               className="hover:scale-[1.05] transition-all bg-[red] text-[white] text-[13px] font-medium px-2 rounded-md py-1"
                             >
                               Từ Chối
                             </button>
                           </>
-                        )}
-                      {displayConnect ===
-                        appointmentHome._id && (
-                          <Link
-                            href={`http://127.0.0.1:3000/zero/${appointmentHome._id
-                              }/${userData.user?.role === "USER"
-                                ? "patient"
-                                : "doctor"
-                              }`}
-                          >
-                            <button className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[13px] font-medium px-2 rounded-md py-1">
-                              Tham Gia Cuộc Hẹn
-                            </button>
-                          </Link>
                         )}
                     </td>
                   </tr>

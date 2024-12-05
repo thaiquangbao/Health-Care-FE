@@ -5,6 +5,7 @@ import { convertDateToDayMonthYearVietNam } from "@/utils/date";
 import { set } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import Input from "../input";
+import axios from "axios";
 
 const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
   const { appointmentData, appointmentHandler } =
@@ -26,6 +27,30 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
       setMedical(appointmentData.medicalRecord.medical);
     }
   }, [appointmentData.medicalRecord]);
+
+  // them phan thuoc
+  const [medicalData, setMedicalData] = useState([])
+  const [medicalFilter, setMedicalFilter] = useState([])
+  const [selectedMedical, setSelectedMedical] = useState()
+  useEffect(() => {
+    axios.post('https://prod.jiohealth.com:8443/jio-search/v1/search/retail/products-advance?offset=0&limit=315&sortName=PRICE&isDescending=false&categories=82&token=b161dc46-207d-11ee-aa37-02b973dc30b0&userID=1')
+      .then(res => {
+        setMedicalData(res.data.data.products)
+      })
+  }, [])
+  useEffect(() => {
+    if (!visible) {
+      setSelectedMedical()
+    }
+  }, [visible])
+  useEffect(() => {
+    if (nameMedical !== '') {
+      const filter = medicalData.filter(item => item.title.toLowerCase().trim().includes(nameMedical.toLowerCase().trim()))
+      setMedicalFilter(filter)
+    }
+  }, [nameMedical])
+
+  // -----------------------------------------------
 
   useEffect(() => {
     if (appointmentData.currentAppointment) {
@@ -85,13 +110,52 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
 
   // Xử lý
   // Thêm thuốc
+  function checkIntegerString(value) {
+    if (value === '') {
+      return false
+    }
+    const parsedValue = Number(value);
+    if (
+      !isNaN(parsedValue) &&
+      Number.isInteger(parsedValue)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   const addMedical = () => {
+    if (nameMedical === '') {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Vui lòng chọn thuốc"
+      );
+      return
+    }
+    if (quantity === '') {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Vui lòng nhập số lượng thuốc"
+      );
+      return
+    }
+    if (!checkIntegerString(quantity)) {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Số lượng thuốc không hợp lệ"
+      );
+      return
+    }
     const newMedical = {
       medicalName: nameMedical,
       quantity: Number(quantity),
       unitOfCalculation: unitOfCalculation,
     };
     setMedical([...medical, newMedical]);
+    setSelectedMedical()
+    setNameMedical('')
+    setUnitOfCalculation('Đơn vị tính')
+    setQuantity('')
   };
 
   useEffect(() => {
@@ -134,19 +198,19 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
       style={
         visible
           ? {
-              height: "95%",
-              width: "65%",
-              transition: "0.3s",
-              backgroundSize: "cover",
-              overflow: "auto",
-              backgroundImage: "url(/bg.png)",
-            }
+            height: "95%",
+            width: "80%",
+            transition: "0.3s",
+            backgroundSize: "cover",
+            overflow: "auto",
+            backgroundImage: "url(/bg.png)",
+          }
           : {
-              height: 0,
-              width: 0,
-              transition: "0.3s",
-              overflow: "hidden",
-            }
+            height: 0,
+            width: 0,
+            transition: "0.3s",
+            overflow: "hidden",
+          }
       }
       className="z-[41] shadow-xl w-[300px] min-h-[100px] bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
     >
@@ -197,7 +261,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
               <span className="font-semibold px-2 mt-[1rem]">Nhịp tim:</span>
               {appointmentData.medicalRecord?.healthRate === 0
                 ? "Không"
-                : appointmentData.medicalRecord?.healthRate + " bpm"}
+                : appointmentData.medicalRecord?.healthRate + " nhịp/phút"}
             </div>
             <div>
               <span className="font-semibold px-2 mt-[1rem]">Cân nặng:</span>
@@ -209,13 +273,13 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
               <span className="font-semibold px-2 mt-[1rem]">Chiều cao:</span>
               {appointmentData.medicalRecord?.height === 0
                 ? "Không"
-                : appointmentData.medicalRecord?.height + " kg"}
+                : appointmentData.medicalRecord?.height + " cm"}
             </div>
             <div>
               <span className="font-semibold px-2 mt-[1rem]">Nhiệt độ:</span>
               {appointmentData.medicalRecord?.temperature === 0
                 ? "Không"
-                : appointmentData.medicalRecord?.temperature + " bpm"}
+                : appointmentData.medicalRecord?.temperature + " °C"}
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold px-2">Tái khám:</span>
@@ -265,7 +329,20 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
           </div>
           <span className="font-semibold px-2 mt-[1rem]">Đơn Thuốc</span>
           <div className="grid grid-cols-2 h-auto gap-x-[0.5rem] px-2 mt-1">
-            <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4">
+            <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4 relative">
+              {/*them phan thuoc*/}
+              <div style={{ height: (nameMedical !== '' && !selectedMedical) ? '120px' : 0, transition: '0.5s', padding: (nameMedical !== '' && !selectedMedical) ? '10px 0' : 0 }} className=" overflow-y-auto absolute top-[40px] flex flex-col gap-2 left-4 w-[90%] rounded-md bg-[white] shadow-lg">
+                {medicalFilter.map((medical, index) =>
+                  <div onClick={() => {
+                    setSelectedMedical(medical)
+                    setNameMedical(medical.title)
+                    setUnitOfCalculation(medical.packaging)
+                  }} className="w-full px-3 flex items-start gap-2 h-[50px] py-2 transition-all cursor-pointer hover:bg-[#e9e9e9]" key={index}>
+                    <img src={medical.images[0].images[0].url} className="h-[30px]" />
+                    <span className="w-[80%] text-[12px]">{medical.title}</span>
+                  </div>
+                )}
+              </div>
               <input
                 placeholder="Tên thuốc"
                 className="text-[14px] w-[100%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
@@ -273,20 +350,12 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 value={nameMedical}
               />
               <div className="flex items-center justify-between">
-                <select
+                <input
+                  placeholder="Đơn vị tính"
+                  readOnly
                   className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
                   value={unitOfCalculation}
-                  onChange={(e) => setUnitOfCalculation(e.target.value)}
-                >
-                  <option>Đơn vị tính</option>
-                  <option>Viên</option>
-                  <option>Vỉ</option>
-                  <option>Hộp</option>
-                  <option>Ống</option>
-                  <option>Gói</option>
-                  <option>Chai/Lọ</option>
-                  <option>Tuýp</option>
-                </select>
+                />
                 <input
                   placeholder="Số lượng"
                   className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
@@ -294,12 +363,26 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                   value={quantity}
                 />
               </div>
-              <button
-                className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
-                onClick={() => addMedical()}
-              >
-                Thêm
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
+                  onClick={() => addMedical()}
+                >
+                  Thêm
+                </button>
+                <button
+                  className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
+                  onClick={() => {
+                    setSelectedMedical()
+                    setNameMedical('')
+                    setUnitOfCalculation('Đơn vị tính')
+                    setQuantity('')
+                  }}
+                >
+                  Hủy thuốc đang chọn
+                </button>
+              </div>
+              {/*-----------them phan thuoc*/}
             </div>
             <div className="w-full max-h-[140px] overflow-y-auto relative">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -311,11 +394,14 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                     <th scope="col" className="w-[50%] py-2 text-center">
                       Tên Thuốc
                     </th>
-                    <th scope="col" className="w-[20%] py-2">
-                      Số Lượng
+                    <th scope="col" className="w-[10%] py-2">
+                      SL
                     </th>
-                    <th scope="col" className="w-[20%] py-2">
-                      Đơn vị tính
+                    <th scope="col" className="w-[15%] py-2">
+                      Đơn vị
+                    </th>
+                    <th scope="col" className="w-[15%] py-2">
+                      Thao Tác
                     </th>
                   </tr>
                 </thead>
@@ -336,6 +422,16 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                       </td>
                       <td className="py-2">{medical.quantity}</td>
                       <td className="py-2">{medical.unitOfCalculation}</td>
+                      <td className="py-2">
+                        <button
+                          className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[55px] text-[white] mt-2 h-[37px] rounded-lg"
+                          onClick={() => {
+                            setMedical(prev => prev.filter(item => item.medicalName !== medical.medicalName))
+                          }}
+                        >
+                          Xóa
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -366,7 +462,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 value={reAppointmentYear}
               />
             </div> */}
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-2">
             <button
               onClick={() => updateMedicalRecord()}
               className="hover:scale-[1.05] transition-all bg-[blue] text-[white] text-[15px] font-medium px-4 rounded-md py-2"

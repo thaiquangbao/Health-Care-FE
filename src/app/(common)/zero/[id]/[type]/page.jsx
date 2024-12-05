@@ -67,38 +67,36 @@ const Zero = () => {
     }).then((res) => {
       appointmentHandler.setCurrentAppointment(res);
     });
-    const access = globalThis.localStorage.getItem(
-      "accessToken"
-    );
-    const refresh = globalThis.localStorage.getItem(
-      "refreshToken"
-    );
+    // const access = globalThis.localStorage.getItem(
+    //   "accessToken"
+    // );
+    // const refresh = globalThis.localStorage.getItem( sửa ở đây
+    //   "refreshToken"
+    // );
 
-    if (!access && !refresh) {
+    // if (!access && !refresh) {
+    //   api({ type: TypeHTTP.GET, path: `/appointments/get-one/${id}`, sendToken: false })
+    //     .then(res => {
+    //       const customer = res.patient;
+    //       api({ type: TypeHTTP.POST, path: `/customers/generate-token-zego`, sendToken: false, body: customer })
+    //         .then((token) => {
+    //           console.log(token);
 
-
-      api({ type: TypeHTTP.GET, path: `/appointments/get-one/${id}`, sendToken: false })
-        .then(res => {
-          const customer = res.patient;
-          api({ type: TypeHTTP.POST, path: `/customers/generate-token-zego`, sendToken: false, body: customer })
-            .then((token) => {
-              console.log(token);
-
-              globalThis.localStorage.setItem(
-                "accessToken",
-                token.accessToken
-              );
-              globalThis.localStorage.setItem(
-                "refreshToken",
-                token.refreshToken
-              );
-              globalThis.window.location.reload()
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-        })
-    }
+    //           globalThis.localStorage.setItem(
+    //             "accessToken",
+    //             token.accessToken
+    //           );
+    //           globalThis.localStorage.setItem(
+    //             "refreshToken",
+    //             token.refreshToken
+    //           );
+    //           globalThis.window.location.reload()
+    //         })
+    //         .catch((err) => {
+    //           console.log(err);
+    //         })
+    //     })
+    // }
   }, [id]);
 
   const endMeet = async () => {

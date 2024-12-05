@@ -81,55 +81,77 @@ const GlobalProvider = ({ children }) => {
   }, [pathname]);
 
   useEffect(() => {
+    const accessToken = globalThis.localStorage.getItem('accessToken')
     const pathnames = [
-      "ho-so",
       "cam-nang",
       "chi-tiet-cam-nang",
-      "zero",
       "cong-dong",
       "chi-tiet-cau-hoi",
-      "cuoc-tro-chuyen",
+      "cac-dich-vu", // sửa ở đây
+      "bac-si-noi-bat", // sửa ở đây
+      "ho-so-dang-ky", // sửa ở đây
+      "zero", // sửa ở đây
+      "ho-so-bac-si", // sửa ở đây
+      "dich-vu",
+      "zego",
+      "meet",
+      "danh-sach-thuoc"
+    ];
+    const patientPathnames = [
+      "/cac-dich-vu",
+      "/bac-si-noi-bat",
+      "/cuoc-hen-cua-ban",
+      "/ho-so-bac-si",
+      "/ho-so-suc-khoe",
+      "/theo-doi-suc-khoe",
+      "/kham-suc-khoe-tai-nha",
+      "/zero", // sửa ở đây
+      "/ho-so-dang-ky-tai-nha",// sửa ở đây
+      "/ho-so-dang-ky", // sửa ở đây
+      "/ho-so-dang-ky-theo-doi-suc-khoe", // sửa ở đây
+      "/ho-so", // sửa ở đây
+      "/kham-tong-quat", // sửa ở đây // thiếu url khám theo loại bệnh
+      "/",
     ];
     const doctorPathname = [
-      "/phieu-dang-ky",
-      "/ho-so-ca-nhan-bac-si",
-      "/them-cam-nang",
-      "/benh-nhan-cua-toi",
       "/thong-ke-doanh-thu",
       "/doanh-thu-cua-toi",
+      "/phieu-dang-ky",
+      "/benh-nhan-cua-toi",
+      "/cuoc-tro-chuyen",
+      "/ho-so-ca-nhan-bac-si",
+      "/them-cam-nang",
+      "/ho-so",
+      "/"
     ];
     if (pathname.includes("location")) {
-    } else if (pathname !== "/") {
+
+    } else {
       if (userData.user) {
+        //nếu là admin
         if (userData.user.role === "ADMIN") {
           notify(
             notifyType.FAIL,
-            "Vui Lòng đăng nhập bằng tài khoản User"
+            "Vui Lòng đăng nhập bằng tài khoản người sử dụng"
           );
           userHandler.setUser();
           globalThis.localStorage.removeItem("accessToken");
-          globalThis.localStorage.removeItem(
-            "refreshToken"
-          );
-        } else {
-          if (pathnames.includes(pathname.split("/")[1])) {
-          } else {
-            if (userData.user?.role !== "DOCTOR") {
-              if (doctorPathname.includes(pathname)) {
-                router.push("/");
-              }
-            } else {
-              if (!doctorPathname.includes(pathname)) {
-                router.push("/phieu-dang-ky");
-              }
-            }
+          globalThis.localStorage.removeItem("refreshToken");
+        }
+        // nêú là patient
+        else if (userData.user.role === "USER") {
+          if (!pathnames.includes(pathname.split("/")[1]) && !patientPathnames.includes('/' + pathname.split("/")[1])) {
+            router.push('/')
+          }
+        }
+        // nếu là doctor
+        else {
+          if (!pathnames.includes(pathname.split("/")[1]) && !doctorPathname.includes('/' + pathname.split("/")[1])) {
+            router.push("/phieu-dang-ky");
           }
         }
       } else {
-        if (
-          doctorPathname.includes(pathname) ||
-          pathnames.includes(pathname)
-        ) {
+        if (!pathnames.includes(pathname.split("/")[1])) {
           router.push("/");
         }
       }

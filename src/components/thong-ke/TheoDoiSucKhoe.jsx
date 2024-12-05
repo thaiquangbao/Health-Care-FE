@@ -64,7 +64,7 @@ const TheoDoiSucKhoe = ({ month }) => {
     setRevenueToday(logBooks.filter(item => compare2Date(item.dateStop, today)).reduce((total, item) => total += item.priceList.price * 0.7, 0))
     setRevenueYesterday(logBooks.filter(item => compare2Date(item.dateStop, yesterday)).reduce((total, item) => total += item.priceList.price * 0.7, 0))
     setRevenueMonth(logBooks.reduce((total, item) => total += item.priceList.price * 0.7, 0))
-    setRevenueWeek(logBooks.filter(item => compareDate1GetterThanDate2(item.dateStop, convertDateToDayMonthYearObject(firstDay)) && compareDate1GetterThanDate2(convertDateToDayMonthYearObject(lastDay), item.dateStop)).reduce((total, item) => total += item.priceList.price * 0.7, 0))
+    setRevenueWeek(logBooks.filter(item => compareDate1GetterThanDate2(item.dateStop, convertDateToDayMonthYearObject(firstDay)) && compareDate1GetterThanDate2(convertDateToDayMonthYearObject(lastDay), item.dateStop)).reduce((total, item) => total += item.priceList.price * 0.7, 0)) // sửa ở đây
   }, [logBooks])
 
   return (
@@ -189,7 +189,7 @@ const TheoDoiSucKhoe = ({ month }) => {
                   </td>
                   <td className="py-4">
                     {`${convertDateToDayMonthYearVietNam(
-                      logBook.date
+                      logBook.dateStop
                     )}`}
                   </td>
                   <td className="py-4">

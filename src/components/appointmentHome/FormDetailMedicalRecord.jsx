@@ -111,7 +111,7 @@ const FormDetailMedicalRecord = ({ medicalRecord, hidden }) => {
             </span>{" "}
             {medicalRecord?.reExaminationDate?.month !== 0 && medicalRecord?.reExaminationDate?.month !== null ? convertDateToDayMonthYearVietNam2(
               medicalRecord?.reExaminationDate
-            ): "Không"}
+            ) : "Không"}
           </span>
         </div>
         <div className="grid grid-cols-3 h-auto gap-x-[0.5rem] mt-[0.5rem]">

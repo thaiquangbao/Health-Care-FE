@@ -3,6 +3,7 @@ import { globalContext, notifyType } from '@/context/GlobalContext';
 import { utilsContext } from '@/context/UtilsContext';
 import { api, TypeHTTP } from "@/utils/api";
 import { convertDateToDayMonthYearVietNam } from "@/utils/date";
+import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doctorRecord1, appointmentHome1, setReload }) => {
   const { appointmentData, appointmentHandler } = useContext(
@@ -41,34 +42,82 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
     }
   }, [medicalRecord])
 
+  // them phan thuoc
+  const [medicalData, setMedicalData] = useState([])
+  const [medicalFilter, setMedicalFilter] = useState([])
+  const [selectedMedical, setSelectedMedical] = useState()
+  useEffect(() => {
+    axios.post('https://prod.jiohealth.com:8443/jio-search/v1/search/retail/products-advance?offset=0&limit=315&sortName=PRICE&isDescending=false&categories=82&token=b161dc46-207d-11ee-aa37-02b973dc30b0&userID=1')
+      .then(res => {
+        setMedicalData(res.data.data.products)
+      })
+  }, [])
+  useEffect(() => {
+    setSelectedMedical()
+  }, [type])
+  useEffect(() => {
+    if (nameMedical !== '') {
+      const filter = medicalData.filter(item => item.title.toLowerCase().trim().includes(nameMedical.toLowerCase().trim()))
+      setMedicalFilter(filter)
+    }
+  }, [nameMedical])
+
+  // -----------------------------------------------
+
   useEffect(() => {
     setDoctorRecord(doctorRecord1)
     setAppointmentHome(appointmentHome1)
 
   }, [doctorRecord1, appointmentHome1, type]);
 
-  // useEffect(() => {
-  //   if (appointmentHome1?.patient) {
-  //     api({ type: TypeHTTP.GET, sendToken: false, path: `/medicalRecords/findByPatient/${appointmentHome1.patient._id}` })
-  //       .then(res => {
-  //         const filter = res.filter(item => item.appointment === appointmentHome1._id)[0]
-  //         if (filter) {
-  //           console.log(filter)
-  //           appointmentHandler.setMedicalRecord(filter)
-  //         }
-  //       })
-  //   }
-  // }, [appointmentHome1])
-
   // Xử lý
   // Thêm thuốc
+  function checkIntegerString(value) {
+    if (value === '') {
+      return false
+    }
+    const parsedValue = Number(value);
+    if (
+      !isNaN(parsedValue) &&
+      Number.isInteger(parsedValue)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   const addMedical = () => {
+    if (nameMedical === '') {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Vui lòng chọn thuốc"
+      );
+      return
+    }
+    if (quantity === '') {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Vui lòng nhập số lượng thuốc"
+      );
+      return
+    }
+    if (!checkIntegerString(quantity)) {
+      utilsHandler.notify(
+        notifyType.WARNING,
+        "Số lượng thuốc không hợp lệ"
+      );
+      return
+    }
     const newMedical = {
       medicalName: nameMedical,
       quantity: Number(quantity),
       unitOfCalculation: unitOfCalculation,
     };
     setMedical([...medical, newMedical]);
+    setSelectedMedical()
+    setNameMedical('')
+    setUnitOfCalculation('Đơn vị tính')
+    setQuantity('')
   };
 
   useEffect(() => {
@@ -313,73 +362,82 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
       </span>
       <div className="grid grid-cols-2 h-auto gap-x-[0.25rem] px-2">
         {!medicalRecord && (
-          <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4">
+          <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4 relative">
+            {/*them phan thuoc*/}
+            <div style={{ height: (nameMedical !== '' && !selectedMedical) ? '120px' : 0, transition: '0.5s', padding: (nameMedical !== '' && !selectedMedical) ? '10px 0' : 0 }} className=" overflow-y-auto absolute top-[40px] flex flex-col gap-2 left-4 w-[90%] rounded-md bg-[white] shadow-lg">
+              {medicalFilter.map((medical, index) =>
+                <div onClick={() => {
+                  setSelectedMedical(medical)
+                  setNameMedical(medical.title)
+                  setUnitOfCalculation(medical.packaging)
+                }} className="w-full px-3 flex items-start gap-2 h-[50px] py-2 transition-all cursor-pointer hover:bg-[#e9e9e9]" key={index}>
+                  <img src={medical.images[0].images[0].url} className="h-[30px]" />
+                  <span className="w-[80%] text-[12px]">{medical.title}</span>
+                </div>
+              )}
+            </div>
             <input
               placeholder="Tên thuốc"
               className="text-[14px] w-[100%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-              onChange={(e) =>
-                setNameMedical(e.target.value)
-              }
+              onChange={(e) => setNameMedical(e.target.value)}
               value={nameMedical}
             />
             <div className="flex items-center justify-between">
-              <select
+              <input
+                placeholder="Đơn vị tính"
+                readOnly
                 className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
                 value={unitOfCalculation}
-                onChange={(e) =>
-                  setUnitOfCalculation(e.target.value)
-                }
-              >
-                <option>Đơn vị tính</option>
-                <option>Viên</option>
-                <option>Vỉ</option>
-                <option>Hộp</option>
-                <option>Ống</option>
-                <option>Gói</option>
-                <option>Chai/Lọ</option>
-                <option>Tuýp</option>
-              </select>
+              />
               <input
                 placeholder="Số lượng"
                 className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                onChange={(e) =>
-                  setQuantity(e.target.value)
-                }
+                onChange={(e) => setQuantity(e.target.value)}
                 value={quantity}
               />
             </div>
             {!appointmentData.medicalRecord && (
-              <button
-                className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
-                onClick={() => addMedical()}
-              >
-                Thêm
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  className="hover:scale-[1.05] transition-all text-[14px] bg-[blue] flex justify-center items-center w-[30%] text-[white] mt-2 h-[37px] rounded-lg"
+                  onClick={() => addMedical()}
+                >
+                  Thêm
+                </button>
+                <button
+                  className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
+                  onClick={() => {
+                    setSelectedMedical()
+                    setNameMedical('')
+                    setUnitOfCalculation('Đơn vị tính')
+                    setQuantity('')
+                  }}
+                >
+                  Hủy thuốc đang chọn
+                </button>
+              </div>
             )}
-
+            {/*-----------them phan thuoc*/}
           </div>
         )}
         <div className="w-full max-h-[140px] overflow-y-auto relative">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="sticky top-0 left-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th
-                  scope="col"
-                  className="w-[10%] py-2 text-center"
-                >
+                <th scope="col" className="w-[10%] py-2 text-center">
                   #
                 </th>
-                <th
-                  scope="col"
-                  className="w-[50%] py-2 text-center"
-                >
+                <th scope="col" className="w-[50%] py-2 text-center">
                   Tên Thuốc
                 </th>
-                <th scope="col" className="w-[20%] py-2">
-                  Số Lượng
+                <th scope="col" className="w-[10%] py-2">
+                  SL
                 </th>
-                <th scope="col" className="w-[20%] py-2">
-                  Đơn vị tính
+                <th scope="col" className="w-[15%] py-2">
+                  Đơn vị
+                </th>
+                <th scope="col" className="w-[15%] py-2">
+                  Thao Tác
                 </th>
               </tr>
             </thead>
@@ -398,11 +456,17 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
                   <td className="py-2 text-[15px] text-center">
                     {medical.medicalName}
                   </td>
-                  <td className="py-2">
-                    {medical.quantity}
-                  </td>
-                  <td className="py-2">
-                    {medical.unitOfCalculation}
+                  <td className="py-2">{medical.quantity}</td>
+                  <td className="py-2">{medical.unitOfCalculation}</td>
+                  <td className="py-2 flex justify-between">
+                    <button
+                      className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[55px] text-[white] mt-2 h-[37px] rounded-lg"
+                      onClick={() => {
+                        setMedical(prev => prev.filter(item => item.medicalName !== medical.medicalName))
+                      }}
+                    >
+                      Xóa
+                    </button>
                   </td>
                 </tr>
               ))}

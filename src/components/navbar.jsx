@@ -195,6 +195,19 @@ const Navbar = () => {
               </li>
               <li
                 onClick={() => {
+                  router.push("/danh-sach-thuoc");
+                  authHandler.hiddenWrapper();
+                  authHandler.setVisibleMore(false);
+                }}
+                className="flex gap-3 cursor-pointer mt-5"
+              >
+                <i class='bx bxs-capsule text-[rgb(76,195,225)] text-[25px]'></i>
+                <span className="text-[16px] font-medium">
+                  Danh Sách Thuốc
+                </span>
+              </li>
+              <li
+                onClick={() => {
                   authHandler.setVisibleMore(false);
                   setTimeout(() => {
                     authHandler.showSmartSearching();

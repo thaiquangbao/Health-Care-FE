@@ -15,118 +15,32 @@ const ResultBooking = () => {
     const { appointmentHandler, appointmentData } = useContext(appointmentContext)
     const router = useRouter()
 
-    const handleSubmit = () => {
+    const handleGoBack = () => {
         router.push('/bac-si-noi-bat')
         globalHandler.reload()
-        // if (userData.user) {
-        //   globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-        //   router.push('/bac-si-noi-bat')
-        //   globalHandler.reload()
-        //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
-        //     const formData = new FormData()
-        //     bookingData.images.forEach(item => {
-        //         formData.append('files', item.file)
-        //     })
-        //     api({ type: TypeHTTP.POST, sendToken: false, body: formData, path: '/upload-image/save' })
-        //         .then(listImage => {
-        //             api({ type: TypeHTTP.POST, sendToken: true, path: '/appointments/save', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id, images: listImage } })
-        //                 .then(res => {
-        //                     let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
-        //                     let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
-        //                     let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
-        //                     time.status = 'Queue'
-        //                     api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-        //                         .then(res => {
-        //                             bookingHandler.setDoctorRecord()
-        //                             appointmentHandler.setDoctorRecord()
-        //                             globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-        //                             router.push('/bac-si-noi-bat')
-        //                             // globalHandler.reload()
-        //                         })
-        //                 })
-        //         })
-        // } else {
-        //     globalHandler.notify(notifyType.LOADING, "Đang Đăng Ký Lịch Hẹn")
-        //     api({ type: TypeHTTP.POST, sendToken: false, path: '/appointments/save/customer', body: { ...bookingData.booking, price_list: bookingData.booking.priceList._id } })
-        //         .then(res => {
-        //             let record = JSON.parse(JSON.stringify(appointmentData.doctorRecord))
-        //             let schedule = record.schedules.filter(item => item.date.day === res.appointment_date.day && item.date.month === res.appointment_date.month && item.date.year === res.appointment_date.year)[0]
-        //             let time = schedule.times.filter(item => item.time === res.appointment_date.time)[0]
-        //             time.status = 'Queue'
-        //             api({ type: TypeHTTP.POST, path: '/doctorRecords/update', sendToken: false, body: record })
-        //                 .then(res => {
-        //                     bookingHandler.setDoctorRecord()
-        //                     appointmentHandler.setDoctorRecord()
-        //                     globalHandler.notify(notifyType.SUCCESS, "Đăng Ký Lịch Hẹn Thành Công")
-        //                     router.push('/bac-si-noi-bat')
-        //                     globalHandler.reload()
-        //                 })
-        //         })
-        // }
     }
+
+    const handleGoManage = () => {
+        router.push('/cuoc-hen-cua-ban')
+        globalHandler.reload()
+    }
+
 
     return (
         <>
-            <div className='border-[#cfcfcf] overflow-hidden relative w-[70%] gap-2 mt-6 rounded-md border-[1px] flex flex-col items-start'>
-                <div className='flex gap-3 py-2 mt-1 border-[#cfcfcf] border-b-[1px] items-center px-4 w-full text-[13px] font-medium'>
-                    <span className='text-[14px]'>Trạng Thái Thanh Toán</span>
+            <div className='w-[70%] flex justify-between items-center mt-2'>
+                <div className='flex flex-col gap-2 w-[60%]'>
+                    <span className='text-[15px] font-space font-semibold'>Thanh Toán Thành Công</span>
+                    <span className='text-[14px] font-space'>Cảm ơn bạn đã hoản tất thủ tục đăng ký khám trực tuyến với bác sĩ {bookingData.doctorRecord?.doctor?.fullName}, hãy chờ bác sĩ chấp nhận cuộc hẹn và truy cập cuộc hẹn khám đúng giờ nhé</span>
+                    <div className='relative w-[100%] gap-2 rounded-md flex mt-1'>
+                        <button onClick={() => handleGoManage()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[35px] rounded-lg'>Quản lý cuộc hẹn khám</button>
+                        <button onClick={() => handleGoBack()} className='hover:scale-[1.05] transition-all text-[14px] font-medium] px-[1.5rem] text-[#1dcbb6] font-semibold border-[2px] border-[#1dcbb6] h-[35px] rounded-lg'>Trở về trang chủ</button>
+                    </div>
                 </div>
-                <div className='grid grid-cols-2'>
-                    Thanh Toán Thành Công
-                </div>
-            </div>
-            <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
-                <button onClick={() => handleSubmit()} className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Hoàn Tất</button>
+                <img src='/payment-successfully.png' className='w-[40%]' />
             </div>
         </>
     )
 }
 
 export default ResultBooking
-
-
-// const medicalRecord = {
-//     patient: {
-//         _id: ObjectID,
-//         fullName: String,
-//         dob: Date,
-//         gender: Boolean,
-//         phone: String,
-//         email: String
-//     },
-//     doctor: {
-//         _id: ObjectID,
-//         fullName: String,
-//         phone: String,
-//         email: String
-//     },
-//     totalDiagnosisDisease: [String](chuẩn đoán bệnh 'thường là lấy chuẩn đoán bênh mới nhất'),
-//     totalSymptoms: [String](triệu chứng tổng, 'thường là lấy triệu chứng mới nhất'),
-//     vitalSigns: [{
-//         temperature: Number,
-//         bloodPressure: Number,
-//         heartRate: Number,
-//         respiratoryRate: Number('hít thở bao nhiêu lần')
-//     }],
-//     medicalExaminationHistory: [{
-//         diagnosisDisease: [String],
-//         symptoms: [String],
-//         date: {
-//             day: Number,
-//             month: Number,
-//             year: Number,
-//             time: String
-//         },
-//         note: String,
-//         medical: [{
-//             medicalName: String,
-//             quantity: Number
-//         }]
-//     }],
-
-//     reExaminationDate: {
-//         day: Number,
-//         month: Number,
-//         year: Number,
-//     }
-// }

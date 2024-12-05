@@ -131,7 +131,7 @@ const DoanhThuCuaToi = () => {
               Chào Mừng Bác Sĩ{" "}
               {
                 userData.user?.fullName.split(" ")[
-                  userData.user?.fullName.split(" ").length - 1
+                userData.user?.fullName.split(" ").length - 1
                 ]
               }{" "}
               <img src="/hand.png" width={"30px"} />
@@ -142,7 +142,7 @@ const DoanhThuCuaToi = () => {
           </div>
           <div className="flex gap-3">
             <div
-              className="px-5 py-1 gap-6 flex flex-row shadow-lg text-center focus:outline-0 rounded-md font-medium "
+              className="px-5 h-[50px] justify-center flex items-center gap-2 shadow-lg text-center focus:outline-0 rounded-md font-medium "
               style={{
                 backgroundImage: "url(/bg.png)",
                 boxShadow:
@@ -156,12 +156,7 @@ const DoanhThuCuaToi = () => {
                 </span>
               </div>
               <div
-                className="px-2 py-1 text-[14px] shadow-lg text-center focus:outline-0 rounded-md font-medium cursor-pointer transition-transform transform hover:scale-105"
-                style={{
-                  background: "#28f677",
-                  boxShadow:
-                    "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
-                }}
+                className="px-2 bg-[#1dcbb6] text-[white] py-1 text-[14px] shadow-lg text-center focus:outline-0 rounded-md font-semibold cursor-pointer transition-transform transform hover:scale-105"
                 onClick={() => handleReceive()}
               >
                 <span>Nhận</span>

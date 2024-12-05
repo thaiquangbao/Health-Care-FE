@@ -40,17 +40,15 @@ const FormChuyenBacSi = ({ visibleTransfer, logBook, hidden }) => {
       _id: logBook._id,
       doctor: doctorUpdate,
       status: {
-        status_type: "STOPPED",
+        status_type: "CANCELED",
         message: 'Chuyển sang bác sĩ khác'
       },
-      dateStop: convertDateToDayMonthYearTimeObject(new Date().toISOString()),
       statusNew: {
-        status_type: "TRANSFER",
+        status_type: "QUEUE",
         message: "Đang chờ bác sĩ xác nhận"
       }
     }
-
-
+    globalHandler.notify(notifyType.LOADING, `Đang chuyển hồ sơ bệnh nhân cho bác sĩ ${doctor.doctor.fullName}`)
     api({ type: TypeHTTP.POST, sendToken: true, path: '/healthLogBooks/transfer-doctor', body })
       .then(res => {
         healthHandler.setLogBooks(prev => prev.map(item => {

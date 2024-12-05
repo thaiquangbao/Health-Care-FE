@@ -48,7 +48,7 @@ const AssessmentDoctor = ({ setType, appointmentHome }) => {
         <div className="px-[2rem] min-w-[100%] h-full py-[1rem] flex flex-col gap-2">
             <div className='flex items-center'>
                 <i onClick={() => setType(0)} className='bx bx-chevron-left text-[30px] cursor-pointer text-[#565656]'></i>
-                <span className="font-semibold">Hồ Sơ Bệnh Án</span>
+                <span className="font-semibold">Đánh giá bác sĩ</span>
             </div>
             <div className="min-w-[100%] px-[2.5rem] py-[1.5rem] flex justify-center">
                 <div className="w-full h-full px-[0.25rem] flex flex-col gap-1">

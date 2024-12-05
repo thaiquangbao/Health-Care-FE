@@ -47,7 +47,6 @@ const BookingInformation = ({ setCustomer }) => {
   };
 
   const handleNextStep = () => {
-    console.log(bookingData.booking, userData.user)
     if (!userData.user) {
       const name = bookingData.booking?.patient?.fullName.trim().replace(/\s+/g, ' ');
       if (!/^[A-ZÀ-Ỹ][a-zà-ỹ]*(\s[A-ZÀ-Ỹ][a-zà-ỹ]*)*$/.test(name)) {

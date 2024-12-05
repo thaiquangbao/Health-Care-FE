@@ -37,7 +37,7 @@ const Appointment = () => {
               onChange={(e) => setTicketType(e.target.value)}
               className="px-2 py-2 text-[15px] shadow-lg text-center focus:outline-0 rounded-md font-medium"
             >
-              <option value={1}>Phiếu Đăng Ký Hẹn Khám</option>
+              <option value={1}>Phiếu Hẹn Khám Trực Tuyến</option>
               <option value={2}>Phiếu Theo Dõi Sức Khỏe</option>
               <option value={3}>Phiếu Hẹn Khám Tại Nhà</option>
             </select>

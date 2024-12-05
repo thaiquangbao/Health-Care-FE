@@ -68,15 +68,14 @@ export function convertDateToDayMonthYearVietNam(date) {
   year = year < 10 ? "0" + year : year;
 
   // Trả về chuỗi ngày và tháng
-  return `${day} tháng ${month}, ${year} (${time} ${
-    Number(time.split(":")[0]) <= 10
-      ? "Sáng"
-      : Number(time.split(":")[0]) <= 14
+  return `${day} tháng ${month}, ${year} (${time} ${Number(time.split(":")[0]) <= 10
+    ? "Sáng"
+    : Number(time.split(":")[0]) <= 14
       ? "Trưa"
       : Number(time.split(":")[0]) <= 17
-      ? "Chiều"
-      : "Tối"
-  })`;
+        ? "Chiều"
+        : "Tối"
+    })`;
 }
 
 export function convertDateToDayMonthYearVietNam2(date) {
@@ -154,9 +153,8 @@ export function formatVietnameseDate(date1) {
   let year = date.getFullYear();
 
   // Tạo chuỗi ngày theo định dạng mong muốn
-  return `${dayOfWeek}, ngày ${
-    day < 10 ? "0" + day : day
-  } ${month} năm ${year}`;
+  return `${dayOfWeek}, ngày ${day < 10 ? "0" + day : day
+    } ${month} năm ${year}`;
 }
 
 export function generateTimes(startTime, endTime, interval) {
@@ -201,7 +199,6 @@ export const compare2Date = (date1, date2) => {
   return false;
 };
 export const compare2DateTime = (date1, date2) => {
-  console.log(date1, date2);
   if (
     date1.month === date2.month &&
     date1.year === date2.year &&
@@ -214,43 +211,66 @@ export const compare2DateTime = (date1, date2) => {
 };
 
 export const compareDate1GetterThanDate2 = (date1, date2) => {
-  if (
-    date1.month >= date2.month &&
-    date1.year >= date2.year &&
-    date1.day >= date2.day
-  ) {
-    return true;
-  }
-  return false;
+  const d1 = new Date(date1.year + '-' + date1.month + '-' + date1.day)
+  const d2 = new Date(date2.year + '-' + date2.month + '-' + date2.day)
+  return d1 >= d2
+  // if (
+  //   date1.month >= date2.month &&
+  //   date1.year >= date2.year &&
+  //   date1.day >= date2.day
+  // ) {
+  //   return true;
+  // }
+  // return false;
 };
 
 export const compareTimeDate1GreaterThanDate2 = (date1, date2) => {
-  // So sánh năm
-  if (date1.year > date2.year) return true;
-  if (date1.year < date2.year) return false;
+  const d1 = new Date(date1.year + '-' + date1.month + '-' + date1.day)
+  const d2 = new Date(date2.year + '-' + date2.month + '-' + date2.day)
+  if (d1 > d2) {
+    return true
+  } else if (d1 === d2) {
+    const time1 = date1.time.split(":").map(Number);
+    const time2 = date2.time.split(":").map(Number);
 
-  // So sánh tháng nếu năm bằng nhau
-  if (date1.month > date2.month) return true;
-  if (date1.month < date2.month) return false;
+    const hour1 = time1[0];
+    const minute1 = time1[1];
+    const hour2 = time2[0];
+    const minute2 = time2[1];
 
-  // So sánh ngày nếu tháng và năm bằng nhau
-  if (date1.day > date2.day) return true;
-  if (date1.day < date2.day) return false;
+    if (hour1 > hour2) return true;
+    if (hour1 < hour2) return false;
+    return minute1 >= minute2;
+  }
+  else {
+    return false
+  }
+  // // So sánh năm
+  // if (date1.year > date2.year) return true;
+  // if (date1.year < date2.year) return false;
 
-  // Nếu ngày, tháng và năm bằng nhau, so sánh thời gian
-  const time1 = date1.time.split(":").map(Number);
-  const time2 = date2.time.split(":").map(Number);
+  // // So sánh tháng nếu năm bằng nhau
+  // if (date1.month > date2.month) return true;
+  // if (date1.month < date2.month) return false;
 
-  const hour1 = time1[0];
-  const minute1 = time1[1];
-  const hour2 = time2[0];
-  const minute2 = time2[1];
+  // // So sánh ngày nếu tháng và năm bằng nhau
+  // if (date1.day > date2.day) return true;
+  // if (date1.day < date2.day) return false;
 
-  if (hour1 > hour2) return true;
-  if (hour1 < hour2) return false;
+  // // Nếu ngày, tháng và năm bằng nhau, so sánh thời gian
+  // const time1 = date1.time.split(":").map(Number);
+  // const time2 = date2.time.split(":").map(Number);
 
-  // Nếu giờ bằng nhau, so sánh phút
-  return minute1 >= minute2;
+  // const hour1 = time1[0];
+  // const minute1 = time1[1];
+  // const hour2 = time2[0];
+  // const minute2 = time2[1];
+
+  // if (hour1 > hour2) return true;
+  // if (hour1 < hour2) return false;
+
+  // // Nếu giờ bằng nhau, so sánh phút
+  // return minute1 >= minute2;
 };
 
 export function convertDateToDayMonthYearObject(dateString) {
@@ -294,23 +314,33 @@ export const convertObjectToDate = (date1) => {
 
 export function compareDates(date1, date2) {
   // Lấy các thành phần năm, tháng, ngày của mỗi đối tượng Date
-  const year1 = date1.year;
-  const month1 = date1.month;
-  const day1 = date1.day;
+  // const year1 = date1.year;
+  // const month1 = date1.month;
+  // const day1 = date1.day;
 
-  const year2 = date2.year;
-  const month2 = date2.month;
-  const day2 = date2.day;
+  // const year2 = date2.year;
+  // const month2 = date2.month;
+  // const day2 = date2.day;
+
+  const d1 = new Date(date1.year + '-' + date1.month + '-' + date1.day)
+  const d2 = new Date(date2.year + '-' + date2.month + '-' + date2.day)
+  if (d1 === d2) {
+    return 0
+  } else if (d1 < d2) {
+    return -1
+  } else {
+    return 1
+  }
 
   // So sánh từng thành phần
-  if (year1 < year2) return -1;
-  if (year1 > year2) return 1;
+  // if (year1 < year2) return -1;
+  // if (year1 > year2) return 1;
 
-  if (month1 < month2) return -1;
-  if (month1 > month2) return 1;
+  // if (month1 < month2) return -1;
+  // if (month1 > month2) return 1;
 
-  if (day1 < day2) return -1;
-  if (day1 > day2) return 1;
+  // if (day1 < day2) return -1;
+  // if (day1 > day2) return 1;
 
   // 0 nếu hai ngày bằng nhau.
   // -1 nếu date1 nhỏ hơn date2.

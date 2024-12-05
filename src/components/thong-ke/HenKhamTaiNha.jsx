@@ -87,7 +87,7 @@ const HenKhamTaiNha = ({ month }) => {
     setRevenueToday(appointmentHomes.filter(item => compare2Date(item.appointment_date, today)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
     setRevenueYesterday(appointmentHomes.filter(item => compare2Date(item.appointment_date, yesterday)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
     setRevenueMonth(appointmentHomes.reduce((total, item) => total += item.price_list.price * 0.7, 0))
-    setRevenueWeek(appointmentHomes.filter(item => compareDate1GetterThanDate2(item.appointment_date, convertDateToDayMonthYearObject(firstDay)) && compareDate1GetterThanDate2(convertDateToDayMonthYearObject(lastDay), item.appointment_date)).reduce((total, item) => total += item.price_list.price * 0.7, 0))
+    setRevenueWeek(appointmentHomes.filter(item => compareDate1GetterThanDate2(item.appointment_date, convertDateToDayMonthYearObject(firstDay)) && compareDate1GetterThanDate2(convertDateToDayMonthYearObject(lastDay), item.appointment_date)).reduce((total, item) => total += item.price_list.price * 0.7, 0)) // sửa ở đây
   }, [appointmentHomes])
 
   return (

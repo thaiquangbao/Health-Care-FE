@@ -4,7 +4,7 @@ import { globalContext, notifyType } from '@/context/GlobalContext'
 import { userContext } from '@/context/UserContext'
 import { convertDateToDayMonthYear, convertDateToMinuteHour } from '@/utils/date'
 import { formatMoney } from '@/utils/other'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 const BookingInformation = () => {
     const { globalHandler } = useContext(globalContext)
@@ -41,7 +41,7 @@ const BookingInformation = () => {
     return (
         <>
             <div className='border-[#cfcfcf] px-4 py-2 w-[70%] gap-3 rounded-md border-[1px] mt-7 flex items-center'>
-                {userData.user ? (
+                {userData.user ? ( 
                     <>
                         <img src={userData.user ? userData.user?.image : 'https://th.bing.com/th/id/R.be953f29410b3d18ef0e5e0fbd8d3120?rik=Dm2iDRVLgVcpdA&pid=ImgRaw&r=0'} className='rounded-full w-[50px]' />
                         <div className='flex flex-col text-[14px]'>
@@ -80,8 +80,9 @@ const BookingInformation = () => {
                         <span className='font-medium'>Khám bệnh tại nhà với BS {bookingHomeData.booking?.doctor?.fullName}</span>
                         <span className='mt-3 px-[0.5rem] py-1 rounded-md text-[13px] bg-[#e0eff6]'>Chuyên Khoa {bookingHomeData.booking?.doctor?.specialize}</span>
                         <span className='font-medium mt-1'>BS {bookingHomeData.booking?.doctor?.fullName}</span>
-                    </div>
-                    <span className='absolute top-[60px] text-[14px] right-2 font-medium text-[blue]'>{formatMoney(bookingHomeData.booking?.priceList?.price)} đ</span>
+                    </div> 
+                    {/* sửa ở đây */}
+                    <span className='absolute top-[60px] text-[14px] right-2 font-medium text-[blue]'>{formatMoney(bookingHomeData.booking?.price_list?.price)} đ</span> 
                 </div>
             </div>
             <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex items-center'>

@@ -26,7 +26,7 @@ const ChoosePayment = ({ customer }) => {
     if (customer) {
       setUrl(`https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${customer.user._id}2b`)
     } else {
-      if (bookingData.booking && step === 1) {
+      if (bookingData.booking && bookingData.currentStep === 2) {
         setUrl(`https://qr.sepay.vn/img?bank=MBBank&acc=0834885704&template=compact&amount=${bookingData.booking?.priceList?.price}&des=MaKH${userData.user?._id}2b`)
       }
     }
@@ -337,7 +337,6 @@ const ChoosePayment = ({ customer }) => {
           </span>
         </div>
       </div>
-      <button onClick={() => handleSubmit()}>submit</button>
       {/* <div className='relative py-3 w-[70%] gap-2 mt-1 rounded-md flex flex-col items-end'>
                 <button onClick={() => } className='hover:scale-[1.05] transition-all text-[14px] font-medium bg-[#1dcbb6] px-[1.5rem] text-[white] h-[32px] rounded-lg'>Bước Tiếp Theo</button>
             </div> */}

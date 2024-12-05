@@ -46,14 +46,14 @@ const FormBenhNhanDetail = ({
       style={{
         height:
           logBook &&
-          visibleTransfer === false &&
-          visibleMedicalRecord === false
+            visibleTransfer === false &&
+            visibleMedicalRecord === false
             ? "90%"
             : 0,
         width:
           logBook &&
-          visibleTransfer === false &&
-          visibleMedicalRecord === false
+            visibleTransfer === false &&
+            visibleMedicalRecord === false
             ? "90%"
             : 0,
         transition: "0.4s",
@@ -80,14 +80,14 @@ const FormBenhNhanDetail = ({
               <span
                 style={{
                   color:
-                    logBook.status.status_type !== "STOPPED"
+                    logBook.status.status_type !== "CANCELED"
                       ? "black"
                       : "red",
                 }}
                 className="font-semibold text-[25px]"
               >
                 Thông tin cá nhân (
-                {logBook.status.status_type !== "STOPPED"
+                {logBook.status.status_type !== "CANCELED"
                   ? "Đang theo dõi sức khỏe"
                   : "Đã dừng theo dõi sức khỏe"}
                 )
@@ -146,40 +146,37 @@ const FormBenhNhanDetail = ({
                           (item) => item.note !== ""
                         ).length > 0
                           ? logBook.disMon?.filter(
+                            (item) => item.note !== ""
+                          )[
+                            logBook.disMon?.filter(
                               (item) => item.note !== ""
-                            )[
-                              logBook.disMon?.filter(
-                                (item) => item.note !== ""
-                              ).length - 1
-                            ].note +
-                            " " +
-                            `(${
-                              logBook.disMon?.filter(
-                                (item) => item.note !== ""
-                              )[
-                                logBook.disMon?.filter(
-                                  (item) => item.note !== ""
-                                ).length - 1
-                              ].date?.day
-                            }/
-                    ${
-                      logBook.disMon?.filter(
-                        (item) => item.note !== ""
-                      )[
-                        logBook.disMon?.filter(
-                          (item) => item.note !== ""
-                        ).length - 1
-                      ].date?.month
-                    }/
-                    ${
-                      logBook.disMon?.filter(
-                        (item) => item.note !== ""
-                      )[
-                        logBook.disMon?.filter(
-                          (item) => item.note !== ""
-                        ).length - 1
-                      ].date?.year
-                    })`
+                            ).length - 1
+                          ].note +
+                          " " +
+                          `(${logBook.disMon?.filter(
+                            (item) => item.note !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) => item.note !== ""
+                            ).length - 1
+                          ].date?.day
+                          }/
+                    ${logBook.disMon?.filter(
+                            (item) => item.note !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) => item.note !== ""
+                            ).length - 1
+                          ].date?.month
+                          }/
+                    ${logBook.disMon?.filter(
+                            (item) => item.note !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) => item.note !== ""
+                            ).length - 1
+                          ].date?.year
+                          })`
                           : "Không"}
                       </span>
                     </div>
@@ -192,43 +189,40 @@ const FormBenhNhanDetail = ({
                           (item) => item.symptom !== ""
                         ).length > 0
                           ? logBook.disMon?.filter(
+                            (item) => item.symptom !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) =>
+                                item.symptom !== ""
+                            ).length - 1
+                          ].symptom +
+                          " " +
+                          `(${logBook.disMon?.filter(
+                            (item) =>
+                              item.symptom !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) =>
+                                item.symptom !== ""
+                            ).length - 1
+                          ].date?.day
+                          }/
+                    ${logBook.disMon?.filter(
+                            (item) => item.symptom !== ""
+                          )[
+                            logBook.disMon?.filter(
                               (item) => item.symptom !== ""
-                            )[
-                              logBook.disMon?.filter(
-                                (item) =>
-                                  item.symptom !== ""
-                              ).length - 1
-                            ].symptom +
-                            " " +
-                            `(${
-                              logBook.disMon?.filter(
-                                (item) =>
-                                  item.symptom !== ""
-                              )[
-                                logBook.disMon?.filter(
-                                  (item) =>
-                                    item.symptom !== ""
-                                ).length - 1
-                              ].date?.day
-                            }/
-                    ${
-                      logBook.disMon?.filter(
-                        (item) => item.symptom !== ""
-                      )[
-                        logBook.disMon?.filter(
-                          (item) => item.symptom !== ""
-                        ).length - 1
-                      ].date?.month
-                    }/
-                    ${
-                      logBook.disMon?.filter(
-                        (item) => item.symptom !== ""
-                      )[
-                        logBook.disMon?.filter(
-                          (item) => item.symptom !== ""
-                        ).length - 1
-                      ].date?.year
-                    })`
+                            ).length - 1
+                          ].date?.month
+                          }/
+                    ${logBook.disMon?.filter(
+                            (item) => item.symptom !== ""
+                          )[
+                            logBook.disMon?.filter(
+                              (item) => item.symptom !== ""
+                            ).length - 1
+                          ].date?.year
+                          })`
                           : "Không"}
                       </span>
                     </div>
@@ -239,10 +233,10 @@ const FormBenhNhanDetail = ({
                       <span className="px-2 py-1">
                         {logBook.status_bloodPressure ===
                           null &&
-                        logBook.status_temperature ===
+                          logBook.status_temperature ===
                           null &&
-                        logBook.status_heartRate === null &&
-                        logBook.status_bmi === null
+                          logBook.status_heartRate === null &&
+                          logBook.status_bmi === null
                           ? "Bình thường"
                           : "Báo động"}
                       </span>
@@ -250,33 +244,33 @@ const FormBenhNhanDetail = ({
                   </div>
                   <div className="flex flex-col py-2 gap-1 w-[100%]">
                     {logBook.status.status_type !==
-                      "STOPPED" && (
-                      <>
-                        <button
-                          className="py-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-white"
-                          onClick={() => {
-                            setVisibleTransfer(true);
-                          }}
-                        >
-                          Chuyển bác sĩ
-                        </button>
-                        <button
-                          className="py-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 text-white"
-                          onClick={() => {
-                            setVisibleMedicalRecord(true);
-                          }}
-                        >
-                          Xem hồ sơ sức khỏe
-                        </button>
-                      </>
-                    )}
+                      "CANCELED" && (
+                        <>
+                          <button
+                            className="py-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-white"
+                            onClick={() => {
+                              setVisibleTransfer(true);
+                            }}
+                          >
+                            Chuyển bác sĩ
+                          </button>
+                          <button
+                            className="py-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 text-white"
+                            onClick={() => {
+                              setVisibleMedicalRecord(true);
+                            }}
+                          >
+                            Xem hồ sơ sức khỏe
+                          </button>
+                        </>
+                      )}
 
                     <button
                       onClick={() => setScreen(2)}
                       className="py-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 text-white"
                     >
                       {logBook.status.status_type !==
-                      "STOPPED"
+                        "CANCELED"
                         ? "Nhắc nhở bệnh nhân"
                         : "Gửi tin nhắn"}
                     </button>
@@ -284,7 +278,7 @@ const FormBenhNhanDetail = ({
                 </div>
                 <div className="flex flex-col gap-1 w-[75%]">
                   {logBook.status.status_type !==
-                  "STOPPED" ? (
+                    "CANCELED" ? (
                     <>
                       <div className="flex flex-row gap-4 p-2 h-[50%]">
                         <div className="w-[50%]">

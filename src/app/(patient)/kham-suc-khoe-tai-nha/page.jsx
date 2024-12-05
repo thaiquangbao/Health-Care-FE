@@ -43,7 +43,7 @@ const KhamSucKhoeTaiNha = () => {
         path: `/appointmentHomes/findByPatient/${userData.user._id}`,
         sendToken: true,
       }).then((logBooks) => {
-        setAppointmentHomes(logBooks);
+        setAppointmentHomes(logBooks.reverse());
         setLoading(false);
       });
       api({
@@ -209,14 +209,14 @@ const KhamSucKhoeTaiNha = () => {
                               ?.status_type === "QUEUE"
                               ? "black"
                               : appointmentHome.status
-                                  ?.status_type ===
+                                ?.status_type ===
                                 "ACCEPTED"
-                              ? "green"
-                              : appointmentHome.status
+                                ? "green"
+                                : appointmentHome.status
                                   ?.status_type ===
-                                "COMPLETED"
-                              ? "blue"
-                              : "red",
+                                  "COMPLETED"
+                                  ? "blue"
+                                  : "red",
                         }}
                         className="py-4"
                       >
@@ -236,11 +236,11 @@ const KhamSucKhoeTaiNha = () => {
                       >
                         {appointmentHome.appointment_date
                           .month !== null &&
-                        appointmentHome.appointment_date
-                          .month !== 0
+                          appointmentHome.appointment_date
+                            .month !== 0
                           ? `${convertDateToDayMonthYearVietNam(
-                              appointmentHome.appointment_date
-                            )}`
+                            appointmentHome.appointment_date
+                          )}`
                           : "Chưa rõ thời gian"}
                       </td>
                       <td
@@ -262,7 +262,7 @@ const KhamSucKhoeTaiNha = () => {
                           1 &&
                           appointmentHome.status
                             ?.status_type ===
-                            "ACCEPTED" && (
+                          "ACCEPTED" && (
                             <button
                               onClick={() => {
                                 bookingHomeHandler.setBooking(
@@ -286,7 +286,7 @@ const KhamSucKhoeTaiNha = () => {
                             ?.status_type
                         ) &&
                           appointmentHome.processAppointment !==
-                            2 && (
+                          2 && (
                             <button
                               onClick={() =>
                                 handleCancelAppointmentHome(

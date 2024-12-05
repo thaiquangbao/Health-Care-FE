@@ -21,7 +21,7 @@ const HoSoSucKhoe = () => {
         type: TypeHTTP.GET,
         sendToken: false,
         path: `/medicalRecords/findByPatient/${userData?.user?._id}`,
-      }).then((res) => setMedicalRecords(res));
+      }).then((res) => setMedicalRecords(res.reverse()));
     }
   }, [userData.user]);
 

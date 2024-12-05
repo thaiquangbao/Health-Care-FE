@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import Logo from "@/components/logo";
 import Navbar from "@/components/navbar";
 import { appointmentContext } from "@/context/AppointmentContext";
+import { userContext } from "@/context/UserContext";
 import { api, TypeHTTP } from "@/utils/api";
 import { removeDiacritics } from "@/utils/other";
 import Image from "next/image";
@@ -14,6 +15,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 export default function Home() {
   const router = useRouter()
   const { appointmentData, appointmentHandler } = useContext(appointmentContext)
+  const { userData } = useContext(userContext)
 
   useEffect(() => {
     api({ path: '/sicks/get-all', sendToken: false, type: TypeHTTP.GET })
@@ -43,7 +45,7 @@ export default function Home() {
           />
           <div className="flex flex-col w-[40%] top-[40%] left-[5%] translate-y-[-50%] absolute z-[10] justify-center">
             <div className="flex flex-col">
-              <span className="text-[blue] font-medium text-[18px]">HealthHaven</span>
+              <span className="text-[#229bff] font-space text-[18px]">HealthHaven</span>
               <span className="text-[32px] font-bold mt-2">Tham khảo ý kiến sức khỏe về bệnh tim mạch tại HealthHaven.</span>
               <div className="flex gap-4 items-center mt-[1rem]">
                 <img src="/green-arrow.png" width={'30px'} />
@@ -52,17 +54,25 @@ export default function Home() {
             </div>
             <div className="flex mt-4 gap-3 font-medium">
               {/* <Link href="http://localhost:3000/zero/833347"> */}
-              <button onClick={() => router.push('/bac-si-noi-bat')} className="flex items-center cursor-pointer hover:scale-[1.05] transition-all bg-[#1dcbb6] text-[white] text-[15px] px-[1rem] justify-center rounded-2xl gap-2">
-                <span>Đặt Lịch Khám Ngay</span>
+              <button onClick={() => {
+                if (userData.user?.role !== 'DOCTOR') {
+                  router.push('/bac-si-noi-bat')
+                } else {
+                  router.push('/phieu-dang-ky')
+                }
+              }} className="flex items-center cursor-pointer hover:scale-[1.05] transition-all bg-[#1dcbb6] text-[white] text-[15px] px-[1rem] py-[0.5rem] justify-center rounded-2xl gap-2">
+                <span>{userData.user?.role !== 'DOCTOR' ? 'Đặt Lịch Khám Ngay' : 'Quản Lý Lịch Khám'}</span>
                 <i className='bx bx-right-arrow-alt text-[20px]'></i>
               </button>
               {/* </Link> */}
-              <button onClick={() => router.push('/cac-dich-vu')} className="flex items-center text-[15px] px-[1rem] justify-center py-3 rounded-md gap-2">
-                <span>Xem Thêm</span>
-                <div className="flex items-center border-[1px] border-[black] rounded-full">
-                  <i className='bx bx-right-arrow-alt text-[20px]'></i>
-                </div>
-              </button>
+              {userData.user?.role !== 'DOCTOR' && (
+                <button onClick={() => router.push('/cac-dich-vu')} className="flex items-center text-[15px] px-[1rem] justify-center py-3 rounded-md gap-2">
+                  <span>Xem Thêm</span>
+                  <div className="flex items-center border-[1px] border-[black] rounded-full">
+                    <i className='bx bx-right-arrow-alt text-[20px]'></i>
+                  </div>
+                </button>
+              )}
               {/* <div className="flex flex-col justify-end z-10 text-[white] aspect-square rounded-2xl">
                 <div className="flex bg-[#ffffffd1] rounded-xl shadow-md text-[#008cff] w-[400px] items-center gap-3 px-4 py-2 text-[15px] font-semibold absolute bottom-[-8px] left-[-20%]">
                   <img src="https://cdn.jiohealth.com/jio-website/home-page/jio-website-v2.2/assets/images/heart-icon.svg" width={'50px'} /> Chăm sóc các bệnh lý tim mạch, tăng huyết áp, ngoại tâm thu, v.v.
