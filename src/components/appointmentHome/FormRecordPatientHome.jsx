@@ -2,7 +2,7 @@ import { appointmentContext } from '@/context/AppointmentContext';
 import { globalContext, notifyType } from '@/context/GlobalContext';
 import { utilsContext } from '@/context/UtilsContext';
 import { api, TypeHTTP } from "@/utils/api";
-import { convertDateToDayMonthYearVietNam } from "@/utils/date";
+import { convertDateToDayMonthYearVietNam, editNumber } from "@/utils/date";
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doctorRecord1, appointmentHome1, setReload }) => {
@@ -33,7 +33,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
       setDiagnosisDisease(medicalRecord.diagnosisDisease)
       setSymptoms(medicalRecord.symptoms)
       setNote(medicalRecord.note)
-      setReAppointmentDate(`${medicalRecord.reExaminationDate.year}-${medicalRecord.reExaminationDate.month}-${medicalRecord.reExaminationDate.day}`)
+      setReAppointmentDate(`${medicalRecord.reExaminationDate.year}-${editNumber(medicalRecord.reExaminationDate.month)}-${editNumber(medicalRecord.reExaminationDate.day)}`)
       setTemperature(medicalRecord.temperature)
       setBloodPressure(medicalRecord.bloodPressure)
       setHealthRate(medicalRecord.healthRate)
@@ -46,6 +46,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
   const [medicalData, setMedicalData] = useState([])
   const [medicalFilter, setMedicalFilter] = useState([])
   const [selectedMedical, setSelectedMedical] = useState()
+  const [custom, setCustom] = useState(false)
   useEffect(() => {
     axios.post('https://prod.jiohealth.com:8443/jio-search/v1/search/retail/products-advance?offset=0&limit=315&sortName=PRICE&isDescending=false&categories=82&token=b161dc46-207d-11ee-aa37-02b973dc30b0&userID=1')
       .then(res => {
@@ -118,6 +119,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
     setNameMedical('')
     setUnitOfCalculation('Đơn vị tính')
     setQuantity('')
+    setCustom(false)
   };
 
   useEffect(() => {
@@ -125,6 +127,7 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
     setNameMedical("");
     setQuantity("");
     setUnitOfCalculation("Đơn vị tính");
+    setCustom(false)
   }, [medical]);
 
   const updateMedicalRecord = () => {
@@ -143,15 +146,23 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
       // chổ này cần check xem có nhập đủ thông tin không
       if (symptoms === "") {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập triệu chứng")
+        setTemporary(false)
+        return
       }
       if (diagnosisDisease === "") {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập chẩn đoán bệnh")
+        setTemporary(false)
+        return
       }
       if (note === "") {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập ghi chú")
+        setTemporary(false)
+        return
       }
       if (medical.length === 0) {
         utilsHandler.notify(notifyType.WARNING, "Chưa nhập đơn thuốc")
+        setTemporary(false)
+        return
       }
       const body = {
         patient: appointmentHome?.patient?._id,
@@ -365,6 +376,13 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
           <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4 relative">
             {/*them phan thuoc*/}
             <div style={{ height: (nameMedical !== '' && !selectedMedical) ? '120px' : 0, transition: '0.5s', padding: (nameMedical !== '' && !selectedMedical) ? '10px 0' : 0 }} className=" overflow-y-auto absolute top-[40px] flex flex-col gap-2 left-4 w-[90%] rounded-md bg-[white] shadow-lg">
+              <div onClick={() => {
+                setSelectedMedical({ title: nameMedical })
+                setCustom(true)
+              }} className="w-full px-3 flex items-center gap-2 h-[50px] py-2 transition-all cursor-pointer hover:bg-[#e9e9e9]">
+                <img src={'https://cdn-icons-png.flaticon.com/512/8694/8694747.png'} className="h-[30px]" />
+                <span className="w-[80%] text-[12px]">{nameMedical}</span>
+              </div>
               {medicalFilter.map((medical, index) =>
                 <div onClick={() => {
                   setSelectedMedical(medical)
@@ -383,12 +401,29 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
               value={nameMedical}
             />
             <div className="flex items-center justify-between">
-              <input
-                placeholder="Đơn vị tính"
-                readOnly
-                className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                value={unitOfCalculation}
-              />
+              {custom === false ? (
+                <input
+                  placeholder="Đơn vị tính"
+                  readOnly
+                  className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                  value={unitOfCalculation}
+                />
+              ) : (
+                <select
+                  className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                  value={unitOfCalculation}
+                  onChange={(e) => setUnitOfCalculation(e.target.value)}
+                >
+                  <option>Đơn vị tính</option>
+                  <option>Viên</option>
+                  <option>Vỉ</option>
+                  <option>Hộp</option>
+                  <option>Ống</option>
+                  <option>Gói</option>
+                  <option>Chai/Lọ</option>
+                  <option>Tuýp</option>
+                </select>
+              )}
               <input
                 placeholder="Số lượng"
                 className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
@@ -404,17 +439,20 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
                 >
                   Thêm
                 </button>
-                <button
-                  className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
-                  onClick={() => {
-                    setSelectedMedical()
-                    setNameMedical('')
-                    setUnitOfCalculation('Đơn vị tính')
-                    setQuantity('')
-                  }}
-                >
-                  Hủy thuốc đang chọn
-                </button>
+                {selectedMedical && (
+                  <button
+                    className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
+                    onClick={() => {
+                      setSelectedMedical()
+                      setNameMedical('')
+                      setUnitOfCalculation('Đơn vị tính')
+                      setQuantity('')
+                      setCustom(false)
+                    }}
+                  >
+                    Hủy thuốc đang chọn
+                  </button>
+                )}
               </div>
             )}
             {/*-----------them phan thuoc*/}
@@ -436,9 +474,11 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
                 <th scope="col" className="w-[15%] py-2">
                   Đơn vị
                 </th>
-                <th scope="col" className="w-[15%] py-2">
-                  Thao Tác
-                </th>
+                {!medicalRecord && (
+                  <th scope="col" className="w-[15%] py-2">
+                    Thao Tác
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className=" w-[full] bg-black font-medium">
@@ -458,16 +498,18 @@ const FormRecordPatientHome = ({ medicalRecord, type, setType, setTemporary, doc
                   </td>
                   <td className="py-2">{medical.quantity}</td>
                   <td className="py-2">{medical.unitOfCalculation}</td>
-                  <td className="py-2 flex justify-between">
-                    <button
-                      className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[55px] text-[white] mt-2 h-[37px] rounded-lg"
-                      onClick={() => {
-                        setMedical(prev => prev.filter(item => item.medicalName !== medical.medicalName))
-                      }}
-                    >
-                      Xóa
-                    </button>
-                  </td>
+                  {!medicalRecord && (
+                    <td className="py-2 flex justify-center">
+                      <button
+                        className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[55px] text-[white] mt-2 h-[37px] rounded-lg"
+                        onClick={() => {
+                          setMedical(prev => prev.filter(item => item.medicalName !== medical.medicalName))
+                        }}
+                      >
+                        Xóa
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

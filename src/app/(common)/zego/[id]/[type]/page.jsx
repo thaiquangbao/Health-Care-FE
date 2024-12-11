@@ -23,7 +23,7 @@ import React, {
 } from "react";
 const Zego = () => {
   const param = useParams();
-  const { id, type } = param;
+  const { id, type, mobile } = param;
   const { userData } = useContext(userContext);
   const { authHandler, authData } = useContext(authContext);
   const { appointmentHandler, appointmentData } =
@@ -70,8 +70,8 @@ const Zego = () => {
   }, [id]);
 
   const endMeet = async () => {
-    const appId = 562167596;
-    const server = "859015aa2014d3064603245297b0afe4";
+    const appId = 2063127223;
+    const server = "4169814335cb55bbcdb9a3f63f38dfb8";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,
@@ -81,15 +81,33 @@ const Zego = () => {
         fullName
       );
     const zc = ZegoUIKitPrebuilt.create(kitToken);
-    zc.hangUp();
-    // chổ này là dùng để dọn dẹp dữ liệu phòng meet chứ bth tắt là nó còn chạy meet đó bên phía server zego nên là phải có chổ này
-
-    // còn m muốn khi 1 người out thì thằng kia out luôn thì phải thêm tí socket
+    if (mobile) {
+      zc.hangUp();
+    } else {
+      if (type === "patient") {
+        authHandler.showAssessment();
+        zc.hangUp();
+      } else {
+        const res = await api({
+          path: `/medicalRecords/check-appointment`,
+          type: TypeHTTP.POST,
+          body: { appointment: id },
+          sendToken: false,
+        });
+        api({
+          path: `/medicalRecords/send-mail/${res._id}`,
+          type: TypeHTTP.POST,
+          sendToken: false,
+        });
+        globalThis.window.location.href = deploy;
+        zc.hangUp();
+      }
+    }
   };
 
   const myMeeting = async (element) => {
-    const appId = 562167596;
-    const server = "859015aa2014d3064603245297b0afe4";
+    const appId = 2063127223;
+    const server = "4169814335cb55bbcdb9a3f63f38dfb8";
     const kitToken =
       ZegoUIKitPrebuilt.generateKitTokenForTest(
         appId,

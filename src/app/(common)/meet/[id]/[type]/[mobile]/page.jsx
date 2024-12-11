@@ -1,6 +1,6 @@
 'use client'
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Meet = () => {
     const router = useRouter()
@@ -9,12 +9,13 @@ const Meet = () => {
     const { id, type } = param;
     const accessToken = searchParams.get('accesstoken');
     const refreshToken = searchParams.get('refreshtoken');
+    const isMobile = searchParams.get('ismobile');
 
     useEffect(() => {
         if (accessToken && refreshToken) {
             globalThis.localStorage.setItem('accessToken', accessToken)
             globalThis.localStorage.setItem('refreshToken', refreshToken)
-            router.push(`/zego/${id}/${type}`)
+            router.push(`/zego/${id}/${type}/${isMobile ? true : false}`)
         }
     }, [accessToken, refreshToken])
 

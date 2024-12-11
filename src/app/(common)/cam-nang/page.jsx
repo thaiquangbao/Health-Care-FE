@@ -18,6 +18,8 @@ const CamNang = () => {
   const [forums, setForums] = useState([]);
   const router = useRouter();
   const { userData } = useContext(userContext);
+  const [filterForum, setFilterForum] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     api({
       path: "/forums/get-all",
@@ -25,8 +27,27 @@ const CamNang = () => {
       type: TypeHTTP.GET,
     }).then((res) => {
       setForums(res);
+      setFilterForum(res)
     });
   }, []);
+  const handleFindForum = (e) => { // sửa ở đây
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+
+    if (searchValue.trim() === "") {
+      const filtered = forums.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
+      );
+     
+      setFilterForum(filtered);
+    } else {
+      const filtered = forums.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      
+      setFilterForum(filtered);
+    }
+  };
   const extractFirstParagraphAndImage = (content) => {
     // Lấy đoạn nội dung đầu tiên
     const paragraphMatch = content.match(/<p>(.*?)<\/p>/);
@@ -55,6 +76,7 @@ const CamNang = () => {
             <span className="font-bold mt-[2rem]">
               Cẩm nang sức khỏe
             </span>
+            
             {userData.user &&
               userData.user?.role === "DOCTOR" && (
                 <button
@@ -69,8 +91,17 @@ const CamNang = () => {
                 </button>
               )}
           </div>
+          <div className="w-full relative mt-[1rem]">
+            <input
+              value={searchTerm}
+              placeholder="Tìm cẩm nang..."
+              className="text-[14px] h-[50px] w-[100%] focus:outline-0 border-[1px] pl-[3rem] pr-[1rem] border-[#dadada] rounded-3xl"
+              onChange={handleFindForum}
+            />
+            <i className="bx bx-search absolute top-[50%] translate-y-[-50%] text-[23px] text-[#999] left-4"></i>
+          </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
-            {forums.map((forum, index) => {
+            {filterForum.map((forum, index) => {
               const { firstParagraph, firstImageUrl } =
                 extractFirstParagraphAndImage(
                   forum.content

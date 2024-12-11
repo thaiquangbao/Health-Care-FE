@@ -32,6 +32,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
   const [medicalData, setMedicalData] = useState([])
   const [medicalFilter, setMedicalFilter] = useState([])
   const [selectedMedical, setSelectedMedical] = useState()
+  const [custom, setCustom] = useState(false)
   useEffect(() => {
     axios.post('https://prod.jiohealth.com:8443/jio-search/v1/search/retail/products-advance?offset=0&limit=315&sortName=PRICE&isDescending=false&categories=82&token=b161dc46-207d-11ee-aa37-02b973dc30b0&userID=1')
       .then(res => {
@@ -156,6 +157,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
     setNameMedical('')
     setUnitOfCalculation('Đơn vị tính')
     setQuantity('')
+    setCustom(false)
   };
 
   useEffect(() => {
@@ -163,6 +165,7 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
     setNameMedical("");
     setQuantity("");
     setUnitOfCalculation("Đơn vị tính");
+    setCustom(false)
   }, [medical]);
   const updateMedicalRecord = () => {
     let splitDate = reAppointmentDate ? reAppointmentDate.split("-") : [];
@@ -332,6 +335,13 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
             <div className="text-[14px] w-[100%] focus:outline-0 rounded-lg px-4 relative">
               {/*them phan thuoc*/}
               <div style={{ height: (nameMedical !== '' && !selectedMedical) ? '120px' : 0, transition: '0.5s', padding: (nameMedical !== '' && !selectedMedical) ? '10px 0' : 0 }} className=" overflow-y-auto absolute top-[40px] flex flex-col gap-2 left-4 w-[90%] rounded-md bg-[white] shadow-lg">
+                <div onClick={() => {
+                  setSelectedMedical({ title: nameMedical })
+                  setCustom(true)
+                }} className="w-full px-3 flex items-center gap-2 h-[50px] py-2 transition-all cursor-pointer hover:bg-[#e9e9e9]">
+                  <img src={'https://cdn-icons-png.flaticon.com/512/8694/8694747.png'} className="h-[30px]" />
+                  <span className="w-[80%] text-[12px]">{nameMedical}</span>
+                </div>
                 {medicalFilter.map((medical, index) =>
                   <div onClick={() => {
                     setSelectedMedical(medical)
@@ -350,12 +360,29 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 value={nameMedical}
               />
               <div className="flex items-center justify-between">
-                <input
-                  placeholder="Đơn vị tính"
-                  readOnly
-                  className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
-                  value={unitOfCalculation}
-                />
+                {custom === false ? (
+                  <input
+                    placeholder="Đơn vị tính"
+                    readOnly
+                    className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                    value={unitOfCalculation}
+                  />
+                ) : (
+                  <select
+                    className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"
+                    value={unitOfCalculation}
+                    onChange={(e) => setUnitOfCalculation(e.target.value)}
+                  >
+                    <option>Đơn vị tính</option>
+                    <option>Viên</option>
+                    <option>Vỉ</option>
+                    <option>Hộp</option>
+                    <option>Ống</option>
+                    <option>Gói</option>
+                    <option>Chai/Lọ</option>
+                    <option>Tuýp</option>
+                  </select>
+                )}
                 <input
                   placeholder="Số lượng"
                   className="text-[14px] mt-2 w-[48%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4"

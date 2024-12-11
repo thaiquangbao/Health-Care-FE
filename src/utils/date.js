@@ -9,6 +9,13 @@ export function convertDateToDay(dateString) {
   return `${day}`;
 }
 
+export const editNumber = (num) => {
+  if (num < 10) {
+    return `0${num}`
+  }
+  return `${num}`
+}
+
 export function convertDateInputToObject(dateString) {
   return {
     day: Number(dateString.split("-")[2]),

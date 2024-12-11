@@ -18,6 +18,8 @@ const CongDong = () => {
   const [visibleFormCreate, setVisibleFormCreate] =
     useState(false);
   const router = useRouter();
+  const [filterQA, setFilterQA] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     api({
       path: "/qas/get-all",
@@ -25,11 +27,29 @@ const CongDong = () => {
       type: TypeHTTP.GET,
     }).then((res) => {
       setQAs(res);
+      setFilterQA(res)
     });
   }, []);
   const clickItem = (id) => {
     router.push(`/chi-tiet-cau-hoi/${id}`);
   };
+  const handleFindQA = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+    if (searchValue.trim() === "") {
+      const filtered = qas.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
+      );
+     
+      setFilterQA(filtered);
+    } else {
+      const filtered = qas.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      
+      setFilterQA(filtered);
+    }
+  } // sửa ở đây
   useEffect(() => {
     if (userData.user?.role === "USER") {
       setVisibleFormCreate(true);
@@ -67,8 +87,17 @@ const CongDong = () => {
               </button>
             )}
           </div>
+          <div className="w-full relative mt-[1rem]">
+            <input
+              value={searchTerm}
+              placeholder="Tìm cuộc thảo luận..."
+              className="text-[14px] h-[50px] w-[100%] focus:outline-0 border-[1px] pl-[3rem] pr-[1rem] border-[#dadada] rounded-3xl"
+              onChange={handleFindQA}
+            />
+            <i className="bx bx-search absolute top-[50%] translate-y-[-50%] text-[23px] text-[#999] left-4"></i>
+          </div>
           <div className="flex flex-col gap-4 mt-2 w-[100%]">
-            {qas.map((qa, index) => {
+            {filterQA.map((qa, index) => {
               return (
                 <div
                   key={index}

@@ -29,6 +29,18 @@ const FormSignIn = ({ visible, hidden }) => {
     const [otp, setOtp] = useState('')
     const router = useRouter()
 
+    const handleCheckAuth = () => {
+        if (!/^0[0-9]{9}$/.test(phone)) {
+            globalHandler.notify(notifyType.WARNING, "Số điện thoại không hợp lệ") // sửa ở đây
+            return
+        }
+        api({ path: '/auth/check-auth', type: TypeHTTP.POST, body: { phone } })
+            .then(res => {
+                setCurrentStep(3)
+            }).catch(error => {
+                globalHandler.notify(notifyType.WARNING, "Số điện thoại không tồn tại")
+            })
+    }
     const handleSubmitChangePassword = () => {
         if (password.length < 6) {
             globalHandler.notify(notifyType.WARNING, "Mật khẩu phải lớn hơn 6 ký tự")
@@ -45,7 +57,6 @@ const FormSignIn = ({ visible, hidden }) => {
                 setCurrentStep(1)
             })
     }
-
     const handleSignIn = () => {
         if (!/^0[0-9]{9}$/.test(info.userName)) {
             globalHandler.notify(notifyType.WARNING, "Số điện thoại không hợp lệ")
@@ -122,18 +133,14 @@ const FormSignIn = ({ visible, hidden }) => {
             return
         }
         globalHandler.notify(notifyType.LOADING, 'Đang xác thực tài khoản')
-        // verification.confirm(otp)
-        //     .then(data => {
-        //         globalHandler.notify(notifyType.SUCCESS, 'Xác Thực Tài Khoản Thành Công')
-        //         setCurrentStep(4)
-        //     })
-        //     .catch(() => {
-        //         globalHandler.notify(notifyType.FAIL, 'Mã xác minh không đúng')
-        //     })
-        setTimeout(() => {
-            globalHandler.notify(notifyType.SUCCESS, 'Xác Thực Tài Khoản Thành Công')
-            setCurrentStep(4)
-        }, 1000);
+        verification.confirm(otp)
+            .then(data => {
+                globalHandler.notify(notifyType.SUCCESS, 'Xác Thực Tài Khoản Thành Công')
+                setCurrentStep(4)
+            })
+            .catch(() => {
+                globalHandler.notify(notifyType.FAIL, 'Mã xác minh không đúng')
+            })
     }
 
     return (
@@ -154,6 +161,12 @@ const FormSignIn = ({ visible, hidden }) => {
                             </div>
                         </div>
                         <button onClick={() => hidden()}><i className='bx bx-x absolute right-2 top-2 text-[30px] text-[#5e5e5e]'></i></button>
+                        {currentStep !== 1 && (
+                            <button className='absolute left-2 top-2 flex items-center gap-1' onClick={() => setCurrentStep(prev => prev - 1)}>
+                                <i className='bx bx-chevron-left text-[30px] text-[#5e5e5e]'></i>
+                                <span className='text-[14px]'>Quay Về</span>
+                            </button>
+                        )}
                     </div>
                     <div className='min-w-[100%] h-full px-[2rem] py-[1.5rem] flex justify-center'>
                         <img src='/sign.png' width={'40%'} />
@@ -161,13 +174,7 @@ const FormSignIn = ({ visible, hidden }) => {
                             <h2 className='text-[20px] font-medium '>Xác minh số điện thoại của bạn</h2>
                             <span className='text-[13px]'>Vui lòng nhập số điện thoại của bạn bên dưới</span>
                             <input onChange={e => setPhone(e.target.value)} value={phone} placeholder='Số Điện Thoại' className='text-[14px] mt-2 w-[90%] h-[40px] bg-[white] border-[1px] border-[#cfcfcf] focus:outline-0 rounded-lg px-4' />
-                            <button onClick={() => {
-                                if (!/^0[0-9]{9}$/.test(phone)) {
-                                    globalHandler.notify(notifyType.WARNING, "Số điện thoại không hợp lệ")
-                                    return
-                                }
-                                setCurrentStep(3)
-                            }} className='hover:scale-[1.05] transition-all text-[14px] bg-[blue] px-[3rem] w-[270px] text-[white] mt-2 h-[37px] rounded-lg'>Xác Thực Tài Khoản</button>
+                            <button onClick={() => handleCheckAuth()} className='hover:scale-[1.05] transition-all text-[14px] bg-[blue] px-[3rem] w-[270px] text-[white] mt-2 h-[37px] rounded-lg'>Xác Thực Tài Khoản</button>
                         </div>
                     </div>
                     <div className='min-w-[100%] h-full px-[2rem] py-[1.5rem] flex justify-center'>
