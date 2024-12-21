@@ -32,22 +32,21 @@ const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
           type: TypeHTTP.GET,
           sendToken: true,
         }).then((logBooks) => {
-          console.log(logBooks)
           setLoading(false)
           if (typeStatus === '1') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "2") {
@@ -65,19 +64,19 @@ const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
         }).then((logBooks) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "3") {
@@ -95,19 +94,19 @@ const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
         }).then((logBooks) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else {
@@ -122,19 +121,19 @@ const PhieuTheoDoi = ({ type, setType, typeStatus }) => {
         }).then((logBooks) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED'))
+            setLogBooks(logBooks.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       }

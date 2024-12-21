@@ -132,9 +132,6 @@ const FormMessageArea = ({ room, setCurrentRoom }) => {
                                         Cập nhật sức khỏe
                                     </button>
                                 )}
-                                <button>
-                                    <i className="text-[25px] text-[#494949] fa-solid fa-bars"></i>
-                                </button>
                             </div>
                         </div>
                         <MessageArea height={'75%'} currentRoom={room} wrapperRef={wrapperRef} messageRef={messageRef} messages={messages?.messages} currentUser={userData.user?.role === "USER" ? 'PATIENT' : 'DOCTOR'} />

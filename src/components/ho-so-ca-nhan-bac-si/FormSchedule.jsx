@@ -267,10 +267,10 @@ const FormSchedule = ({ visible, hidden, day }) => {
       style={
         visible
           ? {
-              height: "auto",
-              width: "60%",
-              transition: "0.3s",
-            }
+            height: "auto",
+            width: "60%",
+            transition: "0.3s",
+          }
           : { height: 0, width: 0, transition: "0.3s" }
       }
       className="z-[45] w-[70%] min-h-[100px] overflow-hidden bg-[white] rounded-lg fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
@@ -343,12 +343,12 @@ const FormSchedule = ({ visible, hidden, day }) => {
                           checkSchedule(time) === 0
                             ? "white"
                             : checkSchedule(time) === 4
-                            ? "#ffc1b4"
-                            : checkSchedule(time) === 3
-                            ? "#abebc6"
-                            : checkSchedule(time) === 1
-                            ? "#eaeded"
-                            : "#fafac7",
+                              ? "#ffc1b4"
+                              : checkSchedule(time) === 3
+                                ? "#abebc6"
+                                : checkSchedule(time) === 1
+                                  ? "#eaeded"
+                                  : "#fafac7",
                       }}
                       className=" border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center"
                     >
@@ -373,81 +373,81 @@ const FormSchedule = ({ visible, hidden, day }) => {
                       </button>
                       {(checkSchedule(time) === 0 ||
                         checkSchedule(time) === 1) && (
-                        <div
-                          style={{
-                            width:
-                              currentIndex === index
-                                ? "auto"
-                                : 0,
-                            height:
-                              currentIndex === index
-                                ? visibleList
-                                  ? "80px"
-                                  : "50px"
-                                : 0,
-                            bottom: "42px",
-                          }}
-                          className="absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md"
-                        >
-                          {visibleList === false ? (
-                            <>
-                              <button
-                                onClick={() => {
-                                  setCurrentIndex(-1);
-                                  handleTime(
-                                    time,
-                                    checkSchedule(time) ===
-                                      2
-                                      ? true
-                                      : false
-                                  );
-                                }}
-                                className="px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]"
-                              >
-                                Trực tuyến
-                              </button>
-                              <button
-                                onClick={() =>
-                                  setVisibleList(true)
-                                }
-                                className="px-3 py-1 transition-all w-[100px] hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]"
-                              >
-                                Theo Dõi
-                              </button>
-                            </>
-                          ) : (
-                            <div className="w-[100%] h-[100%] flex flex-col overflow-auto gap-1">
-                              {logBooks.map(
-                                (item, index) => {
-                                  if (
-                                    item.status
-                                      .status_type ===
-                                    "ACCEPTED"
-                                  ) {
-                                    return (
-                                      <button
-                                        onClick={() =>
-                                          handleCreateLichTheoDoi(
-                                            time,
-                                            item.patient._id
-                                          )
-                                        }
-                                        className="w-full bg-[green] text-[white] text-[14px] py-2 "
-                                        key={index}
-                                      >
-                                        {
-                                          item.patient
-                                            .fullName
-                                        }
-                                      </button>
+                          <div
+                            style={{
+                              width:
+                                currentIndex === index
+                                  ? "auto"
+                                  : 0,
+                              height:
+                                currentIndex === index
+                                  ? visibleList
+                                    ? "80px"
+                                    : "50px"
+                                  : 0,
+                              bottom: "42px",
+                            }}
+                            className="absolute overflow-hidden bottom-[42px] left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md"
+                          >
+                            {visibleList === false ? (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    setCurrentIndex(-1);
+                                    handleTime(
+                                      time,
+                                      checkSchedule(time) ===
+                                        2
+                                        ? true
+                                        : false
                                     );
+                                  }}
+                                  className="px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]"
+                                >
+                                  Trực tuyến
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    setVisibleList(true)
                                   }
-                                }
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                                  className="px-3 py-1 transition-all w-[100px] hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]"
+                                >
+                                  Theo Dõi
+                                </button>
+                              </>
+                            ) : (
+                              <div className="w-[100%] h-[100%] flex flex-col overflow-auto gap-1">
+                                {logBooks.map(
+                                  (item, index) => {
+                                    if (
+                                      item.status
+                                        .status_type ===
+                                      "ACCEPTED"
+                                    ) {
+                                      return (
+                                        <button
+                                          onClick={() =>
+                                            handleCreateLichTheoDoi(
+                                              time,
+                                              item.patient._id
+                                            )
+                                          }
+                                          className="w-full bg-[green] text-[white] text-[14px] py-2 "
+                                          key={index}
+                                        >
+                                          {
+                                            item.patient
+                                              .fullName
+                                          }
+                                        </button>
+                                      );
+                                    }
+                                  }
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
                     </div>
                   );
                 }
@@ -460,12 +460,12 @@ const FormSchedule = ({ visible, hidden, day }) => {
                         checkSchedule(time) === 0
                           ? "white"
                           : checkSchedule(time) === 4
-                          ? "#ffc1b4"
-                          : checkSchedule(time) === 3
-                          ? "#abebc6"
-                          : checkSchedule(time) === 1
-                          ? "#eaeded"
-                          : "#fafac7",
+                            ? "#ffc1b4"
+                            : checkSchedule(time) === 3
+                              ? "#abebc6"
+                              : checkSchedule(time) === 1
+                                ? "#eaeded"
+                                : "#fafac7",
                     }}
                     className=" border-[1px] border-[#999] cursor-pointer relative rounded-md flex justify-center"
                   >
@@ -490,74 +490,74 @@ const FormSchedule = ({ visible, hidden, day }) => {
                     </button>
                     {(checkSchedule(time) === 0 ||
                       checkSchedule(time) === 1) && (
-                      <div
-                        style={{
-                          width:
-                            currentIndex === index
-                              ? "auto"
-                              : 0,
-                          height:
-                            currentIndex === index
-                              ? visibleList
-                                ? "80px"
-                                : "50px"
-                              : 0,
-                          bottom: "42px",
-                        }}
-                        className="absolute overflow-hidden bottom-[42px] px-2 left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md"
-                      >
-                        {visibleList === false ? (
-                          <>
-                            <button
-                              onClick={() => {
-                                setCurrentIndex(-1);
-                                handleTime(
-                                  time,
-                                  checkSchedule(time) === 2
-                                    ? true
-                                    : false
-                                );
-                              }}
-                              className="px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]"
-                            >
-                              Trực tuyến
-                            </button>
-                            <button
-                              onClick={() =>
-                                setVisibleList(true)
-                              }
-                              className="px-3 py-1 w-[100px] transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]"
-                            >
-                              Theo Dõi
-                            </button>
-                          </>
-                        ) : (
-                          <div className="w-[100%] h-[100%] flex flex-col overflow-auto gap-1">
-                            {logBooks.map((item, index) => {
-                              if (
-                                item.status.status_type ===
-                                "ACCEPTED"
-                              ) {
-                                return (
-                                  <button
-                                    onClick={() =>
-                                      handleCreateLichTheoDoi(
-                                        time,
-                                        item.patient._id
-                                      )
-                                    }
-                                    className="w-full bg-[green] text-[white] text-[14px] py-2 "
-                                    key={index}
-                                  >
-                                    {item.patient.fullName}
-                                  </button>
-                                );
-                              }
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                        <div
+                          style={{
+                            width:
+                              currentIndex === index
+                                ? "auto"
+                                : 0,
+                            height:
+                              currentIndex === index
+                                ? visibleList
+                                  ? "80px"
+                                  : "50px"
+                                : 0,
+                            bottom: "42px",
+                          }}
+                          className="absolute overflow-hidden bottom-[42px] px-2 left-0 shadow-xl flex gap-2 bg-[#e9e9e9] items-center justify-center rounded-md"
+                        >
+                          {visibleList === false ? (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setCurrentIndex(-1);
+                                  handleTime(
+                                    time,
+                                    checkSchedule(time) === 2
+                                      ? true
+                                      : false
+                                  );
+                                }}
+                                className="px-3 py-1 transition-all hover:scale-[1.05] rounded-md bg-[blue] w-[100px] text-[white] text-[14px]"
+                              >
+                                Trực tuyến
+                              </button>
+                              <button
+                                onClick={() =>
+                                  setVisibleList(true)
+                                }
+                                className="px-3 py-1 w-[100px] transition-all hover:scale-[1.05] rounded-md bg-[green] text-[white] text-[14px]"
+                              >
+                                Theo Dõi
+                              </button>
+                            </>
+                          ) : (
+                            <div className="w-[150px] h-[100%] py-2 flex flex-col overflow-auto gap-1">
+                              {logBooks.map((item, index) => {
+                                if (
+                                  item.status.status_type ===
+                                  "ACCEPTED"
+                                ) {
+                                  return (
+                                    <button
+                                      onClick={() =>
+                                        handleCreateLichTheoDoi(
+                                          time,
+                                          item.patient._id
+                                        )
+                                      }
+                                      className="w-full bg-[green] rounded-md text-[white] text-[14px] py-2 "
+                                      key={index}
+                                    >
+                                      {item.patient.fullName}
+                                    </button>
+                                  );
+                                }
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )}
                   </div>
                 );
               }

@@ -73,19 +73,19 @@ const CuocHen = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setAppointments(res.filter(item => item.status === 'QUEUE'))
+            setAppointments(res.filter(item => item.status === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+            setAppointments(res.filter(item => item.status === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setAppointments(res.filter(item => item.status === 'REJECTED'))
+            setAppointments(res.filter(item => item.status === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+            setAppointments(res.filter(item => item.status === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setAppointments(res.filter(item => item.status === 'CANCELED'))
+            setAppointments(res.filter(item => item.status === 'CANCELED').reverse())
           }
         });
       } else if (type === "2" || type === "3") {
@@ -105,19 +105,19 @@ const CuocHen = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setAppointments(res.filter(item => item.status === 'QUEUE'))
+            setAppointments(res.filter(item => item.status === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+            setAppointments(res.filter(item => item.status === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setAppointments(res.filter(item => item.status === 'REJECTED'))
+            setAppointments(res.filter(item => item.status === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+            setAppointments(res.filter(item => item.status === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setAppointments(res.filter(item => item.status === 'CANCELED'))
+            setAppointments(res.filter(item => item.status === 'CANCELED').reverse())
           }
         });
       } else if (type === "4") {
@@ -132,19 +132,19 @@ const CuocHen = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setAppointments(res.filter(item => item.status === 'QUEUE'))
+            setAppointments(res.filter(item => item.status === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+            setAppointments(res.filter(item => item.status === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setAppointments(res.filter(item => item.status === 'REJECTED'))
+            setAppointments(res.filter(item => item.status === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+            setAppointments(res.filter(item => item.status === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setAppointments(res.filter(item => item.status === 'CANCELED'))
+            setAppointments(res.filter(item => item.status === 'CANCELED').reverse())
           }
         });
       } else if (type === "5") {
@@ -159,19 +159,19 @@ const CuocHen = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setAppointments(res.filter(item => item.status === 'QUEUE'))
+            setAppointments(res.filter(item => item.status === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+            setAppointments(res.filter(item => item.status === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setAppointments(res.filter(item => item.status === 'REJECTED'))
+            setAppointments(res.filter(item => item.status === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+            setAppointments(res.filter(item => item.status === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setAppointments(res.filter(item => item.status === 'CANCELED'))
+            setAppointments(res.filter(item => item.status === 'CANCELED').reverse())
           }
         });
       } else if (type === "6") {
@@ -186,19 +186,19 @@ const CuocHen = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            setAppointments(res.filter(item => item.status === 'QUEUE'))
+            setAppointments(res.filter(item => item.status === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            setAppointments(res.filter(item => item.status === 'ACCEPTED'))
+            setAppointments(res.filter(item => item.status === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            setAppointments(res.filter(item => item.status === 'REJECTED'))
+            setAppointments(res.filter(item => item.status === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            setAppointments(res.filter(item => item.status === 'COMPLETED'))
+            setAppointments(res.filter(item => item.status === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            setAppointments(res.filter(item => item.status === 'CANCELED'))
+            setAppointments(res.filter(item => item.status === 'CANCELED').reverse())
           }
         });
       }

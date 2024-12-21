@@ -9,13 +9,12 @@ const Meet = () => {
     const { id, type } = param;
     const accessToken = searchParams.get('accesstoken');
     const refreshToken = searchParams.get('refreshtoken');
-    const isMobile = searchParams.get('ismobile');
 
     useEffect(() => {
         if (accessToken && refreshToken) {
             globalThis.localStorage.setItem('accessToken', accessToken)
             globalThis.localStorage.setItem('refreshToken', refreshToken)
-            router.push(`/zego/${id}/${type}/${isMobile ? true : false}`)
+            router.push(`/zego/${id}/${type}`)
         }
     }, [accessToken, refreshToken])
 

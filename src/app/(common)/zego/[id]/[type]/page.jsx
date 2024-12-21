@@ -1,6 +1,7 @@
 "use client";
 import FormAssessment from "@/components/appointment/FormAssessment";
 import FormRecordPatient from "@/components/appointment/FormRecordPatient";
+import useWindowWidth from "@/components/UseWindowWidth";
 import { appointmentContext } from "@/context/AppointmentContext";
 import { authContext } from "@/context/AuthContext";
 import {
@@ -23,7 +24,7 @@ import React, {
 } from "react";
 const Zego = () => {
   const param = useParams();
-  const { id, type, mobile } = param;
+  const { id, type } = param;
   const { userData } = useContext(userContext);
   const { authHandler, authData } = useContext(authContext);
   const { appointmentHandler, appointmentData } =
@@ -32,9 +33,8 @@ const Zego = () => {
   const [visibleStatusUpdated, setVisibleStatusUpdated] =
     useState(false);
   const { globalHandler } = useContext(globalContext);
-  const router = useRouter();
   const [offset, setOffset] = useState();
-  const wrapperRef = useRef();
+  const width = useWindowWidth();
 
   useEffect(() => {
     const element = document.querySelector(
@@ -81,7 +81,7 @@ const Zego = () => {
         fullName
       );
     const zc = ZegoUIKitPrebuilt.create(kitToken);
-    if (mobile) {
+    if (width <= 768) {
       zc.hangUp();
     } else {
       if (type === "patient") {

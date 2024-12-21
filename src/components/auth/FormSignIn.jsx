@@ -101,7 +101,7 @@ const FormSignIn = ({ visible, hidden }) => {
     }
 
     useEffect(() => {
-        if (phone !== '') {
+        if (phone !== '' && currentStep === 3) {
             setTimeout(() => {
                 const recaptchaContainer = recaptchaRef.current;
                 if (recaptchaContainer) {

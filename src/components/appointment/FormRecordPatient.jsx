@@ -397,17 +397,19 @@ const FormRecordPatient = ({ hidden, visible, setVisibleStatusUpdated }) => {
                 >
                   Thêm
                 </button>
-                <button
-                  className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
-                  onClick={() => {
-                    setSelectedMedical()
-                    setNameMedical('')
-                    setUnitOfCalculation('Đơn vị tính')
-                    setQuantity('')
-                  }}
-                >
-                  Hủy thuốc đang chọn
-                </button>
+                {selectedMedical && (
+                  <button
+                    className="hover:scale-[1.05] transition-all text-[14px] bg-[red] flex justify-center items-center w-[45%] text-[white] mt-2 h-[37px] rounded-lg"
+                    onClick={() => {
+                      setSelectedMedical()
+                      setNameMedical('')
+                      setUnitOfCalculation('Đơn vị tính')
+                      setQuantity('')
+                    }}
+                  >
+                    Hủy thuốc đang chọn
+                  </button>
+                )}
               </div>
               {/*-----------them phan thuoc*/}
             </div>

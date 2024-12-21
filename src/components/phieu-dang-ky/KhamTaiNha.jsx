@@ -106,19 +106,19 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "2" || type === "3") {
@@ -141,19 +141,19 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "4") {
@@ -169,19 +169,19 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "5") {
@@ -197,19 +197,19 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       } else if (type === "6") {
@@ -225,19 +225,19 @@ const KhamTaiNha = ({ type, setType, typeStatus }) => {
         }).then((res) => {
           setLoading(false)
           if (typeStatus === '1') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'QUEUE').reverse())
           }
           else if (typeStatus === '2') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'ACCEPTED').reverse())
           }
           else if (typeStatus === '3') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'REJECTED').reverse())
           }
           else if (typeStatus === '4') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'COMPLETED').reverse())
           }
           else if (typeStatus === '5') {
-            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED'))
+            appointmentHandler.setAppointmentHomes(res.filter(item => item.status.status_type === 'CANCELED').reverse())
           }
         });
       }

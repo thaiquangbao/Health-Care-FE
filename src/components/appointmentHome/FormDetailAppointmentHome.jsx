@@ -64,7 +64,7 @@ const FormDetailAppointmentHome = ({
         sendToken: false,
         path: `/medicalRecords/findByPatient/${data?.patient?._id}`,
       }).then((res) => {
-        setMedicalRecords(res);
+        setMedicalRecords(res.reverse());
       });
       api({
         path: `/medicalRecords/check-appointment`,
@@ -151,8 +151,7 @@ const FormDetailAppointmentHome = ({
         className="flex w-full h-full"
       >
         <div className="px-[2rem] min-w-[100%] h-full py-[1.5rem] flex flex-col gap-2">
-          <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${data?.sick !== "" ? data?.sick : "Khám tại nhà"
-            })`}</span>
+          <span className="font-semibold">{`Thông Tin Chi Tiết Cuộc Hẹn (${data?.sick !== "" ? data?.sick : "Khám tại nhà"})`}</span>
           <div className="flex justify-between items-center px-4 mt-4">
             <div className="flex items-center gap-4">
               <div
@@ -257,10 +256,10 @@ const FormDetailAppointmentHome = ({
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-center px-4 text-[14px] mt-2">
+          <div className="flex justify-between items-center px-4 text-[14px]">
             <span>
               <span className="font-semibold">
-                Triệu Chứng:
+                Ghi Chú:
               </span>{" "}
               {data?.note}
             </span>
@@ -458,7 +457,7 @@ const FormDetailAppointmentHome = ({
           setType={setType}
           doctorRecord1={doctorRecord}
           appointmentHome1={data}
-          medicalRecord={medicalRecord}
+        // medicalRecord={medicalRecord}
         />
         <AssessmentDoctor
           appointmentHome={data}
