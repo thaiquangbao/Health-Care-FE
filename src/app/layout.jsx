@@ -53,8 +53,8 @@ export default function RootLayout({ children }) {
             </BookingHomeProvider>
           </UserProvider>
         </UtilsProvider>
-        <script src="https://aichatbox.membee.app/bot.js?title=Xin chào 👋&subtitle=Bắt đầu trò chuyện cùng Membee. Chatbot hỗ trợ 24/7.&webhookUrl=https://n8n.membee.app/webhook/aa56da8d-d6c2-4e5f-a546-fd44e52997b4/chat&welcomeBot=Xin chào! 👋&messageBot=Tôi là Trang Membee. Chatbot hỗ trợ 24/7."></script>
       </body>
+      <script src="https://aichatbox.membee.app/bot.js?title=Xin chào 👋&subtitle=Bắt đầu trò chuyện cùng Membee. Chatbot hỗ trợ 24/7.&webhookUrl=https://n8n.membee.app/webhook/aa56da8d-d6c2-4e5f-a546-fd44e52997b4/chat&welcomeBot=Xin chào! 👋&messageBot=Tôi là Trang Membee. Chatbot hỗ trợ 24/7."></script>
     </html>
   );
 }
